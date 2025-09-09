@@ -1,6 +1,6 @@
 // src/hooks/useUsers.ts
 import { useQuery } from '@tanstack/react-query';
-import { fetchUsers } from '@/services/api';
+import { fetchUsuarios } from '@/services/api';
 
 export const useUsers = () => {
   const {
@@ -10,7 +10,7 @@ export const useUsers = () => {
     error,
   } = useQuery({
     queryKey: ['users'],
-    queryFn: fetchUsers,
+    queryFn: fetchUsuarios,
   });
 
   return { users, isLoading, isError, error };

@@ -1,5 +1,3 @@
-// src/pages/Kanban/index.tsx
-
 import React, { useState } from 'react';
 import {
   DndContext,
@@ -17,64 +15,57 @@ import { useBoardStore } from '@/store/boardStore';
 import Column from './components/Column';
 import { Task } from './components/Task';
 import './Kanban.scss';
-import { ColumnType } from '@/services/api.types';
-import { TaskType } from './types';
+import { ColumnaType, TareaType } from '@/services/api.types';
 import { kanbanMessages } from './Kanban.messages';
-// ✅ 1. Importa el nuevo hook personalizado
 import { useKanbanBoard } from './hooks/useKanbanBoard';
 
 const Kanban: React.FC = () => {
-  // ✅ 2. Llama al hook para obtener el estado y la función de actualización.
-  //    Toda la lógica de fetching, mutaciones y errores ahora vive aquí.
-  const { isLoading, isError, updateBoard } = useKanbanBoard();
-
-  // El estado de la UI (lo que se ve en pantalla) viene directamente del store de Zustand.
-  const { tasks, columns, columnOrder, setBoardState } = useBoardStore();
-
-  const [activeTask, setActiveTask] = useState<TaskType | null>(null);
+  const { isLoading, isError, updateTablero } = useKanbanBoard();
+  const { tareas, columnas, ordenColumnas, setBoardState } = useBoardStore();
+  const [activeTask, setActiveTask] = useState<TareaType | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
-  // --- Lógica de Drag and Drop (Esta se queda en el componente) ---
-
-  const findColumnOfTask = (taskId: string): ColumnType | undefined => {
+  const findColumnOfTask = (taskId: string): ColumnaType | undefined => {
     const state = useBoardStore.getState();
-    const columnName = Object.keys(state.columns).find((colName) =>
-      state.columns[colName].taskIds.includes(taskId)
+    const colId = Object.keys(state.columnas).find((id) =>
+      state.columnas[id].tareasIds.includes(taskId)
     );
-    return columnName ? state.columns[columnName] : undefined;
+    return colId ? state.columnas[colId] : undefined;
   };
 
   const handleDragStart = (event: DragStartEvent) => {
-    const taskId = event.active.id as string;
-    setActiveTask(tasks[taskId]);
+    setActiveTask(tareas[event.active.id as string]);
   };
 
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
-    const isActiveTask = active.data.current?.type !== 'Column';
-    if (!isActiveTask) return;
     const activeId = active.id as string;
     const overId = over.id as string;
     const activeColumn = findColumnOfTask(activeId);
     const overColumn =
       over.data.current?.type === 'Column'
-        ? columns[overId]
+        ? columnas[overId]
         : findColumnOfTask(overId);
-    if (activeColumn && overColumn && activeColumn.id !== overColumn.id) {
+
+    if (
+      activeColumn &&
+      overColumn &&
+      activeColumn.idColumna !== overColumn.idColumna
+    ) {
       setBoardState({
         ...useBoardStore.getState(),
-        columns: {
-          ...columns,
-          [activeColumn.id]: {
+        columnas: {
+          ...columnas,
+          [activeColumn.idColumna]: {
             ...activeColumn,
-            taskIds: activeColumn.taskIds.filter((id) => id !== activeId),
+            tareasIds: activeColumn.tareasIds.filter((id) => id !== activeId),
           },
-          [overColumn.id]: {
+          [overColumn.idColumna]: {
             ...overColumn,
-            taskIds: [...overColumn.taskIds, activeId],
+            tareasIds: [...overColumn.tareasIds, activeId],
           },
         },
       });
@@ -90,34 +81,30 @@ const Kanban: React.FC = () => {
     const activeId = active.id as string;
     const overId = over.id as string;
     const activeColumn = findColumnOfTask(activeId);
-    const overColumn = findColumnOfTask(overId);
-    if (activeColumn && overColumn && activeColumn.id === overColumn.id) {
-      const activeIndex = activeColumn.taskIds.indexOf(activeId);
-      const overIndex = overColumn.taskIds.indexOf(overId);
+
+    if (activeColumn && activeId !== overId) {
+      const activeIndex = activeColumn.tareasIds.indexOf(activeId);
+      const overIndex = activeColumn.tareasIds.indexOf(overId);
       if (activeIndex !== overIndex) {
-        const newTaskIds = arrayMove(
-          activeColumn.taskIds,
-          activeIndex,
-          overIndex
-        );
         setBoardState({
           ...useBoardStore.getState(),
-          columns: {
-            ...columns,
-            [activeColumn.id]: { ...activeColumn, taskIds: newTaskIds },
+          columnas: {
+            ...columnas,
+            [activeColumn.idColumna]: {
+              ...activeColumn,
+              tareasIds: arrayMove(
+                activeColumn.tareasIds,
+                activeIndex,
+                overIndex
+              ),
+            },
           },
         });
       }
     }
 
-    // ✅ 3. Llama a la función 'updateBoard' devuelta por nuestro hook para guardar.
     const finalState = useBoardStore.getState();
-    updateBoard({
-      tasks: finalState.tasks,
-      columns: finalState.columns,
-      columnOrder: finalState.columnOrder,
-    });
-
+    updateTablero(finalState);
     setActiveTask(null);
   };
 
@@ -135,13 +122,19 @@ const Kanban: React.FC = () => {
       onDragEnd={handleDragEnd}
     >
       <div className="kanban">
-        {columnOrder.map((columnId) => {
-          const column = columns[columnId];
+        {ordenColumnas.map((columnId) => {
+          const column = columnas[columnId];
           if (!column) return null;
-          const columnTasks = column.taskIds
-            .map((taskId) => tasks[taskId])
+          const columnTasks = column.tareasIds
+            .map((taskId) => tareas[taskId])
             .filter(Boolean);
-          return <Column key={column.id} column={column} tasks={columnTasks} />;
+          return (
+            <Column
+              key={column.idColumna}
+              column={column}
+              tasks={columnTasks}
+            />
+          );
         })}
       </div>
       <DragOverlay>
@@ -150,5 +143,4 @@ const Kanban: React.FC = () => {
     </DndContext>
   );
 };
-
 export default Kanban;

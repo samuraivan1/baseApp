@@ -1,52 +1,12 @@
-.users {
-  padding: 1rem;
-
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
+.admin-users { padding: 1rem;
+  &__header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+  &__table { width:100%; border-collapse:collapse;
+    th,td{ padding:0.5rem; border:1px solid #eee; text-align:left; }
   }
-
-  &__button {
-    padding: 0.4rem 0.8rem;
-    border-radius: 6px;
-    cursor: pointer;
-
-    &--primary {
-      background: #2b2b2b;
-      color: white;
-      border: none;
-    }
-  }
-
-  &__table {
-    width: 100%;
-    border-collapse: collapse;
-
-    th, td {
-      padding: 0.5rem;
-      border: 1px solid #e8e8e8;
-      text-align: left;
-    }
-  }
-
-  &__modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    &-content {
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      max-width: 720px;
-      width: 100%;
-    }
+  &__modal { position:fixed; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center;
+    &-content { background:#fff; padding:1rem; border-radius:8px; width:600px; max-width:95%;}
   }
 }
+.btn{ padding:0.4rem 0.6rem; border-radius:6px; cursor:pointer; border:1px solid #ddd; background:#f7f7f7; }
+.btn--primary{ background:#2b2b2b; color:#fff; border:none; }
+.btn--danger{ background:#dc3545; color:#fff; border:none; }

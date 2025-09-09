@@ -4,6 +4,7 @@ import axios from 'axios';
 import { authMessages } from '@/constants/commonMessages';
 import { AuthState, AuthActions } from './store.types';
 import { getConfig } from '@/services/configService';
+import { UsuarioType, RolType, PermisoType } from '@/services/api.types';
 
 export const useAuthStore = create<AuthState & AuthActions>()(
   persist(
@@ -14,81 +15,75 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
       login: async (emailOrUsername, password) => {
         const config = getConfig();
-        const API_USERS_URL = `${config.API_BASE_URL}/usuario`;
-        const API_ROLES_URL = `${config.API_BASE_URL}/roles`;
+        const API_BASE_URL = config.API_BASE_URL;
 
         set({ loading: true });
         try {
-          const userByEmailResponse = await axios.get(API_USERS_URL, {
-            params: { correo_electronico: emailOrUsername },
-          });
-          const userByUsernameResponse = await axios.get(API_USERS_URL, {
-            params: { nombre_usuario: emailOrUsername },
-          });
-          const potentialUser =
-            userByEmailResponse.data[0] || userByUsernameResponse.data[0];
+          // 1. Obtener todos los datos necesarios del json-server
+          const [usuariosRes, rolesRes, permisosRes] = await Promise.all([
+            axios.get<UsuarioType[]>(`${API_BASE_URL}/usuarios`),
+            axios.get<RolType[]>(`${API_BASE_URL}/roles`),
+            axios.get<PermisoType[]>(`${API_BASE_URL}/permisos`),
+          ]);
 
-          if (potentialUser) {
-            // ✅ --- INICIO DE LA CORRECCIÓN --- ✅
-            // Ahora que encontramos al usuario, COMPARAMOS LA CONTRASEÑA
-            if (potentialUser.hash_contrasena === password) {
-              // Si la contraseña es correcta, procedemos
-              const roleResponse = await axios.get(
-                `${API_ROLES_URL}/${potentialUser.rolId}`
-              );
-              const userPermissions = roleResponse.data.permisos;
+          const usuarios = usuariosRes.data;
+          const roles = rolesRes.data;
+          const permisos = permisosRes.data;
 
-              set({
-                isLoggedIn: true,
-                user: {
-                  id: potentialUser.id_usuario,
-                  name:
-                    potentialUser.nombre + ' ' + potentialUser.apellido_paterno,
-                  initials: potentialUser.iniciales,
-                  email: potentialUser.correo_electronico,
-                  role: roleResponse.data.nombre,
-                  permisos: userPermissions,
-                  bearerToken: 'este_es_un_token_de_ejemplo_jwt',
-                },
-                loading: false,
-              });
-              return true;
-            } else {
-              // La contraseña es incorrecta
-              set({ loading: false });
-              throw new Error(authMessages.loginError);
-            }
-            // ✅ --- FIN DE LA CORRECCIÓN --- ✅
+          // 2. Encontrar al usuario por correo o nombre de usuario
+          const potentialUser = usuarios.find(
+            (u) =>
+              u.correoElectronico === emailOrUsername ||
+              u.nombreUsuario === emailOrUsername
+          );
+
+          // 3. Validar contraseña (en un caso real, esto sería contra un hash)
+          if (potentialUser && potentialUser.hashContrasena === password) {
+            const userRole = roles.find((r) => r.idRol === potentialUser.rolId);
+            if (!userRole) throw new Error('Rol de usuario no encontrado.');
+
+            // 4. Construir la lista de permisos del usuario a partir de su rol
+            const userPermissions = userRole.permisosIds
+              .map((id) => {
+                const permission = permisos.find((p) => p.idPermiso === id);
+                return permission ? permission.permiso : '';
+              })
+              .filter(Boolean);
+
+            set({
+              isLoggedIn: true,
+              user: {
+                id: potentialUser.idUsuario,
+                nombreCompleto: `${potentialUser.nombre} ${potentialUser.apellidoPaterno}`,
+                iniciales: potentialUser.iniciales,
+                email: potentialUser.correoElectronico,
+                rol: userRole.nombre,
+                permisos: userPermissions,
+                bearerToken: 'token_simulado_jwt_para_desarrollo',
+              },
+              loading: false,
+            });
+            return true;
           } else {
-            // El usuario no fue encontrado
-            set({ loading: false });
             throw new Error(authMessages.loginError);
           }
         } catch (error) {
           set({ loading: false });
+          // Si es un error de Axios, relanzamos el mensaje del error, si no, el error genérico
+          if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || 'Error de red');
+          }
           throw error;
         }
       },
       logout: () => {
-        set({
-          isLoggedIn: false,
-          user: null,
-          loading: false,
-        });
-        // Ya no hay toast aquí
+        set({ isLoggedIn: false, user: null, loading: false });
       },
-
       hasPermission: (requiredPermission) => {
         const { user } = get();
-        if (!user || !user.permisos) {
-          return false;
-        }
-        return user.permisos.includes(requiredPermission);
+        return user?.permisos.includes(requiredPermission) ?? false;
       },
     }),
-    // ✅ 3. Opciones de configuración para la persistencia
-    {
-      name: 'auth-storage', // Nombre de la clave en localStorage
-    }
+    { name: 'auth-storage' }
   )
 );

@@ -1,21 +1,19 @@
-// src/store/store.types.ts
-
-import { BoardType } from '@/services/api.types';
+import { TableroType } from '@/services/api.types';
 
 // --- Tipos para AuthStore ---
-export interface User {
+export interface UserSession {
   id: number;
-  name: string;
-  initials: string;
+  nombreCompleto: string;
+  iniciales: string;
   email: string;
-  role: string;
-  permisos: string[];
+  rol: string;
+  permisos: string[]; // Guardaremos la lista de strings de permisos
   bearerToken: string;
 }
 
 export interface AuthState {
   isLoggedIn: boolean;
-  user: User | null;
+  user: UserSession | null;
   loading: boolean;
 }
 
@@ -26,18 +24,12 @@ export interface AuthActions {
 }
 
 // --- Tipos para BoardStore ---
-// El estado del board store es la estructura del tablero
-export type BoardState = BoardType;
+export type BoardState = TableroType;
 
 export interface BoardActions {
   setBoardState: (newState: BoardState) => void;
 }
 
 // --- Tipos para MenuStore (a futuro) ---
-export interface MenuState {
-  // Por ahora vacío, pero listo para crecer
-}
-
-export interface MenuActions {
-  // Acciones futuras para el menú
-}
+export interface MenuState {}
+export interface MenuActions {}

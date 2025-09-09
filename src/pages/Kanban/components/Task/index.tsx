@@ -2,23 +2,19 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { formatDate, getDateStatus } from '@/utils/dateUtils';
-import { TaskType } from '../../types';
+import { TareaType } from '@/services/api.types';
 import { taskMessages } from './Task.messages';
 
-// ✅ 2. Creamos un tipo para las props del componente
 interface TaskProps {
-  task: TaskType;
+  task: TareaType;
 }
 
-const renderAvatars = (users: string[] | undefined) => {
-  if (!users || users.length === 0) return null;
-  // Usaremos BEM aquí también para los avatares
-  const containerClass =
-    users.length > 2 ? 'task__avatars task__avatars--stacked' : 'task__avatars';
-  const usersToShow = users.length > 2 ? users.slice(0, 2) : users;
+const renderAvatars = (users?: string[]) => {
+  if (!users?.length) return null;
+  const containerClass = `task__avatars ${users.length > 2 ? 'task__avatars--stacked' : ''}`;
   return (
     <div className={containerClass}>
-      {usersToShow.map((user, index) => (
+      {users.slice(0, 3).map((user, index) => (
         <span key={index} className="task__avatar">
           {user}
         </span>
@@ -35,42 +31,36 @@ export const Task: React.FC<TaskProps> = ({ task }) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: task.id }); // Mantenemos tu useSortable original
-
+  } = useSortable({ id: task.idTarea });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
+  const dateStatusClass = getDateStatus(task.fechaVencimiento);
 
-  const dateStatusClass = getDateStatus(task.dueDate);
-
-  // ✅ Usamos BEM: un bloque 'task'
   return (
     <div
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
-      className="task" // ✅ className actualizado a 'task'
+      className="task"
     >
-      <p className="task__content">{task.content}</p> {/* ✅ Elemento BEM */}
-      {task.daysActive !== undefined && (
+      <p className="task__content">{task.contenido}</p>
+      {task.diasActivo !== undefined && (
         <div className="task__days">
-          {task.daysActive} {taskMessages.days}
-        </div> // ✅ Elemento BEM
+          {task.diasActivo} {taskMessages.days}
+        </div>
       )}
       <div className="task__footer">
-        {' '}
-        {/* ✅ Elemento BEM */}
-        {task.dueDate && (
-          // ✅ Elemento BEM con un Modificador BEM dinámico
+        {task.fechaVencimiento && (
           <div className={`task__date task__date--${dateStatusClass}`}>
             <span>📅</span>
-            <span>{formatDate(task.dueDate)}</span>
+            <span>{formatDate(task.fechaVencimiento)}</span>
           </div>
         )}
-        {renderAvatars(task.users)}
+        {renderAvatars(task.usuariosAsignados)}
       </div>
     </div>
   );

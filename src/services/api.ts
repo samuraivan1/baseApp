@@ -1,42 +1,45 @@
-import apiClient from './apiClient'; // ✅ 1. Importa nuestro cliente configurado
-import { NavMenuItem, BoardType, RoleType, UserType } from './api.types';
+import apiClient from './apiClient';
+import {
+  NavMenuItem,
+  TableroType,
+  RolType,
+  UsuarioType,
+  PermisoType,
+} from './api.types';
 
-// Ya no necesitamos 'axios' aquí
-
-// ✅ 2. Reemplaza 'axios.get' por 'apiClient.get' y elimina la URL base
+// --- Menu API ---
 export const fetchMenu = async (): Promise<NavMenuItem[]> => {
   const { data } = await apiClient.get('/menu');
   return data;
 };
 
 export const fetchProfileMenu = async (): Promise<NavMenuItem[]> => {
-  const { data } = await apiClient.get('/menuprofile');
+  const { data } = await apiClient.get('/menuPerfil');
   return data;
 };
 
-export const fetchBoard = async (): Promise<BoardType> => {
-  const { data } = await apiClient.get('/board');
+// --- Kanban API ---
+export const fetchTablero = async (): Promise<TableroType> => {
+  const { data } = await apiClient.get('/tablero');
   return data;
 };
 
-/*export const updateBoard = async (newBoardState: BoardType): Promise<BoardType> => {
-  const { data } = await apiClient.put('/board', newBoardState);
+/*export const updateTablero = async (newState: TableroType): Promise<TableroType> => {
+  const { data } = await apiClient.put('/tablero', newState);
   return data;
 };*/
 
 // ✅ --- INICIO DE LA SIMULACIÓN DE ERROR --- ✅
-export const updateBoard = async (
-  newBoardState: BoardType
-): Promise<BoardType> => {
+export const updateTablero = async (
+  newState: TableroType
+): Promise<TableroType> => {
   // 1. Añadimos un console.log para ver que la función se llama.
   console.log(
     'Intentando guardar el tablero (simulación de fallo)...',
-    newBoardState
+    newState
   );
-
   // 2. Simulamos un retraso de 2 segundos para que el efecto sea visible.
   await new Promise((resolve) => setTimeout(resolve, 2000));
-
   // 3. Forzamos a que la petición siempre falle, devolviendo un error.
   return Promise.reject(new Error('Error de red simulado'));
 };
@@ -44,13 +47,17 @@ export const updateBoard = async (
 // ✅ Añade la nueva función para obtener los roles
 
 // --- Seguridad API ---
-// --- Seguridad API ---
-export const fetchRoles = async (): Promise<RoleType[]> => {
+export const fetchRoles = async (): Promise<RolType[]> => {
   const { data } = await apiClient.get('/roles');
   return data;
 };
 
-export const fetchUsers = async (): Promise<UserType[]> => {
-  const { data } = await apiClient.get('/usuario');
+export const fetchUsuarios = async (): Promise<UsuarioType[]> => {
+  const { data } = await apiClient.get('/usuarios');
+  return data;
+};
+
+export const fetchPermisos = async (): Promise<PermisoType[]> => {
+  const { data } = await apiClient.get('/permisos');
   return data;
 };

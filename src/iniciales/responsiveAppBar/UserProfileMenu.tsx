@@ -31,15 +31,15 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
 }) => {
   const hasSubmenu = item.items && item.items.length > 0;
 
-  if (item.title === 'Cerrar Sesión') {
+  if (item.titulo === 'Cerrar Sesión') {
     return (
       <li className="user-menu__item">
         <button onClick={onLogout} className="user-menu__button">
           <FontAwesomeIcon
-            icon={iconMap[item.title]}
+            icon={iconMap[item.titulo]}
             className="user-menu__icon"
           />
-          {item.title}
+          {item.titulo}
         </button>
       </li>
     );
@@ -47,14 +47,14 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
 
   return (
     <li className="user-menu__item">
-      <NavLink to={item.to || '#'} className="user-menu__button">
-        {iconMap[item.title] && (
+      <NavLink to={item.ruta || '#'} className="user-menu__button">
+        {iconMap[item.titulo] && (
           <FontAwesomeIcon
-            icon={iconMap[item.title]}
+            icon={iconMap[item.titulo]}
             className="user-menu__icon"
           />
         )}
-        <span>{item.title}</span>
+        <span>{item.titulo}</span>
         {hasSubmenu && (
           <FontAwesomeIcon
             icon={faChevronRight}
@@ -66,7 +66,7 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
       {hasSubmenu && (
         <ul className="user-menu__submenu">
           {item.items?.map((subItem) => (
-            <MenuItem key={subItem.id} item={subItem} onLogout={onLogout} />
+            <MenuItem key={subItem.idMenu} item={subItem} onLogout={onLogout} />
           ))}
         </ul>
       )}
@@ -89,13 +89,13 @@ const UserProfileMenu: React.FC = () => {
   return (
     <div className="user-menu">
       <div className="user-menu__header">
-        <span className="user-menu__name">{user?.name}</span>
+        <span className="user-menu__name">{user?.nombreCompleto}</span>
         <span className="user-menu__email">{user?.email}</span>
       </div>
       <hr className="user-menu__divider" />
       <ul className="user-menu__list">
         {profileMenuItems.map((item) => (
-          <MenuItem key={item.id} item={item} onLogout={handleLogout} />
+          <MenuItem key={item.idMenu} item={item} onLogout={handleLogout} />
         ))}
       </ul>
     </div>

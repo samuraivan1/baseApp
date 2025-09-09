@@ -5,7 +5,7 @@ import { userSchema, UserFormData } from './validationSchema';
 import { usersMessages } from './Users.messages';
 import { useUsers } from '@/hooks/useUsers';
 import { useRoles } from '@/hooks/useRoles';
-import { UserType } from '@/services/api.types';
+import { UsuarioType } from '@/services/api.types';
 import { toast } from 'react-toastify';
 import '../admin.styles.scss';
 
@@ -22,7 +22,7 @@ const defaultFormValues: Omit<UserFormData, 'rolId'> & { rolId: number | '' } =
 const Users: React.FC = () => {
   const { users, isLoading: isLoadingUsers } = useUsers();
   const { roles, isLoading: isLoadingRoles } = useRoles();
-  const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UsuarioType | null>(null);
 
   const {
     register,
@@ -36,7 +36,7 @@ const Users: React.FC = () => {
 
   useEffect(() => {
     if (selectedUser) {
-      const { id_usuario, hash_contrasena, ...formData } = selectedUser;
+      const { idUsuario, hashContrasena, ...formData } = selectedUser;
       reset(formData);
     } else {
       reset(defaultFormValues as UserFormData);
@@ -61,13 +61,13 @@ const Users: React.FC = () => {
             <ul className="items-list">
               {users.map((user) => (
                 <li
-                  key={user.id_usuario}
+                  key={user.idUsuario}
                   onClick={() => setSelectedUser(user)}
                   className={
-                    selectedUser?.id_usuario === user.id_usuario ? 'active' : ''
+                    selectedUser?.idUsuario === user.idUsuario ? 'active' : ''
                   }
                 >
-                  {user.nombre} {user.apellido_paterno}
+                  {user.nombre} {user.apellidoPaterno}
                 </li>
               ))}
             </ul>
@@ -84,7 +84,7 @@ const Users: React.FC = () => {
               onSubmit={handleSubmit(async (data) => {
                 await new Promise((resolve) => setTimeout(resolve, 1500));
                 console.log('Datos del usuario guardados:', {
-                  id: selectedUser?.id_usuario,
+                  id: selectedUser?.idUsuario,
                   ...data,
                 });
                 toast.success(`Usuario "${data.nombre}" guardado con éxito.`);
@@ -178,7 +178,7 @@ const Users: React.FC = () => {
                 >
                   <option value="">{usersMessages.selectRoleOption}</option>
                   {roles.map((role) => (
-                    <option key={role.id} value={role.id}>
+                    <option key={role.idRol} value={role.idRol}>
                       {role.nombre}
                     </option>
                   ))}

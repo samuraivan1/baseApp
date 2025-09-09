@@ -1,11 +1,11 @@
-export const usersPageText = {
+export const usersMessages = {
   title: 'Gestión de Usuarios',
   createButton: 'Nuevo Usuario',
   loading: 'Cargando usuarios...',
-  name: 'Nombre',
+  nombre: 'Nombre',
   email: 'Correo electrónico',
-  role: 'Rol',
-  active: 'Activo',
+  rol: 'Rol',
+  status: 'Estatus',
   actions: 'Acciones',
   activeYes: 'Sí',
   activeNo: 'No',
@@ -14,5 +14,5 @@ export const usersPageText = {
   createUser: 'Crear Usuario',
   editUser: 'Editar Usuario',
   deleteSuccess: 'Usuario eliminado con éxito',
-  genericError: 'Ocurrió un error al realizar la operación',
+  genericError: 'Ocurrió un error al realizar la operación'
 };

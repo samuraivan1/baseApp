@@ -1,104 +1,261 @@
 {
-  "usuario": [
-    {
-      "id_usuario": 1,
-      "nombre_usuario": "iamendezm",
-      "nombre": "Ismael",
-      "apellido_paterno": "Méndez",
-      "correo_electronico": "ismael.mendez@example.com",
-      "iniciales": "IM",
-      "hash_contrasena": "$2b$12$...",
-      "rolId": 1
+  "tablero": {
+    "tareas": {
+      "idTarea-1": {
+        "idTarea": "idTarea-1",
+        "contenido": "007306 Check list Equipos de arrastre CDRs",
+        "usuariosAsignados": ["AR"],
+        "fechaVencimiento": "2025-09-12",
+        "diasActivo": 15
+      },
+      "idTarea-2": {
+        "idTarea": "idTarea-2",
+        "contenido": "Mejora - Eticolor",
+        "usuariosAsignados": ["AL"],
+        "fechaVencimiento": "2025-08-20",
+        "diasActivo": 6
+      },
+      "idTarea-3": {
+        "idTarea": "idTarea-3",
+        "contenido": "006520 Evaluación scanner SUNLUX y NETUM",
+        "usuariosAsignados": ["GV", "RO"],
+        "fechaVencimiento": "2025-08-29",
+        "diasActivo": 11
+      },
+      "idTarea-4": {
+        "idTarea": "idTarea-4",
+        "contenido": "007135 Actualizar logotipo Grupo Truper CIAT",
+        "usuariosAsignados": ["AR", "GV", "AL"],
+        "fechaVencimiento": "2025-09-30",
+        "diasActivo": 43
+      }
     },
-    {
-      "id_usuario": 2,
-      "nombre_usuario": "jgarcia",
-      "nombre": "Juan",
-      "apellido_paterno": "García",
-      "correo_electronico": "juan.garcia@example.com",
-      "iniciales": "JG",
-      "hash_contrasena": "password123",
-      "rolId": 2
+    "columnas": {
+      "idColumna-1": {
+        "idColumna": "idColumna-1",
+        "titulo": "PENDIENTES",
+        "tareasIds": ["idTarea-2", "idTarea-1"]
+      },
+      "idColumna-2": {
+        "idColumna": "idColumna-2",
+        "titulo": "EN PROCESO",
+        "tareasIds": ["idTarea-4"]
+      },
+      "idColumna-3": {
+        "idColumna": "idColumna-3",
+        "titulo": "PRUEBAS QAS",
+        "tareasIds": ["idTarea-3"]
+      }
     },
+    "ordenColumnas": ["idColumna-1", "idColumna-2", "idColumna-3"]
+  },
+  "usuarios": [
     {
-      "id_usuario": 3,
-      "nombre_usuario": "arodriguez",
-      "nombre": "Ana",
-      "apellido_paterno": "Rodriguez",
-      "correo_electronico": "ana.rodriguez@example.com",
+      "idUsuario": 1,
+      "nombre": "Alejandro",
+      "apellidoPaterno": "Mendez",
+      "apellidoMaterno": "Martinez",
       "iniciales": "AR",
-      "hash_contrasena": "password123",
-      "rolId": 3
+      "correoElectronico": "iamendezm@truper.com",
+      "nombreUsuario": "iamendezm",
+      "hashContrasena": "$2b$12$...",
+      "proveedorAuth": "local",
+      "correoVerificadoEn": "2025-01-15T10:00:00Z",
+      "urlAvatar": "https://example.com/avatars/ar.png",
+      "biografia": "Líder de proyecto con 5 años de experiencia en desarrollo ágil.",
+      "numeroTelefono": "+525512345678",
+      "rolId": 1,
+      "status": "activo",
+      "fechaCreacion": "2025-01-15T09:30:00Z",
+      "fechaActualizacion": "2025-08-20T11:00:00Z",
+      "ultimoInicioSesion": "2025-08-27T11:20:00Z",
+      "azureAdObjectId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      "upn": "iamendezm@empresa.onmicrosoft.com",
+      "id": "e1de"
+    },
+    {
+      "idUsuario": 2,
+      "nombre": "Arturo",
+      "apellidoPaterno": "López",
+      "apellidoMaterno": "Hernández",
+      "iniciales": "AL",
+      "correoElectronico": "arturo.lopez@empresa.com",
+      "nombreUsuario": "arturolopez",
+      "hashContrasena": "password123",
+      "proveedorAuth": "local",
+      "correoVerificadoEn": null,
+      "urlAvatar": null,
+      "biografia": null,
+      "numeroTelefono": null,
+      "rolId": 2,
+      "status": "activo",
+      "fechaCreacion": "2025-02-20T14:00:00Z",
+      "fechaActualizacion": "2025-07-10T18:30:00Z",
+      "ultimoInicioSesion": "2025-08-25T09:00:00Z",
+      "azureAdObjectId": null,
+      "upn": null,
+      "id": "88ea"
+    },
+    {
+      "idUsuario": 3,
+      "nombre": "Gabriela",
+      "apellidoPaterno": "Vargas",
+      "apellidoMaterno": "Mendoza",
+      "iniciales": "GV",
+      "correoElectronico": "gabriela.vargas@empresa.com",
+      "nombreUsuario": "gabrielavargas",
+      "hashContrasena": "password123",
+      "proveedorAuth": "azure_ad",
+      "correoVerificadoEn": "2025-03-01T12:00:00Z",
+      "urlAvatar": "https://example.com/avatars/gv.png",
+      "biografia": "Desarrolladora Frontend especializada en React.",
+      "numeroTelefono": "+525587654321",
+      "rolId": 1002,
+      "status": "inactivo",
+      "fechaCreacion": "2025-03-01T12:00:00Z",
+      "fechaActualizacion": "2025-08-01T15:45:00Z",
+      "ultimoInicioSesion": "2025-07-30T16:00:00Z",
+      "azureAdObjectId": "b2c3d4e5-f6a7-8901-2345-67890abcdef1",
+      "upn": "gabriela.vargas@empresa.onmicrosoft.com",
+      "id": "e9d0"
+    }
+  ],
+  "permisos": [
+    {
+      "idPermiso": 1,
+      "permiso": "page:home:view",
+      "resource": "page",
+      "scope": "home",
+      "action": "view",
+      "descripcion": "Ver la página de Inicio"
+    },
+    {
+      "idPermiso": 2,
+      "permiso": "page:kanban:view",
+      "resource": "page",
+      "scope": "kanban",
+      "action": "view",
+      "descripcion": "Ver la página de Kanban"
+    },
+    {
+      "idPermiso": 3,
+      "permiso": "page:seguridad:view",
+      "resource": "page",
+      "scope": "seguridad",
+      "action": "view",
+      "descripcion": "Ver las páginas de seguridad"
+    },
+    {
+      "idPermiso": 4,
+      "permiso": "task:kanban:create",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "create",
+      "descripcion": "Crear tareas en el Kanban"
+    },
+    {
+      "idPermiso": 5,
+      "permiso": "task:kanban:edit",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "edit",
+      "descripcion": "Editar tareas en el Kanban"
+    },
+    {
+      "idPermiso": 6,
+      "permiso": "task:kanban:delete",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "delete",
+      "descripcion": "Eliminar tareas en el Kanban"
+    },
+    {
+      "idPermiso": 7,
+      "permiso": "role:system:create",
+      "resource": "role",
+      "scope": "system",
+      "action": "create",
+      "descripcion": "Crear nuevos roles"
+    },
+    {
+      "idPermiso": 8,
+      "permiso": "role:system:edit",
+      "resource": "role",
+      "scope": "system",
+      "action": "edit",
+      "descripcion": "Editar roles existentes"
+    },
+    {
+      "idPermiso": 9,
+      "permiso": "role:system:delete",
+      "resource": "role",
+      "scope": "system",
+      "action": "delete",
+      "descripcion": "Eliminar roles"
+    },
+    {
+      "idPermiso": 10,
+      "permiso": "user:system:create",
+      "resource": "user",
+      "scope": "system",
+      "action": "create",
+      "descripcion": "Crear nuevos usuarios"
+    },
+    {
+      "idPermiso": 11,
+      "permiso": "user:system:edit",
+      "resource": "user",
+      "scope": "system",
+      "action": "edit",
+      "descripcion": "Editar usuarios existentes"
     }
   ],
   "roles": [
     {
-      "id": 1,
+      "idRol": 1,
       "nombre": "Super Administrador",
-      "descripcion": "Tiene acceso total a todas las funcionalidades del sistema.",
-      "permisos": [
-        { "accion": "admin:full", "descripcion": "Acceso administrativo total" }
-      ]
+      "descripcion": "Acceso total al sistema.",
+      "permisosIds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     },
     {
-      "id": 2,
-      "nombre": "Gerente de Proyecto",
-      "descripcion": "Puede ver y administrar usuarios, pero no roles.",
-      "permisos": [
-        { "accion": "read:users", "descripcion": "Ver la lista de usuarios" },
-        { "accion": "create:users", "descripcion": "Crear nuevos usuarios" },
-        {
-          "accion": "update:users",
-          "descripcion": "Editar usuarios existentes"
-        },
-        { "accion": "read:roles", "descripcion": "Ver la lista de roles" }
-      ]
+      "idRol": 2,
+      "nombre": "Usuario Básico",
+      "descripcion": "Solo puede ver el contenido principal.",
+      "permisosIds": [1, 2]
     },
     {
-      "id": 3,
-      "nombre": "Desarrollador",
-      "descripcion": "Solo puede ver su propio tablero y tareas.",
-      "permisos": [
-        { "accion": "read:kanban", "descripcion": "Ver el tablero Kanban" },
-        { "accion": "update:tasks", "descripcion": "Mover y editar tareas" }
-      ]
+      "idRol": 1002,
+      "nombre": "Promotoría",
+      "descripcion": "Rol de promotoría con permisos específicos.",
+      "permisosIds": [1]
     }
   ],
   "menu": [
-    { "id": 1, "title": "Home", "to": "/home" },
-    { "id": 2, "title": "Kanban", "to": "/kanban" },
+    { "idMenu": 1, "titulo": "Home", "ruta": "/home", "permisoId": 1 },
+    { "idMenu": 2, "titulo": "Kanban", "ruta": "/kanban", "permisoId": 2 },
     {
-      "id": 3,
-      "title": "Seguridad",
+      "idMenu": 3,
+      "titulo": "Administración",
       "items": [
-        { "id": 31, "title": "Usuarios", "to": "/seguridad/usuarios" },
-        { "id": 32, "title": "Roles", "to": "/seguridad/roles" }
+        { "idMenu": 31, "titulo": "Usuarios", "ruta": "/admin/usuarios" },
+        { "idMenu": 32, "titulo": "Roles", "ruta": "/admin/roles" },
+        { "idMenu": 33, "titulo": "Permisos", "ruta": "/admin/permisos" }
       ]
+    },
+    {
+      "idMenu": 4,
+      "titulo": "Administración",
+      "ruta": "/administracion",
+      "permisoId": 2
     }
   ],
-  "menuprofile": [
-    { "id": 1, "title": "Perfil", "to": "/profile" },
-    { "id": 2, "title": "Cerrar Sesión" }
-  ],
-  "board": {
-    "tasks": {
-      "task-1": {
-        "id": "task-1",
-        "content": "Configurar el pipeline de CI/CD"
-      },
-      "task-2": {
-        "id": "task-2",
-        "content": "Desarrollar módulo de autenticación"
-      }
+  "menuPerfil": [
+    {
+      "idMenu": "1",
+      "titulo": "Perfil",
+      "ruta": "/profile",
+      "permisoId": null
     },
-    "columns": {
-      "column-1": {
-        "id": "column-1",
-        "title": "Por Hacer",
-        "taskIds": ["task-1", "task-2"]
-      },
-      "column-2": { "id": "column-2", "title": "En Progreso", "taskIds": [] }
-    },
-    "columnOrder": ["column-1", "column-2"]
-  }
+    { "idMenu": "4", "titulo": "Cerrar Sesión" }
+  ]
 }

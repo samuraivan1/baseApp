@@ -7,9 +7,14 @@ import Home from '@/pages/Home'; //
 import Kanban from '@/pages/Kanban';
 import Roles from '@/pages/Roles';
 import Users from '@/pages/Users';
+import Permissions from '@/pages/Permissions';
 import Project from '@/pages/Project';
 import DashProject from '@/pages/DashProject';
 import LoginPage from '@/pages/LoginPage'; // Importa la página de Login
+import Administracion from '@/pages/Administracion';
+import PermisosPage from '@/pages/Administracion/Permisos';
+import UsuariosPage from '@/pages/Administracion/Users';
+import RolesPage from '@/pages/Administracion/Roles';
 
 const LOGIN_BACKGROUND_IMAGE =
   'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?q=80&w=2070&auto=format&fit=crop';
@@ -58,7 +63,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/seguridad/roles"
+        path="/admin/roles"
         element={
           <ProtectedRoute>
             <Roles />
@@ -66,10 +71,18 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/seguridad/usuarios"
+        path="/admin/usuarios"
         element={
           <ProtectedRoute>
             <Users />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/permisos"
+        element={
+          <ProtectedRoute>
+            <Permissions />
           </ProtectedRoute>
         }
       />
@@ -86,6 +99,38 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <DashProject />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/administracion"
+        element={
+          <ProtectedRoute>
+            <Administracion />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/administracion/roles"
+        element={
+          <ProtectedRoute>
+            <RolesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/administracion/usuarios"
+        element={
+          <ProtectedRoute>
+            <UsuariosPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/administracion/permisos"
+        element={
+          <ProtectedRoute>
+            <PermisosPage />
           </ProtectedRoute>
         }
       />

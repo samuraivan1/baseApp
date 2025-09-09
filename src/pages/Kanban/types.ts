@@ -1,8 +1,2 @@
-// src/pages/Kanban/types.ts
-export interface TaskType {
-  id: string;
-  content: string;
-  users?: string[];
-  dueDate?: string;
-  daysActive?: number;
-}
+import { TareaType as ApiTareaType } from '@/services/api.types';
+export type TaskType = ApiTareaType;

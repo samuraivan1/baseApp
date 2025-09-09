@@ -20,7 +20,7 @@ const ResponsiveAppBar: React.FC = () => {
   const { profileMenuItems, isLoadingProfile } = useProfileMenu();
 
   // ✅ Creamos un item especial que usaremos como divisor visual
-  const dividerItem: NavMenuItem = { id: 9999, title: 'divider' };
+  const dividerItem: NavMenuItem = { idMenu: 9999, titulo: 'divider' };
 
   // ✅ Combinamos todos los items en un solo array para el menú móvil
   const mobileMenuItems = [...menuItems, dividerItem, ...profileMenuItems];
@@ -48,7 +48,7 @@ const ResponsiveAppBar: React.FC = () => {
               className="app-bar__avatar"
               onClick={() => setUserMenuOpen(!isUserMenuOpen)}
             >
-              {user?.initials || 'U'}
+              {user?.iniciales || 'U'}
             </button>
             {isUserMenuOpen && <UserProfileMenu />}
           </div>

@@ -1,80 +1,86 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import logger from '@/services/logger';
-import { getUsers, deleteUser } from '@/services/usersService';
-import UserForm from './components/UserForm';
-import { usersPageText } from './Users.messages';
+import { getUsuarios, deleteUsuario } from '@/services/adminService';
+import UserForm from './UserForm';
+import { usersMessages } from './Users.messages';
 import './Users.scss';
+import { Usuario } from '@/pages/Administracion/types';
 
-const UsersPage: React.FC = () => {
+const UsuariosPage: React.FC = () => {
+  const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<any | null>(null);
+  const [editing, setEditing] = useState<Usuario | null>(null);
 
-  const { data: users, isLoading, refetch } = useQuery({
-    queryKey: ['users'],
-    queryFn: getUsers,
+  const { data: usuarios, isLoading } = useQuery({
+    queryKey: ['usuarios'],
+    queryFn: getUsuarios,
+  });
+  const delMutation = useMutation({
+    mutationFn: (id: number) => deleteUsuario(id),
+    onSuccess: () => {
+      toast.success(usersMessages.deleteSuccess);
+      queryClient.invalidateQueries({ queryKey: ['usuarios'] });
+    },
+    onError: (err: any) => {
+      logger.error(err, { context: 'deleteUsuario' });
+      toast.error(usersMessages.genericError);
+    },
   });
 
-  const handleCreate = () => {
-    setEditingUser(null);
+  const openCreate = () => {
+    setEditing(null);
     setIsModalOpen(true);
   };
-
-  const handleEdit = (user: any) => {
-    setEditingUser(user);
+  const openEdit = (u: Usuario) => {
+    setEditing(u);
     setIsModalOpen(true);
-  };
-
-  const handleDelete = async (id: number) => {
-    if (!confirm('¿Eliminar usuario?')) return;
-    try {
-      await deleteUser(id);
-      toast.success(usersPageText.deleteSuccess);
-      refetch();
-    } catch (error) {
-      if (error instanceof Error) {
-        logger.error(error, { context: 'Delete User' });
-        toast.error(error.message || usersPageText.genericError);
-      } else {
-        logger.error(new Error('Error desconocido en deleteUser'), { originalError: error });
-        toast.error(usersPageText.genericError);
-      }
-    }
   };
 
   return (
-    <div className="users">
-      <div className="users__header">
-        <h1>{usersPageText.title}</h1>
-        <button className="users__button users__button--primary" onClick={handleCreate}>
-          {usersPageText.createButton}
-        </button>
+    <div className="admin-users">
+      <div className="admin-users__header">
+        <h2>{usersMessages.title}</h2>
+        <div>
+          <button className="btn btn--primary" onClick={openCreate}>
+            {usersMessages.createButton}
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
-        <p>{usersPageText.loading}</p>
+        <p>{usersMessages.loading}</p>
       ) : (
-        <table className="users__table">
+        <table className="admin-users__table">
           <thead>
             <tr>
-              <th>{usersPageText.name}</th>
-              <th>{usersPageText.email}</th>
-              <th>{usersPageText.role}</th>
-              <th>{usersPageText.active}</th>
-              <th>{usersPageText.actions}</th>
+              <th>{usersMessages.nombre}</th>
+              <th>{usersMessages.email}</th>
+              <th>{usersMessages.rol}</th>
+              <th>{usersMessages.status}</th>
+              <th>{usersMessages.actions}</th>
             </tr>
           </thead>
           <tbody>
-            {users?.map((user: any) => (
-              <tr key={user.id_usuario ?? user.id}>
-                <td>{user.nombre ?? user.username}</td>
-                <td>{user.correo_electronico ?? user.email}</td>
-                <td>{user.rolId ?? user.role}</td>
-                <td>{(user.estado ?? user.active) ? usersPageText.activeYes : usersPageText.activeNo}</td>
+            {usuarios?.map((u) => (
+              <tr key={u.idUsuario}>
                 <td>
-                  <button onClick={() => handleEdit(user)}>{usersPageText.edit}</button>
-                  <button onClick={() => handleDelete(user.id_usuario ?? user.id)} className="danger">{usersPageText.delete}</button>
+                  {u.nombre} {u.apellidoPaterno}
+                </td>
+                <td>{u.correoElectronico}</td>
+                <td>{u.rolId}</td>
+                <td>{u.status}</td>
+                <td>
+                  <button className="btn" onClick={() => openEdit(u)}>
+                    {usersMessages.edit}
+                  </button>
+                  <button
+                    className="btn btn--danger"
+                    onClick={() => delMutation.mutate(u.idUsuario)}
+                  >
+                    {usersMessages.delete}
+                  </button>
                 </td>
               </tr>
             ))}
@@ -83,13 +89,18 @@ const UsersPage: React.FC = () => {
       )}
 
       {isModalOpen && (
-        <div className="users__modal">
-          <div className="users__modal-content">
-            <h2>{editingUser ? usersPageText.editUser : usersPageText.createUser}</h2>
+        <div className="admin-users__modal">
+          <div className="admin-users__modal-content">
+            <h3>
+              {editing ? usersMessages.editUser : usersMessages.createUser}
+            </h3>
             <UserForm
-              initialData={editingUser || undefined}
-              onSuccess={() => { setIsModalOpen(false); refetch(); }}
+              initialData={editing || undefined}
               onCancel={() => setIsModalOpen(false)}
+              onSuccess={() => {
+                setIsModalOpen(false);
+                queryClient.invalidateQueries({ queryKey: ['usuarios'] });
+              }}
             />
           </div>
         </div>
@@ -98,4 +109,4 @@ const UsersPage: React.FC = () => {
   );
 };
 
-export default UsersPage;
+export default UsuariosPage;

@@ -32,13 +32,13 @@ interface CustomNavMenuProps {
 const MenuItem: React.FC<MenuItemProps> = ({ item, onItemClick }) => {
   const hasSubmenu = item.items && item.items.length > 0;
 
-  if (item.title === 'divider') {
+  if (item.titulo === 'divider') {
     return <li className="nav-menu__divider" />;
   }
 
   const handleClick = (e: React.MouseEvent) => {
     // Si el item tiene submenú y no tiene link directo, prevenimos la navegación
-    if (hasSubmenu && !item.to) {
+    if (hasSubmenu && !item.ruta) {
       e.preventDefault();
     }
     if (onItemClick) {
@@ -49,17 +49,17 @@ const MenuItem: React.FC<MenuItemProps> = ({ item, onItemClick }) => {
   return (
     <li className="nav-menu__item">
       <NavLink
-        to={item.to || '#'}
+        to={item.ruta || '#'}
         className="nav-menu__link"
         onClick={handleClick}
       >
-        {iconMap[item.title] && (
+        {iconMap[item.titulo] && (
           <FontAwesomeIcon
-            icon={iconMap[item.title]}
+            icon={iconMap[item.titulo]}
             className="nav-menu__icon"
           />
         )}
-        <span className="nav-menu__title">{item.title}</span>
+        <span className="nav-menu__title">{item.titulo}</span>
         {hasSubmenu && (
           <FontAwesomeIcon
             icon={faChevronRight}
@@ -71,7 +71,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ item, onItemClick }) => {
         <ul className="nav-menu__submenu">
           {item.items?.map((subItem) => (
             <MenuItem
-              key={subItem.id}
+              key={subItem.idMenu}
               item={subItem}
               onItemClick={onItemClick}
             />
@@ -90,7 +90,7 @@ const CustomNavMenu: React.FC<CustomNavMenuProps> = ({
   return (
     <ul className="nav-menu">
       {items.map((item) => (
-        <MenuItem key={item.id} item={item} onItemClick={onItemClick} />
+        <MenuItem key={item.idMenu} item={item} onItemClick={onItemClick} />
       ))}
     </ul>
   );

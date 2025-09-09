@@ -1,0 +1,12 @@
+.admin {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #e6e6e6;
+  }
+  &__title { margin: 0; font-size: 1.25rem; }
+  &__nav { display: flex; gap: 1rem; }
+  &__content { padding: 1rem; }
+}

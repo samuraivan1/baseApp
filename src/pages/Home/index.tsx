@@ -17,7 +17,7 @@ const Home: React.FC = () => {
     >
       <div className="home-overlay"></div>
       <div className="home-content">
-        <h1>Bienvenido, {user?.name || 'Usuario'}</h1>
+        <h1>Bienvenido, {user?.nombreCompleto || 'Usuario'}</h1>
         <p>Gestiona tus proyectos y tareas de forma eficiente.</p>
         <Link to="/kanban" className="home-button">
           Ir a mi Tablero Kanban
