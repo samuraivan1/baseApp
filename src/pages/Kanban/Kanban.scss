@@ -1,0 +1,126 @@
+// src/pages/Kanban/Kanban.scss
+
+@use 'kanban.variables' as kanban; // ✅ 1. Importa las kanban locales del Kanban
+
+// --- Contenedor Principal del Tablero ---
+.kanban {
+  display: flex;
+  gap: 20px;
+}
+
+// --- Estilos de las Columnas ---
+// ✅ Estilos para el bloque 'column'
+.column {
+  background-color: kanban.$color-fondo-columna;
+  border-radius: 8px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+
+  // ✅ Estilos para los Elementos
+  &__title {
+    padding: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: kanban.$color-texto-principal;
+  }
+
+  &__add-task-button {
+    padding: 8px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 8px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: kanban.$color-texto-secundario;
+
+    &:hover {
+      background-color: #dcdde1;
+    }
+
+    span {
+      font-size: 20px;
+      font-weight: 600;
+    }
+  }
+
+  &__task-list {
+    padding: 8px;
+    flex-grow: 1;
+    min-height: 100px;
+  }
+}
+
+// --- Estilos de las Tareas (ya refactorizados a BEM) ---
+.task {
+  background-color: kanban.$color-fondo-tarjeta;
+  border-radius: 5px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  box-shadow: kanban.$sombra-tarjeta;
+  font-size: 14px;
+  color: kanban.$color-texto-principal;
+  cursor: grab;
+
+  &__content {
+    margin-top: 0;
+  }
+
+  &__days {
+    font-size: 13px;
+    color: kanban.$color-texto-secundario;
+    margin-top: 12px;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    min-height: 28px;
+  }
+
+  &__date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+
+    &--on-time {
+      color: kanban.$color-fecha-ok;
+    }
+
+    &--off-time {
+      color: kanban.$color-fecha-vencida;
+    }
+  }
+
+  &__avatars {
+    display: flex;
+    flex-direction: row-reverse;
+
+    &--stacked {
+      .task__avatar:not(:last-child) {
+        margin-left: -18px;
+      }
+    }
+  }
+
+  &__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: kanban.$color-avatar-fondo;
+    color: kanban.$color-avatar-texto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+    border: 2px solid kanban.$color-fondo-tarjeta;
+    box-sizing: border-box;
+  }
+}

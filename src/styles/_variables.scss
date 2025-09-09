@@ -1,0 +1,37 @@
+$header-height: 80px;
+$header-tablet-height: 50px;
+$header-mobile-height: 30px;
+$header-shrink-height: 20px;
+
+$main-bg: #fff;
+$black-bg: #000;
+$main-color: #cac8b2;
+$light-color: #666;
+$gold-color: gold;
+
+$txt-main-color: rgb(235, 228, 228);
+$txt-second-color: #8d8d8d;
+$txt-filter-color: #370358;
+$txt-offer-color: #fa0e0e;
+$txt-white: #fff;
+$txt-black: #000;
+
+$btn-main-bg: $main-color;
+$btn-main-color: #fff;
+
+$box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+$mobile-width: 600px;
+$tablet-width: 1024px;
+
+$numbers: (0, 1, 2, 3, 4, 5, 6, 7, 8);
+
+$colors: (
+  'blue': #4267b2,
+  'orange': #fbb96b,
+  'pink': #fe7e73,
+  'white': #fff,
+  'black': #000,
+  'main': $main-color,
+  'red': #ff0000,
+);

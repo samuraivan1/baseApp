@@ -1,0 +1,104 @@
+{
+  "usuario": [
+    {
+      "id_usuario": 1,
+      "nombre_usuario": "iamendezm",
+      "nombre": "Ismael",
+      "apellido_paterno": "Méndez",
+      "correo_electronico": "ismael.mendez@example.com",
+      "iniciales": "IM",
+      "hash_contrasena": "$2b$12$...",
+      "rolId": 1
+    },
+    {
+      "id_usuario": 2,
+      "nombre_usuario": "jgarcia",
+      "nombre": "Juan",
+      "apellido_paterno": "García",
+      "correo_electronico": "juan.garcia@example.com",
+      "iniciales": "JG",
+      "hash_contrasena": "password123",
+      "rolId": 2
+    },
+    {
+      "id_usuario": 3,
+      "nombre_usuario": "arodriguez",
+      "nombre": "Ana",
+      "apellido_paterno": "Rodriguez",
+      "correo_electronico": "ana.rodriguez@example.com",
+      "iniciales": "AR",
+      "hash_contrasena": "password123",
+      "rolId": 3
+    }
+  ],
+  "roles": [
+    {
+      "id": 1,
+      "nombre": "Super Administrador",
+      "descripcion": "Tiene acceso total a todas las funcionalidades del sistema.",
+      "permisos": [
+        { "accion": "admin:full", "descripcion": "Acceso administrativo total" }
+      ]
+    },
+    {
+      "id": 2,
+      "nombre": "Gerente de Proyecto",
+      "descripcion": "Puede ver y administrar usuarios, pero no roles.",
+      "permisos": [
+        { "accion": "read:users", "descripcion": "Ver la lista de usuarios" },
+        { "accion": "create:users", "descripcion": "Crear nuevos usuarios" },
+        {
+          "accion": "update:users",
+          "descripcion": "Editar usuarios existentes"
+        },
+        { "accion": "read:roles", "descripcion": "Ver la lista de roles" }
+      ]
+    },
+    {
+      "id": 3,
+      "nombre": "Desarrollador",
+      "descripcion": "Solo puede ver su propio tablero y tareas.",
+      "permisos": [
+        { "accion": "read:kanban", "descripcion": "Ver el tablero Kanban" },
+        { "accion": "update:tasks", "descripcion": "Mover y editar tareas" }
+      ]
+    }
+  ],
+  "menu": [
+    { "id": 1, "title": "Home", "to": "/home" },
+    { "id": 2, "title": "Kanban", "to": "/kanban" },
+    {
+      "id": 3,
+      "title": "Seguridad",
+      "items": [
+        { "id": 31, "title": "Usuarios", "to": "/seguridad/usuarios" },
+        { "id": 32, "title": "Roles", "to": "/seguridad/roles" }
+      ]
+    }
+  ],
+  "menuprofile": [
+    { "id": 1, "title": "Perfil", "to": "/profile" },
+    { "id": 2, "title": "Cerrar Sesión" }
+  ],
+  "board": {
+    "tasks": {
+      "task-1": {
+        "id": "task-1",
+        "content": "Configurar el pipeline de CI/CD"
+      },
+      "task-2": {
+        "id": "task-2",
+        "content": "Desarrollar módulo de autenticación"
+      }
+    },
+    "columns": {
+      "column-1": {
+        "id": "column-1",
+        "title": "Por Hacer",
+        "taskIds": ["task-1", "task-2"]
+      },
+      "column-2": { "id": "column-2", "title": "En Progreso", "taskIds": [] }
+    },
+    "columnOrder": ["column-1", "column-2"]
+  }
+}

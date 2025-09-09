@@ -1,0 +1,11 @@
+// src/pages/Users/Users.scss
+
+// Importa y utiliza los estilos base de administración
+@use '../admin.styles' as admin;
+
+// Estilo específico para la cuadrícula de 2 columnas en el formulario de usuarios
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}

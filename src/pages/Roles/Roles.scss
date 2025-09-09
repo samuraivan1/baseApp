@@ -1,0 +1,79 @@
+// Importa estilos genéricos para las páginas de administración
+@use '../admin.styles' as admin;
+
+// Contenedor específico para la tabla de permisos
+.permissions-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+
+  &__header,
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 40px;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  &__header {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #555;
+    padding: 0 0.5rem;
+  }
+
+  &__row {
+    input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95rem;
+
+      &:focus {
+        outline: none;
+        border-color: admin.$main-color;
+        box-shadow: 0 0 0 2px rgba(202, 200, 178, 0.5);
+      }
+    }
+
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      font-size: 1rem;
+      padding: 5px;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+
+      &:hover {
+        color: #d32f2f;
+        background-color: #f0f0f0;
+      }
+    }
+  }
+}
+
+.add-permission-button {
+  margin-top: 0.5rem;
+  padding: 8px 12px;
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #555;
+  align-self: flex-start; // Para que no ocupe todo el ancho
+
+  &:hover {
+    background-color: #f0f0f0;
+    border-color: #bbb;
+  }
+}

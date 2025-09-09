@@ -1,0 +1,255 @@
+{
+  "board": {
+    "tasks": {
+      "task-1": {
+        "id": "task-1",
+        "content": "007306 Check list Equipos de arrastre CDRs",
+        "users": ["AR"],
+        "dueDate": "2025-09-12",
+        "daysActive": 15
+      },
+      "task-2": {
+        "id": "task-2",
+        "content": "Mejora - Eticolor",
+        "users": ["AL"],
+        "dueDate": "2025-08-20",
+        "daysActive": 6
+      },
+      "task-3": {
+        "id": "task-3",
+        "content": "006520 Evaluación scanner SUNLUX y NETUM",
+        "users": ["GV", "RO"],
+        "dueDate": "2025-08-29",
+        "daysActive": 11
+      },
+      "task-4": {
+        "id": "task-4",
+        "content": "007135 Actualizar logotipo Grupo Truper CIAT",
+        "users": ["AR", "GV", "AL"],
+        "dueDate": "2025-09-30",
+        "daysActive": 43
+      }
+    },
+    "columns": {
+      "column-1": {
+        "id": "column-1",
+        "title": "PENDIENTES",
+        "taskIds": ["task-2", "task-1"]
+      },
+      "column-2": {
+        "id": "column-2",
+        "title": "EN PROCESO",
+        "taskIds": ["task-4"]
+      },
+      "column-3": {
+        "id": "column-3",
+        "title": "PRUEBAS QAS",
+        "taskIds": ["task-3"]
+      }
+    },
+    "columnOrder": ["column-1", "column-2", "column-3"]
+  },
+  "usuario": [
+    {
+      "id_usuario": 1,
+      "nombre": "Alejandro",
+      "apellido_paterno": "Mendez",
+      "apellido_materno": "Martinez",
+      "iniciales": "AR",
+      "correo_electronico": "iamendezm@truper.com",
+      "nombre_usuario": "iamendezm",
+      "hash_contrasena": "$2b$12$...",
+      "proveedor_auth": "local",
+      "correo_verificado_en": "2025-01-15T10:00:00Z",
+      "url_avatar": "https://example.com/avatars/ar.png",
+      "biografia": "Líder de proyecto con 5 años de experiencia en desarrollo ágil.",
+      "numero_telefono": "+525512345678",
+      "rolId": 1,
+      "estado": "activo",
+      "fecha_creacion": "2025-01-15T09:30:00Z",
+      "fecha_actualizacion": "2025-08-20T11:00:00Z",
+      "ultimo_inicio_sesion": "2025-08-27T11:20:00Z",
+      "azure_ad_object_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+      "upn": "iamendezm@empresa.onmicrosoft.com",
+      "id": "e1de"
+    },
+    {
+      "id_usuario": 2,
+      "nombre": "Arturo",
+      "apellido_paterno": "López",
+      "apellido_materno": "Hernández",
+      "iniciales": "AL",
+      "correo_electronico": "arturo.lopez@empresa.com",
+      "nombre_usuario": "arturolopez",
+      "hash_contrasena": "$2b$12$...",
+      "proveedor_auth": "local",
+      "correo_verificado_en": null,
+      "url_avatar": null,
+      "biografia": null,
+      "numero_telefono": null,
+      "rolId": 2,
+      "estado": "activo",
+      "fecha_creacion": "2025-02-20T14:00:00Z",
+      "fecha_actualizacion": "2025-07-10T18:30:00Z",
+      "ultimo_inicio_sesion": "2025-08-25T09:00:00Z",
+      "azure_ad_object_id": null,
+      "upn": null,
+      "id": "88ea"
+    },
+    {
+      "id_usuario": 3,
+      "nombre": "Gabriela",
+      "apellido_paterno": "Vargas",
+      "apellido_materno": "Mendoza",
+      "iniciales": "GV",
+      "correo_electronico": "gabriela.vargas@empresa.com",
+      "nombre_usuario": "gabrielavargas",
+      "hash_contrasena": "$2b$12$...",
+      "proveedor_auth": "azure_ad",
+      "correo_verificado_en": "2025-03-01T12:00:00Z",
+      "url_avatar": "https://example.com/avatars/gv.png",
+      "biografia": "Desarrolladora Frontend especializada en React.",
+      "numero_telefono": "+525587654321",
+      "rolId": 3,
+      "estado": "inactivo",
+      "fecha_creacion": "2025-03-01T12:00:00Z",
+      "fecha_actualizacion": "2025-08-01T15:45:00Z",
+      "ultimo_inicio_sesion": "2025-07-30T16:00:00Z",
+      "azure_ad_object_id": "b2c3d4e5-f6a7-8901-2345-67890abcdef1",
+      "upn": "gabriela.vargas@empresa.onmicrosoft.com",
+      "id": "e9d0"
+    }
+  ],
+  "permisos": [
+    { "id": "page:home:view", "description": "Ver la página de Inicio" },
+    { "id": "page:kanban:view", "description": "Ver la página de Kanban" },
+    {
+      "id": "page:seguridad:view",
+      "description": "Ver las páginas de seguridad"
+    },
+    { "id": "create:task", "description": "Crear tareas en el Kanban" },
+    { "id": "edit:task", "description": "Editar tareas en el Kanban" },
+    { "id": "delete:task", "description": "Eliminar tareas en el Kanban" },
+    { "id": "role:create", "description": "Crear nuevos roles" },
+    { "id": "role:edit", "description": "Editar roles existentes" },
+    { "id": "role:delete", "description": "Eliminar roles" },
+    { "id": "user:create", "description": "Crear nuevos usuarios" },
+    { "id": "user:edit", "description": "Editar usuarios existentes" }
+  ],
+  "roles": [
+    {
+      "id": 1,
+      "nombre": "Super Administrador",
+      "descripcion": "Acceso total al sistema.",
+      "permisos": [
+        "page:home:view",
+        "page:kanban:view",
+        "page:seguridad:view",
+        "create:task",
+        "edit:task",
+        "delete:task",
+        "role:create",
+        "role:edit",
+        "role:delete",
+        "user:create",
+        "user:edit"
+      ]
+    },
+    {
+      "id": 2,
+      "nombre": "Usuario Básico",
+      "descripcion": "Solo puede ver el contenido principal.",
+      "permisos": ["page:home:view", "page:kanban:view"]
+    },
+    {
+      "id": 1002,
+      "nombre": "Promotoría",
+      "descripcion": "Rol de promotoría con permisos específicos.",
+      "permisos": ["page:home:view"]
+    }
+  ],
+  "menu": [
+    {
+      "id": "1",
+      "title": "Home",
+      "to": "/home",
+      "permission": "view:home"
+    },
+    {
+      "id": "2",
+      "title": "Kanban",
+      "to": "/kanban",
+      "permission": "view:kanban"
+    },
+    {
+      "id": 3,
+      "title": "Administración",
+      "items": [
+        { "id": 31, "title": "Usuarios", "to": "/users" },
+        { "id": 32, "title": "Roles", "to": "/seguridad/roles" }
+      ]
+    },
+    {
+      "id": "4",
+      "title": "Dashboard",
+      "to": "/dashproject",
+      "permission": "view:dashboard"
+    },
+    {
+      "id": "5",
+      "title": "Prueba",
+      "to": "/home",
+      "permission": "view:home"
+    }
+  ],
+  "menuprofile": [
+    {
+      "id": "1",
+      "title": "Profile",
+      "to": "/profile",
+      "permission": "view:profile"
+    },
+    {
+      "id": "2",
+      "title": "Account",
+      "permission": "manage:account",
+      "items": [
+        {
+          "id": 21,
+          "title": "Settings",
+          "to": "/account/settings"
+        },
+        {
+          "id": 22,
+          "title": "Security",
+          "items": [
+            {
+              "id": 221,
+              "title": "Two-Factor Auth",
+              "to": "/account/security/2fa"
+            },
+            {
+              "id": 222,
+              "title": "Change Password",
+              "to": "/account/security/password"
+            }
+          ]
+        },
+        {
+          "id": 23,
+          "title": "Billing",
+          "to": "/account/billing"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Dashboard",
+      "to": "/dashboard"
+    },
+    {
+      "id": "4",
+      "title": "Cerrar Sesión"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+// src/components/ErrorBoundary/ErrorBoundary.scss
+@use '@/styles/variables' as vars;
+
+.error-boundary {
+  padding: 40px 20px;
+  text-align: center;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  background-color: #fafafa;
+  margin: 20px;
+
+  &__title {
+    margin-top: 0;
+    color: #d32f2f; // Un color de error
+  }
+
+  &__message {
+    color: #555;
+    margin-bottom: 24px;
+  }
+
+  &__button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: vars.$main-color;
+    color: vars.$txt-white;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+}
