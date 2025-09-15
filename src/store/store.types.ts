@@ -1,3 +1,4 @@
+// src/store/store.types.ts
 import { TableroType } from '@/services/api.types';
 
 // --- Tipos para AuthStore ---
@@ -7,20 +8,24 @@ export interface UserSession {
   iniciales: string;
   email: string;
   rol: string;
-  permisos: string[]; // Guardaremos la lista de strings de permisos
-  bearerToken: string;
+  permisos: string[];
+  permisosIds: number[];
 }
 
 export interface AuthState {
   isLoggedIn: boolean;
   user: UserSession | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   loading: boolean;
+  // ✅ AÑADIMOS la acción 'hasPermission' para que el estado sepa de ella
+  hasPermission: (requiredPermission: string) => boolean;
 }
 
 export interface AuthActions {
   login: (emailOrUsername: string, password: string) => Promise<boolean>;
   logout: () => void;
-  hasPermission: (requiredPermission: string) => boolean;
+  setToken: (accessToken: string, refreshToken?: string) => void;
 }
 
 // --- Tipos para BoardStore ---

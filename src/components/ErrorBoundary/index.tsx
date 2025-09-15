@@ -1,56 +1,48 @@
-import React, { ReactNode, ErrorInfo } from 'react'; // ✅ 1. Importa tipos de React
-import logger from '@/services/logger';
-import { errorBoundaryText } from './ErrorBoundary.messages';
-import './ErrorBoundary.scss'; // ✅ 1. Importa los estilos
+// src/components/ErrorBoundary/index.tsx
+import React from 'react';
+import errorService, { normalizeError } from '@/services/errorService';
 
-// ✅ 2. Define la "forma" de las props que el componente espera.
-//    En este caso, espera 'children' que pueden ser cualquier cosa renderizable.
-interface ErrorBoundaryProps {
-  children: ReactNode;
-}
+type Props = { children: React.ReactNode };
+type State = { hasError: boolean; error?: any };
 
-// ✅ 3. Define la "forma" del estado interno del componente.
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
-}
-// ✅ 4. Aplica los tipos al componente de clase.
-//    La sintaxis es React.Component<Props, State>.
-class ErrorBoundary extends React.Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
-  constructor(props: ErrorBoundaryProps) {
+class ErrorBoundary extends React.Component<Props, State> {
+  constructor(props: Props) {
     super(props);
-    this.state = { hasError: false, error: null };
+    this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error: error };
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    //console.error('ErrorBoundary atrapó un error:', error, errorInfo);
-    logger.error(error, { componentStack: errorInfo.componentStack });
+  componentDidCatch(error: any, info: any) {
+    const norm = normalizeError(error, {
+      componentStack: info?.componentStack,
+    });
+    errorService.logError(norm);
   }
+
+  handleReport = () => {
+    if (!this.state.error) return;
+    const norm = normalizeError(this.state.error, {
+      userAction: 'User reported from ErrorBoundary',
+    });
+    errorService.logError(norm);
+    alert('Gracias — el error ha sido registrado.');
+  };
 
   render() {
     if (this.state.hasError) {
-      // ✅ 2. Usa las clases BEM
       return (
-        <div className="error-boundary">
-          <h2 className="error-boundary__title">{errorBoundaryText.title}</h2>
-          <p className="error-boundary__message">{errorBoundaryText.message}</p>
-          <button
-            className="error-boundary__button"
-            onClick={() => window.location.reload()}
-          >
-            {errorBoundaryText.reloadButton}
-          </button>
+        <div style={{ padding: 24 }}>
+          <h2>Algo salió mal</h2>
+          <p>
+            Estamos trabajando para solucionarlo. Puedes reportarlo para ayudar.
+          </p>
+          <button onClick={this.handleReport}>Reportar error</button>
         </div>
       );
     }
-
     return this.props.children;
   }
 }

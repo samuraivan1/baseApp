@@ -122,30 +122,6 @@
   ],
   "permisos": [
     {
-      "idPermiso": 1,
-      "permiso": "page:home:view",
-      "resource": "page",
-      "scope": "home",
-      "action": "view",
-      "descripcion": "Ver la página de Inicio"
-    },
-    {
-      "idPermiso": 2,
-      "permiso": "page:kanban:view",
-      "resource": "page",
-      "scope": "kanban",
-      "action": "view",
-      "descripcion": "Ver la página de Kanban"
-    },
-    {
-      "idPermiso": 3,
-      "permiso": "page:seguridad:view",
-      "resource": "page",
-      "scope": "seguridad",
-      "action": "view",
-      "descripcion": "Ver las páginas de seguridad"
-    },
-    {
       "idPermiso": 4,
       "permiso": "task:kanban:create",
       "resource": "task",
@@ -208,6 +184,206 @@
       "scope": "system",
       "action": "edit",
       "descripcion": "Editar usuarios existentes"
+    },
+    {
+      "idPermiso": 13,
+      "permiso": "task:kanban:move",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "move",
+      "descripcion": "Permite mover tareas entre columnas."
+    },
+    {
+      "idPermiso": 14,
+      "permiso": "task:kanban:assign",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "assign",
+      "descripcion": "Permite asignar usuarios a las tareas."
+    },
+    {
+      "idPermiso": 20,
+      "permiso": "user:system:view",
+      "resource": "user",
+      "scope": "system",
+      "action": "view",
+      "descripcion": "Permite ver la lista de usuarios del sistema."
+    },
+    {
+      "idPermiso": 21,
+      "permiso": "user:system:create",
+      "resource": "user",
+      "scope": "system",
+      "action": "create",
+      "descripcion": "Permite crear nuevos usuarios."
+    },
+    {
+      "idPermiso": 22,
+      "permiso": "user:system:edit",
+      "resource": "user",
+      "scope": "system",
+      "action": "edit",
+      "descripcion": "Permite editar la información y el rol de los usuarios."
+    },
+    {
+      "idPermiso": 23,
+      "permiso": "user:system:delete",
+      "resource": "user",
+      "scope": "system",
+      "action": "delete",
+      "descripcion": "Permite eliminar usuarios del sistema."
+    },
+    {
+      "idPermiso": 30,
+      "permiso": "role:system:view",
+      "resource": "role",
+      "scope": "system",
+      "action": "view",
+      "descripcion": "Permite ver la lista de roles del sistema."
+    },
+    {
+      "idPermiso": 31,
+      "permiso": "role:system:create",
+      "resource": "role",
+      "scope": "system",
+      "action": "create",
+      "descripcion": "Permite crear nuevos roles."
+    },
+    {
+      "idPermiso": 32,
+      "permiso": "role:system:edit",
+      "resource": "role",
+      "scope": "system",
+      "action": "edit",
+      "descripcion": "Permite editar los roles y sus permisos asignados."
+    },
+    {
+      "idPermiso": 33,
+      "permiso": "role:system:delete",
+      "resource": "role",
+      "scope": "system",
+      "action": "delete",
+      "descripcion": "Permite eliminar roles del sistema."
+    },
+    {
+      "idPermiso": 40,
+      "permiso": "permission:system:view",
+      "resource": "permission",
+      "scope": "system",
+      "action": "view",
+      "descripcion": "Permite ver el catálogo de permisos."
+    },
+    {
+      "idPermiso": 41,
+      "permiso": "permission:system:create",
+      "resource": "permission",
+      "scope": "system",
+      "action": "create",
+      "descripcion": "Permite crear nuevos permisos en el sistema."
+    },
+    {
+      "idPermiso": 42,
+      "permiso": "permission:system:edit",
+      "resource": "permission",
+      "scope": "system",
+      "action": "edit",
+      "descripcion": "Permite editar los permisos existentes."
+    },
+    {
+      "idPermiso": 43,
+      "permiso": "permission:system:delete",
+      "resource": "permission",
+      "scope": "system",
+      "action": "delete",
+      "descripcion": "Permite eliminar permisos del catálogo."
+    },
+    {
+      "idPermiso": 150,
+      "permiso": "form:contact:create",
+      "resource": "form",
+      "scope": "contact",
+      "action": "create",
+      "descripcion": "Crear envío del formulario de contacto"
+    },
+    {
+      "idPermiso": 10000,
+      "permiso": "page:home:view",
+      "resource": "page",
+      "scope": "home",
+      "action": "view",
+      "descripcion": "Ver la página de Inicio"
+    },
+    {
+      "idPermiso": 10001,
+      "permiso": "page:kanban:view",
+      "resource": "page",
+      "scope": "kanban",
+      "action": "view",
+      "descripcion": "Ver la página de Kanban"
+    },
+    {
+      "idPermiso": 10002,
+      "permiso": "page:seguridad:view",
+      "resource": "page",
+      "scope": "seguridad",
+      "action": "view",
+      "descripcion": "Ver las páginas de seguridad"
+    },
+    {
+      "idPermiso": 10003,
+      "permiso": "page:administracion:view",
+      "resource": "page",
+      "scope": "administracion",
+      "action": "view",
+      "descripcion": "Ver la página principal de Administración"
+    },
+    {
+      "idPermiso": 10004,
+      "permiso": "page:administracion_usuarios:view",
+      "resource": "page",
+      "scope": "administracion_usuarios",
+      "action": "view",
+      "descripcion": "Ver la página de gestión de usuarios"
+    },
+    {
+      "idPermiso": 10005,
+      "permiso": "page:administracion_roles:view",
+      "resource": "page",
+      "scope": "administracion_roles",
+      "action": "view",
+      "descripcion": "Ver la página de gestión de roles"
+    },
+    {
+      "idPermiso": 10006,
+      "permiso": "page:administracion_permisos:view",
+      "resource": "page",
+      "scope": "administracion_permisos",
+      "action": "view",
+      "descripcion": "Ver el catálogo de permisos"
+    },
+    {
+      "idPermiso": 10007,
+      "permiso": "page:project:view",
+      "resource": "page",
+      "scope": "project",
+      "action": "view",
+      "descripcion": "Ver la página de Proyecto"
+    },
+    {
+      "idPermiso": 10008,
+      "permiso": "page:dashproject:view",
+      "resource": "page",
+      "scope": "dashproject",
+      "action": "view",
+      "descripcion": "Ver la página de Dashboard de Proyecto"
+    },
+    {
+      "idPermiso": 10009,
+      "permiso": "page:contacto:view",
+      "resource": "page",
+      "scope": "contacto",
+      "action": "view",
+      "descripcion": "Ver la página de Contacto"
     }
   ],
   "roles": [
@@ -215,38 +391,70 @@
       "idRol": 1,
       "nombre": "Super Administrador",
       "descripcion": "Acceso total al sistema.",
-      "permisosIds": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      "permisosIds": [
+        4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 20, 21, 22, 23, 30, 31, 32, 33, 40,
+        41, 42, 43, 150, 10000, 10001, 10002, 10003, 10004, 10005, 10006, 10007,
+        10008, 10009, 10010, 10011, 10012
+      ]
     },
     {
       "idRol": 2,
       "nombre": "Usuario Básico",
       "descripcion": "Solo puede ver el contenido principal.",
-      "permisosIds": [1, 2]
+      "permisosIds": [10000, 10001]
     },
     {
       "idRol": 1002,
       "nombre": "Promotoría",
       "descripcion": "Rol de promotoría con permisos específicos.",
-      "permisosIds": [1]
+      "permisosIds": [10000]
+    },
+    {
+      "id": "200c",
+      "nombre": "ivan alejandro",
+      "descripcion": "dfsd",
+      "permisosIds": []
     }
   ],
   "menu": [
-    { "idMenu": 1, "titulo": "Home", "ruta": "/home", "permisoId": 1 },
-    { "idMenu": 2, "titulo": "Kanban", "ruta": "/kanban", "permisoId": 2 },
+    {
+      "idMenu": 1,
+      "titulo": "Home",
+      "ruta": "/home",
+      "permisoId": 10000
+    },
+    {
+      "idMenu": 2,
+      "titulo": "Kanban",
+      "ruta": "/kanban",
+      "permisoId": 10001
+    },
     {
       "idMenu": 3,
       "titulo": "Administración",
       "items": [
-        { "idMenu": 31, "titulo": "Usuarios", "ruta": "/admin/usuarios" },
-        { "idMenu": 32, "titulo": "Roles", "ruta": "/admin/roles" },
-        { "idMenu": 33, "titulo": "Permisos", "ruta": "/admin/permisos" }
+        {
+          "idMenu": 31,
+          "titulo": "Usuarios",
+          "ruta": "/admin/usuarios"
+        },
+        {
+          "idMenu": 32,
+          "titulo": "Roles",
+          "ruta": "/admin/roles"
+        },
+        {
+          "idMenu": 33,
+          "titulo": "Permisos",
+          "ruta": "/admin/permisos"
+        }
       ]
     },
     {
       "idMenu": 4,
       "titulo": "Administración",
       "ruta": "/administracion",
-      "permisoId": 2
+      "permisoId": 10003
     }
   ],
   "menuPerfil": [
@@ -256,6 +464,10 @@
       "ruta": "/profile",
       "permisoId": null
     },
-    { "idMenu": "4", "titulo": "Cerrar Sesión" }
-  ]
+    {
+      "idMenu": "4",
+      "titulo": "Cerrar Sesión"
+    }
+  ],
+  "contactos": []
 }

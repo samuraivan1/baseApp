@@ -6,6 +6,7 @@ import '@/styles/index.scss';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { loadConfig } from '@/services/configService';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,9 @@ const initializeApp = async () => {
   root.render(
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </React.StrictMode>

@@ -1,7 +1,155 @@
-.admin-roles{ padding:1rem;
-  &__header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
-  &__table{ width:100%; border-collapse:collapse; th,td{ padding:0.5rem; border:1px solid #eee; } }
-  &__modal{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.4);
-    &-content{ background:#fff; padding:1rem; border-radius:8px; width:700px; }
+// Contenedor principal de la página
+.admin-page-container {
+  padding: 2rem;
+  background-color: #f8f9fa; // Un fondo gris muy claro
+  height: 100%;
+}
+
+// ✅ Encabezado de la página con título y barra de herramientas
+.page-header {
+  margin-bottom: 2rem;
+
+  &__title {
+    margin: 0 0 1rem 0;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  &__divider {
+    border: none;
+    height: 1px;
+    background-color: #e1e1e1;
+    margin-bottom: 1rem;
+  }
+
+  &__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+// ✅ Estilo mejorado para el campo de búsqueda
+.search-input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #a1a1a1;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 320px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #0078d4;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.3);
+  }
+}
+
+// ✅ Botón de acción principal
+.btn--primary {
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #005a9e;
+  }
+}
+
+// Contenedor de la tabla
+.table-container {
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+}
+
+// ✅ Estilos de la tabla refinados
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    border-bottom: 1px solid #e1e1e1;
+  }
+
+  thead {
+    th {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #333;
+      background-color: #f8f9fa;
+    }
+  }
+
+  tbody {
+    tr {
+      &:last-child {
+        td {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+
+// ✅ Celda especial para el nombre del rol
+.role-name-cell {
+  font-weight: 500;
+  color: #0078d4;
+}
+
+// ✅ Estilos refinados para los enlaces de acción
+.action-links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .action-link {
+    background: none;
+    border: none;
+    color: #0078d4;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &--danger {
+      color: #a4262c;
+    }
+  }
+
+  .action-divider {
+    color: #d1d1d1;
+  }
+}
+
+// --- Estilos del Modal (se mantienen sin cambios) ---
+.admin-roles__modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+
+  &-content {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 700px;
   }
 }

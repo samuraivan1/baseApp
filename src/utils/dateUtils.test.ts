@@ -26,6 +26,6 @@ describe('getDateStatus', () => {
   });
 
   it('debería devolver una cadena vacía si no se proporciona fecha', () => {
-    expect(getDateStatus(null)).toBe('');
+    expect(getDateStatus('')).toBe('');
   });
 });

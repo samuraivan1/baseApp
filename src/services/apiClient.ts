@@ -1,64 +1,102 @@
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'; // ✅ 1. Importa tipos de Axios
-import { useAuthStore } from '@/store/authStore';
-import { toast } from 'react-toastify';
-import { authMessages } from '@/constants/commonMessages';
+// src/services/apiClient.ts
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
+// ✅ 1. CORRECCIÓN: Usa una importación con nombre.
 import { getConfig } from './configService';
+import errorService, { normalizeError } from './errorService';
+import { getAuthStore } from '@/store/authStore';
+
+// ❌ Se elimina la asignación de BASE_URL de aquí.
 
 const apiClient = axios.create({
-  // ✅ 3. Usa la URL del servicio de configuración en lugar de import.meta.env
-  //baseURL: config.API_BASE_URL,
+  // El baseURL se asignará dinámicamente en el interceptor.
+  timeout: 15000,
 });
 
-// --- Interceptor de Petición (Request) ---
-// Se ejecuta ANTES de que cada petición sea enviada.
+// ... (las funciones processQueue y la variable failedQueue se mantienen igual) ...
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (v: any) => void;
+  reject: (e: any) => void;
+  originalRequest: any;
+}> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((p) => {
+    if (error) p.reject(error);
+    else p.resolve(token);
+  });
+  failedQueue = [];
+};
+
+// Request interceptor: añadir Authorization header y baseURL dinámico
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    //    En este punto, garantizamos que initializeApp() ya terminó.
+    // ✅ 2. OBTÉN LA CONFIGURACIÓN AQUÍ: Justo antes de cada petición.
     const appConfig = getConfig();
-    if (appConfig.API_BASE_URL) {
-      config.baseURL = appConfig.API_BASE_URL;
-    }
-    // Obtenemos el estado del authStore sin estar en un componente de React
-    const { isLoggedIn, user } = useAuthStore.getState();
+    config.baseURL = appConfig.API_BASE_URL;
 
-    // Si el usuario está logueado, añadimos el token al encabezado
-    if (isLoggedIn && user?.bearerToken) {
-      config.headers.Authorization = `Bearer ${user.bearerToken}`;
+    const authStore = getAuthStore();
+    const token = authStore.getToken?.() ?? null;
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error: AxiosError) => {
-    // Maneja errores en la configuración de la petición
+  (error) => {
+    const norm = normalizeError(error, { phase: 'request' });
+    errorService.logError(norm);
     return Promise.reject(error);
   }
 );
 
-// --- Interceptor de Respuesta (Response) ---
-// Se ejecuta DESPUÉS de recibir una respuesta (o un error).
+// Response interceptor: handle 401 refresh logic
 apiClient.interceptors.response.use(
-  // El primer argumento es para respuestas exitosas (2xx)
-  (response) => {
-    // No hacemos nada, solo devolvemos la respuesta
-    return response;
-  },
-  // El segundo argumento es para respuestas con error
-  (error: AxiosError) => {
-    // Verificamos si el error es por sesión expirada (401 No Autorizado)
-    if (error.response && error.response.status === 401) {
-      // Obtenemos la acción logout de nuestro store
-      const { logout } = useAuthStore.getState();
+  (response) => response,
+  async (error: AxiosError & { config?: any }) => {
+    const originalRequest = error.config;
+    const authStore = getAuthStore();
 
-      // Cerramos la sesión del usuario
-      logout();
+    if (error.response?.status === 401 && !originalRequest?._retry) {
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject, originalRequest });
+        })
+          .then((token) => {
+            if (originalRequest.headers)
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+            return apiClient(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
 
-      // Mostramos una notificación
-      toast.error(authMessages.sessionExpired);
-
-      // Opcional: redirigir al login
-      // window.location.href = '/login';
+      originalRequest._retry = true;
+      isRefreshing = true;
+      try {
+        const refreshToken = authStore.getRefreshToken?.();
+        // ✅ 3. USA LA CONFIGURACIÓN DINÁMICA TAMBIÉN AQUÍ
+        const { API_BASE_URL } = getConfig();
+        const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+          refreshToken,
+        });
+        authStore.setToken?.(data.accessToken, data.refreshToken);
+        processQueue(null, data.accessToken);
+        if (originalRequest.headers)
+          originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        return apiClient(originalRequest);
+      } catch (e) {
+        processQueue(e, null);
+        authStore.logout?.();
+        const norm = normalizeError(e, { phase: 'refresh' });
+        errorService.logError(norm);
+        return Promise.reject(e);
+      } finally {
+        isRefreshing = false;
+      }
     }
 
-    // Devolvemos el error para que pueda ser manejado por el catch del componente si es necesario
+    const norm = normalizeError(error, { phase: 'response' });
+    errorService.logError(norm);
+    (error as any).normalized = norm;
     return Promise.reject(error);
   }
 );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import logger from '@/services/logger';
@@ -10,15 +10,16 @@ import { Rol } from '@/pages/Administracion/types';
 
 const RolesPage: React.FC = () => {
   const queryClient = useQueryClient();
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<Rol | null>(null);
-  //const { data: roles, isLoading } = useQuery(['roles'], getRoles);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingRole, setEditingRole] = useState<Rol | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
   const { data: roles, isLoading } = useQuery({
     queryKey: ['roles'],
     queryFn: getRoles,
   });
 
-  const delMutation = useMutation({
+  const deleteMutation = useMutation({
     mutationFn: (id: number) => deleteRol(id),
     onSuccess: () => {
       toast.success(rolesMessages.deleteSuccess);
@@ -30,19 +31,39 @@ const RolesPage: React.FC = () => {
     },
   });
 
+  const handleOpenCreate = () => {
+    setEditingRole(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEdit = (role: Rol) => {
+    setEditingRole(role);
+    setIsModalOpen(true);
+  };
+
+  const filteredRoles = useMemo(() => {
+    if (!roles) return [];
+    return roles.filter((role) =>
+      role.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [roles, searchTerm]);
+
   return (
-    <div className="admin-roles">
-      <div className="admin-roles__header">
-        <h2>{rolesMessages.title}</h2>
-        <div>
-          <button
-            className="btn btn--primary"
-            onClick={() => {
-              setEditing(null);
-              setOpen(true);
-            }}
-          >
-            {rolesMessages.createButton}
+    <div className="admin-page-container">
+      {/* ✅ 1. Estructura del encabezado mejorada */}
+      <div className="page-header">
+        <h2 className="page-header__title">{rolesMessages.title}</h2>
+        <hr className="page-header__divider" />
+        <div className="page-header__toolbar">
+          <input
+            type="text"
+            placeholder="Buscar por rol..."
+            className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button className="btn btn--primary" onClick={handleOpenCreate}>
+            + Añadir Rol
           </button>
         </div>
       </div>
@@ -50,56 +71,55 @@ const RolesPage: React.FC = () => {
       {isLoading ? (
         <p>{rolesMessages.loading}</p>
       ) : (
-        <table className="admin-roles__table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Permisos</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {roles?.map((r) => (
-              <tr key={r.idRol}>
-                <td>{r.nombre}</td>
-                <td>{r.descripcion}</td>
-                <td>{(r.permisosIds || []).join(', ')}</td>
-                <td>
-                  <button
-                    className="btn"
-                    onClick={() => {
-                      setEditing(r);
-                      setOpen(true);
-                    }}
-                  >
-                    {rolesMessages.edit}
-                  </button>
-                  <button
-                    className="btn btn--danger"
-                    onClick={() => delMutation.mutate(r.idRol)}
-                  >
-                    {rolesMessages.delete}
-                  </button>
-                </td>
+        <div className="table-container">
+          <table className="modern-table">
+            <thead>
+              <tr>
+                <th>Nombre del Rol</th>
+                <th>Descripción</th>
+                <th>Acción</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredRoles.map((r) => (
+                <tr key={r.idRol}>
+                  <td className="role-name-cell">{r.nombre}</td>
+                  <td>{r.descripcion}</td>
+                  <td>
+                    <div className="action-links">
+                      <button
+                        className="action-link"
+                        onClick={() => handleOpenEdit(r)}
+                      >
+                        Actualizar
+                      </button>
+                      <span className="action-divider">|</span>
+                      <button
+                        className="action-link action-link--danger"
+                        onClick={() => deleteMutation.mutate(r.idRol)}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
-      {open && (
+      {isModalOpen && (
         <div className="admin-roles__modal">
           <div className="admin-roles__modal-content">
             <h3>
-              {editing ? rolesMessages.editRole : rolesMessages.createRole}
+              {editingRole ? rolesMessages.editRole : rolesMessages.createRole}
             </h3>
             <RoleForm
-              initialData={editing || undefined}
-              onCancel={() => setOpen(false)}
+              initialData={editingRole || undefined}
+              onCancel={() => setIsModalOpen(false)}
               onSuccess={() => {
-                setOpen(false);
-                queryClient.invalidateQueries({ queryKey: ['roles'] });
+                setIsModalOpen(false);
               }}
             />
           </div>

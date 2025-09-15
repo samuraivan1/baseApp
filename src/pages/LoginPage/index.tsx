@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -25,6 +25,8 @@ interface LoginPageProps {
 const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
+  // ✅ 2. Obtenemos el estado de autenticación del store
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
   const {
     register,
@@ -62,6 +64,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
   const handleWindowsLogin = () => {
     alert('Simulando inicio de sesión con Windows...');
   };
+
+  if (isLoggedIn) {
+    return <Navigate to="/home" replace />;
+  }
 
   return (
     <div
