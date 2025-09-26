@@ -1,28 +1,30 @@
+// .eslintrc.js
 module.exports = {
-  env: {
-    browser: true,
-    es2021: true,
-  },
-  extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:react-hooks/recommended',
-    ' plugin:@typescript-eslint/recommended',
-    'prettier', // IMPORTANTE: 'prettier' siempre debe ser el último.
-  ],
+  root: true,
+  env: { browser: true, es2021: true, node: true },
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
+    ecmaFeatures: { jsx: true },
   },
-  plugins: ['react'],
-  settings: {
-    react: {
-      version: 'detect',
-    },
-  },
-  // ✅ --- AÑADE ESTA SECCIÓN --- ✅
+  settings: { react: { version: 'detect' } },
+  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'storybook'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:storybook/recommended',
+    'prettier',
+  ],
   rules: {
-    'react/react-in-jsx-scope': 'off', // Apaga la regla que requiere importar React
-    'react/prop-types': 'off', // Apaga la regla que requiere definir prop-types
+    'react/react-in-jsx-scope': 'off',
+    'react/prop-types': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
   },
+  ignorePatterns: ['dist', 'coverage', 'node_modules'],
 };

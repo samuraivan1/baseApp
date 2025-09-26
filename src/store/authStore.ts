@@ -1,86 +1,106 @@
+// src/store/authStore.ts
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { AuthState, AuthActions } from './store.types';
-// ✅ 1. Importamos la función de login de nuestro nuevo servicio
 import { login as apiLogin } from '@/services/authService';
-import logger from '@/services/logger';
+
+// Modelo de usuario en sesión
+export interface UserSession {
+  id: number;
+  nombreCompleto: string;
+  iniciales: string;
+  email: string;
+  rol: string;
+  permisos: string[];
+  permisosIds: number[];
+}
+
+// Estado
+interface AuthState {
+  isLoggedIn: boolean;
+  user: UserSession | null;
+  accessToken: string | null;
+  refreshToken: string | null;
+}
+
+// Acciones
+interface AuthActions {
+  login: (credentials: { username: string; password: string }) => Promise<UserSession>;
+  logout: () => void;
+  setToken: (accessToken: string, refreshToken?: string | null) => void;
+  getToken: () => string | null;
+  getRefreshToken: () => string | null;
+  hasPermission: (permiso: string) => boolean;
+}
 
 type AuthStoreType = AuthState & AuthActions;
 
 export const useAuthStore = create<AuthStoreType>()(
   persist(
     (set, get) => ({
-      // Estado inicial (sin cambios)
       isLoggedIn: false,
       user: null,
       accessToken: null,
       refreshToken: null,
-      loading: false,
 
-      // ✅ 2. Refactorizamos la acción de login
-      login: async (emailOrUsername, password) => {
-        set({ loading: true });
-        try {
-          // Llamamos a nuestro servicio, que se encargará de la petición a la API
-          const { user, accessToken, refreshToken } = await apiLogin(
-            emailOrUsername,
-            password
-          );
-
-          // Si la petición es exitosa, actualizamos el estado con los datos reales
-          set({
-            isLoggedIn: true,
-            user,
-            accessToken,
-            refreshToken,
-            loading: false,
-          });
-          return true; // Indicamos que el login fue exitoso
-        } catch (error) {
-          // Si el servicio lanza un error (ej. 401), lo capturamos
-          logger.error(error as Error, {
-            context: 'Falló el inicio de sesión',
-            username: emailOrUsername,
-          });
-          set({ loading: false });
-          // Relanzamos el error para que el componente de UI (LoginPage) pueda manejarlo
-          throw error;
-        }
+      async login(credentials) {
+        const res = await apiLogin(credentials);
+        set({
+          isLoggedIn: true,
+          user: res.user,
+          accessToken: res.accessToken,
+          refreshToken: res.refreshToken ?? null,
+        });
+        return res.user;
       },
 
-      // Resto de las acciones (sin cambios)
-      logout: () =>
+      logout() {
         set({
           isLoggedIn: false,
           user: null,
           accessToken: null,
           refreshToken: null,
-        }),
+        });
+      },
 
-      setToken: (accessToken, refreshToken) =>
+      setToken(accessToken, refreshToken) {
         set({
           accessToken,
-          refreshToken: refreshToken || get().refreshToken,
-          isLoggedIn: !!accessToken,
-        }),
+          refreshToken: refreshToken ?? get().refreshToken ?? null,
+        });
+      },
 
-      hasPermission: (requiredPermission) => {
-        const { user } = get();
-        return user?.permisos.includes(requiredPermission) ?? false;
+      getToken() {
+        return get().accessToken;
+      },
+
+      getRefreshToken() {
+        return get().refreshToken;
+      },
+
+      hasPermission(permiso) {
+        const u = get().user;
+        if (!u) return false;
+        return u.permisos?.includes(permiso) ?? false;
       },
     }),
     {
-      name: 'auth-storage',
+      name: 'auth',
+      partialize: (state) => ({
+        isLoggedIn: state.isLoggedIn,
+        user: state.user,
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
+      }),
     }
   )
 );
 
-// Función auxiliar (sin cambios)
+// ✅ Helper seguro para acceder desde servicios e interceptores
 export function getAuthStore() {
   const state = useAuthStore.getState();
   return {
-    getToken: () => state.accessToken,
-    getRefreshToken: () => state.refreshToken,
+    getToken: () => state.getToken(),
+    getRefreshToken: () => state.getRefreshToken(),
     setToken: state.setToken,
     logout: state.logout,
   };

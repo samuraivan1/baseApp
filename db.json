@@ -4,28 +4,39 @@
       "idTarea-1": {
         "idTarea": "idTarea-1",
         "contenido": "007306 Check list Equipos de arrastre CDRs",
-        "usuariosAsignados": ["AR"],
+        "usuariosAsignados": [
+          "AR"
+        ],
         "fechaVencimiento": "2025-09-12",
         "diasActivo": 15
       },
       "idTarea-2": {
         "idTarea": "idTarea-2",
         "contenido": "Mejora - Eticolor",
-        "usuariosAsignados": ["AL"],
+        "usuariosAsignados": [
+          "AL"
+        ],
         "fechaVencimiento": "2025-08-20",
         "diasActivo": 6
       },
       "idTarea-3": {
         "idTarea": "idTarea-3",
         "contenido": "006520 Evaluación scanner SUNLUX y NETUM",
-        "usuariosAsignados": ["GV", "RO"],
+        "usuariosAsignados": [
+          "GV",
+          "RO"
+        ],
         "fechaVencimiento": "2025-08-29",
         "diasActivo": 11
       },
       "idTarea-4": {
         "idTarea": "idTarea-4",
         "contenido": "007135 Actualizar logotipo Grupo Truper CIAT",
-        "usuariosAsignados": ["AR", "GV", "AL"],
+        "usuariosAsignados": [
+          "AR",
+          "GV",
+          "AL"
+        ],
         "fechaVencimiento": "2025-09-30",
         "diasActivo": 43
       }
@@ -34,20 +45,31 @@
       "idColumna-1": {
         "idColumna": "idColumna-1",
         "titulo": "PENDIENTES",
-        "tareasIds": ["idTarea-2", "idTarea-1"]
+        "tareasIds": [
+          "idTarea-2",
+          "idTarea-1"
+        ]
       },
       "idColumna-2": {
         "idColumna": "idColumna-2",
         "titulo": "EN PROCESO",
-        "tareasIds": ["idTarea-4"]
+        "tareasIds": [
+          "idTarea-4"
+        ]
       },
       "idColumna-3": {
         "idColumna": "idColumna-3",
         "titulo": "PRUEBAS QAS",
-        "tareasIds": ["idTarea-3"]
+        "tareasIds": [
+          "idTarea-3"
+        ]
       }
     },
-    "ordenColumnas": ["idColumna-1", "idColumna-2", "idColumna-3"]
+    "ordenColumnas": [
+      "idColumna-1",
+      "idColumna-2",
+      "idColumna-3"
+    ]
   },
   "usuarios": [
     {
@@ -392,27 +414,71 @@
       "nombre": "Super Administrador",
       "descripcion": "Acceso total al sistema.",
       "permisosIds": [
-        4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 20, 21, 22, 23, 30, 31, 32, 33, 40,
-        41, 42, 43, 150, 10000, 10001, 10002, 10003, 10004, 10005, 10006, 10007,
-        10008, 10009, 10010, 10011, 10012
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        13,
+        14,
+        20,
+        21,
+        22,
+        23,
+        30,
+        31,
+        32,
+        33,
+        40,
+        41,
+        42,
+        43,
+        150,
+        10000,
+        10001,
+        10002,
+        10003,
+        10004,
+        10005,
+        10006,
+        10007,
+        10008,
+        10009,
+        10010,
+        10011,
+        10012
       ]
     },
     {
       "idRol": 2,
       "nombre": "Usuario Básico",
       "descripcion": "Solo puede ver el contenido principal.",
-      "permisosIds": [10000, 10001]
+      "permisosIds": [
+        10000,
+        10001
+      ]
     },
     {
       "idRol": 1002,
       "nombre": "Promotoría",
       "descripcion": "Rol de promotoría con permisos específicos.",
-      "permisosIds": [10000]
+      "permisosIds": [
+        10000
+      ]
     },
     {
-      "id": "200c",
+      "idRol": "200c",
       "nombre": "ivan alejandro",
       "descripcion": "dfsd",
+      "permisosIds": []
+    },
+    {
+      "idRol": "9a13",
+      "nombre": "test",
+      "descripcion": "ddsgfds",
       "permisosIds": []
     }
   ],

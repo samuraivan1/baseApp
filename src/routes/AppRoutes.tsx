@@ -1,4 +1,3 @@
-// src/routes/AppRoutes.tsx
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Home from '@/pages/Home';
 import Kanban from '@/pages/Kanban';
@@ -22,43 +21,12 @@ const AppRoutes = () => {
         path="/login"
         element={<LoginPage backgroundImage={LOGIN_BACKGROUND_IMAGE} />}
       />
-
-      <Route
-        path="/home"
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/kanban"
-        element={
-          <ProtectedRoute permiso="page:kanban:view">
-            <Kanban />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/project"
-        element={
-          <ProtectedRoute permiso="page:project:view">
-            <Project />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/dashproject"
-        element={
-          <ProtectedRoute permiso="page:dashproject:view">
-            <DashProject />
-          </ProtectedRoute>
-        }
-      />
-
+      <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+      <Route path="/kanban" element={<ProtectedRoute permiso="page:kanban:view"><Kanban /></ProtectedRoute>} />
+      <Route path="/project" element={<ProtectedRoute permiso="page:project:view"><Project /></ProtectedRoute>} />
+      <Route path="/dashproject" element={<ProtectedRoute permiso="page:dashproject:view"><DashProject /></ProtectedRoute>} />
+      
+      {/* --- RUTA DE ADMINISTRACIÓN ANIDADA --- */}
       <Route
         path="/administracion"
         element={
@@ -66,44 +34,44 @@ const AppRoutes = () => {
             <Administracion />
           </ProtectedRoute>
         }
-      />
+      >
+        {/* Ruta por defecto: muestra Roles cuando se va a /administracion */}
+        <Route
+          index
+          element={
+            <ProtectedRoute permiso="page:administracion_roles:view">
+              <Navigate to="roles" replace />
+            </ProtectedRoute>
+          }
+        />
+        {/* Rutas hijas que se renderizarán en el Outlet */}
+        <Route
+          path="roles"
+          element={
+            <ProtectedRoute permiso="page:administracion_roles:view">
+              <RolesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="usuarios"
+          element={
+            <ProtectedRoute permiso="page:administracion_usuarios:view">
+              <UsuariosPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="permisos"
+          element={
+            <ProtectedRoute permiso="page:administracion_permisos:view">
+              <PermisosPage />
+            </ProtectedRoute>
+          }
+        />
+      </Route>
 
-      <Route
-        path="/administracion/roles"
-        element={
-          <ProtectedRoute permiso="page:administracion_roles:view">
-            <RolesPage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/administracion/usuarios"
-        element={
-          <ProtectedRoute permiso="page:administracion_usuarios:view">
-            <UsuariosPage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/administracion/permisos"
-        element={
-          <ProtectedRoute permiso="page:administracion_permisos:view">
-            <PermisosPage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/contacto"
-        element={
-          <ProtectedRoute permiso="page:contacto:view">
-            <ContactoPage />
-          </ProtectedRoute>
-        }
-      />
-
+      <Route path="/contacto" element={<ProtectedRoute permiso="page:contacto:view"><ContactoPage /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/register" element={<h2>Página de Registro (futuro)</h2>} />
       <Route

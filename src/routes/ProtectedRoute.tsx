@@ -1,3 +1,4 @@
+// src/routes/ProtectedRoute.tsx
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 
@@ -10,20 +11,19 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   permiso,
   children,
 }) => {
-  const { isLoggedIn, user } = useAuthStore();
+  const { isLoggedIn, hasPermission } = useAuthStore((s) => ({
+    isLoggedIn: s.isLoggedIn,
+    hasPermission: s.hasPermission,
+  }));
 
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
   }
 
-  if (permiso !== undefined) {
-    const tienePermiso = user?.permisos?.some((p) => String(p) === permiso);
-    if (!tienePermiso) {
-      return <Navigate to="/unauthorized" replace />;
-    }
+  if (permiso !== undefined && !hasPermission(permiso)) {
+    return <Navigate to="/unauthorized" replace />;
   }
 
-  // Renderizar children si existen, de lo contrario Outlet (para rutas anidadas)
   return <>{children ? children : <Outlet />}</>;
 };
 

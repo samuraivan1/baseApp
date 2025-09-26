@@ -1,0 +1,17 @@
+@use '@/styles/_variables' as vars;
+// Estilos estáticos para el componente PageHeader
+.page-header {
+  margin-bottom: 1.5rem;
+
+  &__title {
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+    color: #333;
+  }
+
+  &__divider {
+    border: none;
+    height: 2px;
+    background-color: vars.$truper-orange;
+  }
+}

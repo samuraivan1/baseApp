@@ -5,7 +5,7 @@ import logger from '@/services/logger';
 import { getPermisos, deletePermiso } from '@/services/adminService';
 import { permisosMessages } from './Permisos.messages';
 import './Permisos.scss';
-import { Permiso } from '@/pages/Administracion/types';
+
 
 const PermisosPage: React.FC = () => {
   const queryClient = useQueryClient();

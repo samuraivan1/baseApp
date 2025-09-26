@@ -1,3 +1,77 @@
+$truper-orange: #ef6b06;
+$black: #000;
+$white: #fff;
+$main-color: #cac8b2; // Mantengamos este por aho
+
+// --- Paleta de Grises ---
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+
+// --- Paleta Semántica ---
+$color-primary: $truper-orange;
+$color-secondary: $gray-600;
+$color-success: #28a745;
+$color-danger: #dc3545;
+$color-warning: #ffc107;
+$color-info: #17a2b8;
+
+// --- Texto ---
+$txt-main-color: $gray-800;
+$txt-main-color: rgb(235, 228, 228);
+$txt-second-color: #8d8d8d;
+$txt-secondary-color: $gray-600;
+$txt-filter-color: #370358;
+$txt-offer-color: #fa0e0e;
+$txt-white: $white;
+$txt-black: $black;
+
+// ----------------------------------------------------
+// --- ✅ NUESTRAS VARIABLES CSS GLOBALES (TOKENS) ---
+// ----------------------------------------------------
+:root {
+  // Paleta de Colores
+  --color-primary: #{$color-primary};
+  --color-primary-hover: #{darken($color-primary, 8%)};
+  --color-secondary: #{$color-secondary};
+  --color-secondary-hover: #{darken($color-secondary, 8%)};
+  --color-success: #{$color-success};
+  --color-danger: #{$color-danger};
+  --color-text-primary: #{$txt-main-color};
+  --color-text-on-primary: #{$txt-white};
+  --color-background-light: #{$gray-100};
+  --color-border: #{$gray-300};
+
+  // Bordes
+  --border-radius-small: 4px;
+  --border-radius-medium: 8px;
+  --border-radius-large: 12px;
+
+  // Espaciado (usa múltiplos, ej: 0.5rem, 1rem, 1.5rem)
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  // Sombras
+  --box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+// --- Variables SCSS (se mantienen por compatibilidad) ---
+$header-height: 80px;
+$header-tablet-height: 50px;
+$header-mobile-height: 30px;
+$box-shadow: var(--box-shadow-md); // Usamos la nueva variable
+
 $header-height: 80px;
 $header-tablet-height: 50px;
 $header-mobile-height: 30px;
@@ -5,16 +79,10 @@ $header-shrink-height: 20px;
 
 $main-bg: #fff;
 $black-bg: #000;
-$main-color: #cac8b2;
 $light-color: #666;
 $gold-color: gold;
+// ✅ AÑADIMOS LA NUEVA VARIABLE DE MARCA
 
-$txt-main-color: rgb(235, 228, 228);
-$txt-second-color: #8d8d8d;
-$txt-filter-color: #370358;
-$txt-offer-color: #fa0e0e;
-$txt-white: #fff;
-$txt-black: #000;
 
 $btn-main-bg: $main-color;
 $btn-main-color: #fff;

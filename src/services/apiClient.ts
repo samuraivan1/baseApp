@@ -1,26 +1,31 @@
 // src/services/apiClient.ts
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
-// ✅ 1. CORRECCIÓN: Usa una importación con nombre.
+import axios, {
+  AxiosError,
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+} from 'axios';
 import { getConfig } from './configService';
 import errorService, { normalizeError } from './errorService';
 import { getAuthStore } from '@/store/authStore';
 
-// ❌ Se elimina la asignación de BASE_URL de aquí.
+type RefreshResponse = {
+  accessToken: string;
+  refreshToken?: string;
+};
 
 const apiClient = axios.create({
   // El baseURL se asignará dinámicamente en el interceptor.
   timeout: 15000,
 });
 
-// ... (las funciones processQueue y la variable failedQueue se mantienen igual) ...
-let isRefreshing = false;
-let failedQueue: Array<{
-  resolve: (v: any) => void;
-  reject: (e: any) => void;
-  originalRequest: any;
-}> = [];
+let isRefreshing = false; type FailedQueuedItem = {
+  resolve: (token: string | null) => void;
+  reject: (e: unknown) => void;
+  originalRequest: AxiosRequestConfig & { _retry?: boolean };
+};
+let failedQueue: FailedQueuedItem[] = [];
 
-const processQueue = (error: any, token: string | null = null) => {
+const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue.forEach((p) => {
     if (error) p.reject(error);
     else p.resolve(token);
@@ -31,15 +36,29 @@ const processQueue = (error: any, token: string | null = null) => {
 // Request interceptor: añadir Authorization header y baseURL dinámico
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // ✅ 2. OBTÉN LA CONFIGURACIÓN AQUÍ: Justo antes de cada petición.
-    const appConfig = getConfig();
-    config.baseURL = appConfig.API_BASE_URL;
+    // BaseURL dinámico desde el config cargado
+    try {
+      const appConfig = getConfig();
+      config.baseURL = appConfig.API_BASE_URL;
+    } catch {
+      // Si no está cargado aún, dejamos que la request falle y se normalice abajo
+    }
 
+    // Establecer token + cabeceras comunes respetando AxiosHeaders cuando exista
     const authStore = getAuthStore();
     const token = authStore.getToken?.() ?? null;
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const h = config.headers as any;
+    if (h && typeof h.set === 'function') {
+      if (token) h.set('Authorization', `Bearer ${token}`);
+      h.set('X-Requested-With', 'XMLHttpRequest');
+    } else {
+      config.headers = {
+        ...(config.headers as any),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        'X-Requested-With': 'XMLHttpRequest',
+      } as any;
     }
+
     return config;
   },
   (error) => {
@@ -52,18 +71,27 @@ apiClient.interceptors.request.use(
 // Response interceptor: handle 401 refresh logic
 apiClient.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError & { config?: any }) => {
-    const originalRequest = error.config;
+  async (error: AxiosError) => {
+    const originalRequest = (error.config ?? {}) as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
     const authStore = getAuthStore();
 
-    if (error.response?.status === 401 && !originalRequest?._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject, originalRequest });
         })
           .then((token) => {
-            if (originalRequest.headers)
-              originalRequest.headers.Authorization = `Bearer ${token}`;
+            const oh = originalRequest.headers as any;
+            if (oh && typeof oh.set === 'function') {
+              if (token) oh.set('Authorization', `Bearer ${token}`);
+            } else {
+              originalRequest.headers = {
+                ...(originalRequest.headers as any),
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              } as any;
+            }
             return apiClient(originalRequest);
           })
           .catch((err) => Promise.reject(err));
@@ -73,15 +101,22 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
       try {
         const refreshToken = authStore.getRefreshToken?.();
-        // ✅ 3. USA LA CONFIGURACIÓN DINÁMICA TAMBIÉN AQUÍ
         const { API_BASE_URL } = getConfig();
-        const { data } = await axios.post(`${API_BASE_URL}/auth/refresh`, {
-          refreshToken,
-        });
+        const { data } = await axios.post<RefreshResponse>(
+          `${API_BASE_URL}/auth/refresh`,
+          { refreshToken }
+        );
         authStore.setToken?.(data.accessToken, data.refreshToken);
         processQueue(null, data.accessToken);
-        if (originalRequest.headers)
-          originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        const oh = originalRequest.headers as any;
+        if (oh && typeof oh.set === 'function') {
+          oh.set('Authorization', `Bearer ${data.accessToken}`);
+        } else {
+          originalRequest.headers = {
+            ...(originalRequest.headers as any),
+            Authorization: `Bearer ${data.accessToken}`,
+          } as any;
+        }
         return apiClient(originalRequest);
       } catch (e) {
         processQueue(e, null);

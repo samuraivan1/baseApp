@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import logger from '@/services/logger';
 import { createRol, updateRol } from '@/services/adminService';
 import { roleSchema, RoleFormValues } from './validationSchema';
+import { roleFormMessages } from './RoleForm.messages';
 import './RoleForm.scss';
 
 // ✅ 1. Definimos un tipo más completo para los datos iniciales, que incluye el ID.
@@ -87,16 +88,16 @@ const RoleForm: React.FC<Props> = ({ initialData, onCancel, onSuccess }) => {
   return (
     <form onSubmit={handleSubmit(submit)} className="role-form">
       <div className="role-form__group">
-        <label>Nombre</label>
+        <label>{roleFormMessages.nameLabel}</label>
         <input {...register('nombre')} />
         {errors.nombre && <p className="error">{errors.nombre.message}</p>}
       </div>
       <div className="role-form__group">
-        <label>Descripción</label>
+        <label>{roleFormMessages.descriptionLabel}</label>
         <textarea {...register('descripcion')} />
       </div>
       <div className="role-form__group">
-        <label>Permisos (ids, separados por coma)</label>
+        <label>{roleFormMessages.permissionsLabel}</label>
         <input {...register('permisosIds')} placeholder="1,2,3" />
         {errors.permisosIds && <p className="error">"Error 123654654564654"</p>}
       </div>
@@ -111,7 +112,7 @@ const RoleForm: React.FC<Props> = ({ initialData, onCancel, onSuccess }) => {
           {isSubmitting ? 'Guardando...' : 'Guardar'}
         </button>
         <button type="button" className="btn" onClick={onCancel}>
-          Cancelar
+          {roleFormMessages.cancelButton}
         </button>
       </div>
     </form>
