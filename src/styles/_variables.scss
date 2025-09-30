@@ -1,3 +1,4 @@
+@use 'sass:color';
 $truper-orange: #ef6b06;
 $black: #000;
 $white: #fff;
@@ -38,15 +39,20 @@ $txt-black: $black;
 :root {
   // Paleta de Colores
   --color-primary: #{$color-primary};
-  --color-primary-hover: #{darken($color-primary, 8%)};
+  --color-primary-hover: #{color.adjust($color-primary, $lightness: -8%)};
   --color-secondary: #{$color-secondary};
-  --color-secondary-hover: #{darken($color-secondary, 8%)};
+  --color-secondary-hover: #{color.adjust($color-secondary, $lightness: -8%)};
   --color-success: #{$color-success};
   --color-danger: #{$color-danger};
+  --color-danger-hover: #{color.adjust($color-danger, $lightness: -8%)};
   --color-text-primary: #{$txt-main-color};
   --color-text-on-primary: #{$txt-white};
   --color-background-light: #{$gray-100};
   --color-border: #{$gray-300};
+  // Hover helpers para variantes secundarias/outline/ghost/subtle
+  --button-outline-hover-bg: #{$gray-100};
+  --button-ghost-hover-bg: #{$gray-100};
+  --button-subtle-hover-bg: #{$gray-100};
 
   // Bordes
   --border-radius-small: 4px;
@@ -103,3 +109,4 @@ $colors: (
   'main': $main-color,
   'red': #ff0000,
 );
+// color module imported at top

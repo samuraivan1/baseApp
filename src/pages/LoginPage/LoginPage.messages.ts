@@ -1,13 +1,14 @@
+// src/pages/LoginPage/LoginPage.messages.ts
 export const loginPageText = {
   title: 'Iniciar Sesión',
-  emailPlaceholder: 'Correo electrónico o Usuario',
+  emailPlaceholder: 'Correo o usuario',
   passwordPlaceholder: 'Contraseña',
-  rememberMe: 'Recordarme',
+  rememberMe: 'Recuérdame',
   forgotPassword: '¿Olvidaste tu contraseña?',
-  loginButton: 'Iniciar Sesión',
-  loadingButton: 'Cargando...',
-  divider: 'O',
+  loginButton: 'Iniciar sesión',
+  loadingButton: 'Ingresando...',
+  divider: 'o',
   windowsLogin: 'Iniciar sesión con Windows',
-  registerPrompt: '¿No tienes una cuenta?',
+  registerPrompt: '¿No tienes cuenta?',
   registerLink: 'Regístrate',
 };

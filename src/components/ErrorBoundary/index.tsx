@@ -1,45 +1,55 @@
 // src/components/ErrorBoundary/index.tsx
 import React from 'react';
 import errorService, { normalizeError } from '@/services/errorService';
+import { errorBoundaryText } from './ErrorBoundary.messages';
 
 type Props = { children: React.ReactNode };
-type State = { hasError: boolean; error?: any };
+
+type State = {
+  hasError: boolean;
+  error: Error | null;
+};
 
 class ErrorBoundary extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error: any) {
+  static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: any, info: any) {
-    const norm = normalizeError(error, {
-      componentStack: info?.componentStack,
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    const normalized = normalizeError(error, {
+      source: 'error-boundary',
+      errorInfo,
     });
-    errorService.logError(norm);
+    errorService.logError(normalized);
   }
 
-  handleReport = () => {
-    if (!this.state.error) return;
-    const norm = normalizeError(this.state.error, {
-      userAction: 'User reported from ErrorBoundary',
+  private handleReport = () => {
+    const { error } = this.state;
+    if (!error) return;
+
+    const normalized = normalizeError(error, {
+      source: 'error-boundary-report',
     });
-    errorService.logError(norm);
-    alert('Gracias — el error ha sido registrado.');
+    errorService.logError(normalized);
+
+    // Aquí podrías mostrar un toast o redirigir a soporte
+    alert('El error ha sido registrado. Gracias por reportarlo.');
   };
 
   render() {
     if (this.state.hasError) {
       return (
         <div style={{ padding: 24 }}>
-          <h2>Algo salió mal</h2>
-          <p>
-            Estamos trabajando para solucionarlo. Puedes reportarlo para ayudar.
-          </p>
-          <button onClick={this.handleReport}>Reportar error</button>
+          <h2>{errorBoundaryText.title}</h2>
+          <p>{errorBoundaryText.message}</p>
+          <button onClick={this.handleReport}>
+            {errorBoundaryText.reportButton}
+          </button>
         </div>
       );
     }

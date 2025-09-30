@@ -1,0 +1,28 @@
+// Este archivo ahora solo contiene los estilos específicos de la página.
+// Los estilos de los componentes de la tabla, etc., vienen de seguUI.scss.
+
+.segu-page-container {
+  background-color: #f0f2f5;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+// --- Estilos del Modal (se mantienen sin cambios) ---
+.segu-roles__modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+
+  &-content {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 8px;
+    width: 700px;
+  }
+}

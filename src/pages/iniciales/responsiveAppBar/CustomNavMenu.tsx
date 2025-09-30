@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { NavMenuItem } from '@/services/api.types';
+import { NavMenuItem } from '@/types/ui';
 import './CustomNavMenu.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -14,7 +14,7 @@ import {
 const iconMap: { [key: string]: any } = {
   Home: faHome,
   Kanban: faColumns,
-  Administración: faTasks,
+  seguistración: faTasks,
   Dashboard: faChartBar,
 };
 

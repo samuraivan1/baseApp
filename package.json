@@ -28,6 +28,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "server": "json-server --watch db.json --port 3001",
+    "mock": "node server.js",
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"

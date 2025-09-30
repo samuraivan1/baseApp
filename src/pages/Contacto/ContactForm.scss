@@ -23,14 +23,5 @@
     gap: 8px;
   }
 
-  .btn {
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  .btn--primary {
-    background: linear-gradient(90deg, #2b6ef6, #5763ff);
-    color: white;
-    border: 0;
-  }
+  // Botón: usamos el componente Button unificado
 }

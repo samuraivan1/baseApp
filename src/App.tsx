@@ -1,5 +1,5 @@
 import React from 'react'; // Importamos React para usar React.FC
-import Layout from './pages/iniciales/Layout';
+import Layout from '@/features/shell/Layout';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify'; // 1. Importa el contenedor
 import 'react-toastify/dist/ReactToastify.css'; // 2. Importa los estilos CSS

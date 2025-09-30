@@ -1,0 +1,81 @@
+// --- ESTILOS PARA ENTITY TABLE ---
+.table-wrapper {
+  max-height: 60vh;
+  overflow: auto;
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.table-wrapper--centered {
+  width: 100%;
+  max-width: var(--table-max-width, 960px);
+  margin: 0 auto;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+
+  th,
+  td {
+    // ✅ Reducimos el padding vertical
+    padding: 0.4rem 0.5rem;
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid #e1e1e1;
+    word-break: break-word;
+  }
+
+  thead th {
+    // ✅ Cambiamos el color de fondo y de texto
+    background-color: #ef6b06;
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e1e1e1;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  tbody {
+    font-size: 0.95rem;
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+  }
+}
+
+// Cuando autoFit está activo, la tabla se ajusta al contenido y queda centrada
+.modern-table--autofit {
+  width: max-content;
+  max-width: 100%;
+}
+
+.cell--nowrap {
+  white-space: nowrap;
+}
+
+.principal-cell {
+  font-weight: 500;
+  color: #323130;
+}
+
+.action-column-header {
+  text-align: right;
+}
+
+.table-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: flex-end;
+}

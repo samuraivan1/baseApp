@@ -7,7 +7,7 @@ import './ResponsiveAppBar.scss';
 import { useMainMenu } from './hooks/useMainMenu';
 import UserProfileMenu from './UserProfileMenu';
 import { appBarMessages } from './ResponsiveAppBar.messages';
-import { NavMenuItem } from '@/services/api.types'; // ✅ Asegúrate de importar este tipo
+import { NavMenuItem } from '@/types/ui';
 import { useProfileMenu } from './hooks/useProfileMenu';
 
 const ResponsiveAppBar: React.FC = () => {

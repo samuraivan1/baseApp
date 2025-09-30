@@ -10,22 +10,31 @@ type NormalizedError = {
   status?: number | null;
   code?: string | null;
   message: string;
-  details?: any;
+  details?: unknown;
   timestamp: string;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 };
 
 const QUEUE_KEY = 'app:errorQueue_v1';
 
+type Breadcrumb = {
+  message: string;
+  category?: string;
+  data?: unknown;
+};
+
+type ErrorAdapter = {
+  captureException: (err: unknown, meta?: unknown) => Promise<void> | void;
+  captureMessage?: (msg: string, meta?: unknown) => Promise<void> | void;
+  setUser?: (user: { id?: number | string; email?: string; role?: unknown } | null) => void;
+  flush?: () => Promise<void>;
+  addBreadcrumb?: (crumb: Breadcrumb) => void;
+} | null;
+
 class ErrorService {
   private queue: NormalizedError[] = [];
   private adapterInitialized = false;
-  private adapter: {
-    captureException: (err: any, meta?: any) => Promise<void> | void;
-    captureMessage?: (msg: string, meta?: any) => Promise<void> | void;
-    setUser?: (user: any) => void;
-    flush?: () => Promise<void>;
-  } | null = null;
+  private adapter: ErrorAdapter = null;
 
   constructor() {
     this.loadQueue();
@@ -49,7 +58,7 @@ class ErrorService {
     }
   }
 
-  public setAdapter(adapter: any) {
+  public setAdapter(adapter: NonNullable<ErrorAdapter>) {
     this.adapter = adapter;
     this.adapterInitialized = true;
     // al inicializar adapter intentamos flush
@@ -104,23 +113,15 @@ class ErrorService {
     }
   }
 
-  public captureBreadcrumb(b: {
-    message: string;
-    category?: string;
-    data?: any;
-  }) {
+  public captureBreadcrumb(b: Breadcrumb) {
     // guardar en memory context; si adapter soporta breadcrumbs, enviarlo
-    if (this.adapter && (this.adapter as any).addBreadcrumb) {
-      try {
-        (this.adapter as any).addBreadcrumb(b);
-      } catch {}
-    }
+    this.adapter?.addBreadcrumb?.(b);
     // also console for dev
     console.debug('Breadcrumb:', b);
   }
 
   public setUser(
-    user: { id?: number | string; email?: string; role?: any } | null
+    user: { id?: number | string; email?: string; role?: unknown } | null
   ) {
     if (this.adapter && this.adapter.setUser) {
       try {
@@ -134,27 +135,45 @@ const errorService = new ErrorService();
 export default errorService;
 
 /** Helpers para normalizar errores de axios u otros */
-export function normalizeError(err: any, context?: any): NormalizedError {
+export function normalizeError(
+  err: unknown,
+  context?: Record<string, unknown>
+): NormalizedError {
   const timestamp = new Date().toISOString();
   if (!err) return { message: 'Error desconocido', timestamp, context };
-  // Axios error detection
-  const isAxios = err.isAxiosError || !!(err.response || err.request);
-  if (isAxios) {
-    const status = err.response?.status ?? null;
-    const data = err.response?.data;
-    const message = data?.message || err.message || `HTTP ${status}`;
+  // Axios-like error detection (shape-based)
+  const anyErr = err as Record<string, unknown>;
+  const response = anyErr && typeof anyErr === 'object' ? (anyErr['response'] as Record<string, unknown> | undefined) : undefined;
+  const request = anyErr && typeof anyErr === 'object' ? anyErr['request'] : undefined;
+  const isAxiosLike = Boolean((anyErr && (anyErr['isAxiosError'] as boolean)) || response || request);
+  if (isAxiosLike) {
+    const status = (response?.['status'] as number | undefined) ?? null;
+    const data = response?.['data'] as unknown;
+    let message = (anyErr['message'] as string | undefined) || (status ? `HTTP ${status}` : 'HTTP error');
+    const hasStringMessage = (v: unknown): v is { message: string } => {
+      if (typeof v !== 'object' || v === null) return false;
+      const m = (v as Record<string, unknown>).message;
+      return typeof m === 'string';
+    };
+    if (hasStringMessage(data)) message = data.message;
     return {
       status,
-      code: data?.code || null,
+      code:
+        data && typeof data === 'object' && 'code' in data
+          ? (data as { code?: string }).code ?? null
+          : null,
       message,
-      details: data || err.toString(),
+      details: data ?? String(err),
       timestamp,
       context,
     };
   }
   // Generic error
   return {
-    message: err.message || String(err),
+    message:
+      (anyErr && typeof anyErr === 'object' && typeof anyErr['message'] === 'string'
+        ? (anyErr['message'] as string)
+        : String(err)),
     details: err,
     timestamp,
     context,

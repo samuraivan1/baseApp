@@ -24,7 +24,7 @@ export const USER_DATA = {
   bearerToken: '',
 };
 
-export const REDIRECT = '/admin/init';
+export const REDIRECT = '/segu/init';
 
 export const SESSION = {
   token: {

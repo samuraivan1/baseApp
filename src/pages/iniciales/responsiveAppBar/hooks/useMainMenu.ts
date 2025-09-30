@@ -4,8 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { fetchMenu } from '@/services/api';
 import logger from '@/services/logger';
+import { useAuthStore } from '@/store/authStore';
 
 export const useMainMenu = () => {
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const {
     data = [], // Proporciona un valor por defecto para evitar 'undefined'
     isLoading,
@@ -14,6 +16,7 @@ export const useMainMenu = () => {
   } = useQuery({
     queryKey: ['mainMenu'],
     queryFn: fetchMenu,
+    enabled: isLoggedIn,
   });
 
   useEffect(() => {

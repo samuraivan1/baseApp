@@ -8,6 +8,7 @@ import { useContactForm } from './hooks/useContactForm';
 import Input from '@/components/ui/Input';
 import Textarea from '@/components/ui/Textarea';
 import './ContactForm.scss';
+import Button from '@/components/ui/Button';
 import messages from './ContactForm.messages';
 import { useApiError } from '@/hooks/useApiError';
 
@@ -77,13 +78,9 @@ const ContactForm: React.FC = () => {
         />
 
         <div className="contact-form__actions">
-          <button
-            type="submit"
-            className="btn btn--primary"
-            disabled={isSubmitting}
-          >
+          <Button type="submit" variant="primary" disabled={isSubmitting} isLoading={isSubmitting}>
             {isSubmitting ? 'Enviando...' : 'Enviar'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

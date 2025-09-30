@@ -1,0 +1,85 @@
+.fs-section {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 14px 16px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 14px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #1f1f1f;
+    font-weight: 700;
+  }
+  &__icon {
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-on-primary);
+  }
+  &__title {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  &__divider {
+    height: 2px;
+    background: var(--color-primary);
+    margin: 8px 0 12px;
+    opacity: 0.85;
+  }
+  &__body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 18px;
+  }
+
+  &--dense {
+    padding: 8px 10px 10px;
+    .fs-section__body {
+      gap: 8px 12px;
+    }
+  }
+}
+
+// Campos compactos dentro del layout
+.fs-section .ui-input__control,
+.fs-section .ui-textarea__control,
+.fs-section select,
+.fs-section input[type='text'],
+.fs-section input[type='number'],
+.fs-section input[type='email'] {
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.fs-row-span-2 {
+  grid-column: 1 / -1;
+}
+
+.fs-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+@media (max-width: 900px) {
+  .fs-section__body {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Contenedor para listados/tablas con mismo look & feel
+.fs-table-container {
+  display: flex;
+  justify-content: center;
+  padding: 2px 4px 6px;
+}

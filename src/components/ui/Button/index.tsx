@@ -7,12 +7,14 @@ import './Button.scss';
 type ButtonProps = {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: 'primary' | 'secondary' | 'danger'; // Estilos principales
+  variant?: 'primary' | 'secondary' | 'danger' | 'link' | 'outline' | 'ghost' | 'subtle'; // Estilos principales
   size?: 'small' | 'medium' | 'large'; // Tamaños
   icon?: IconDefinition; // Icono opcional
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset';
   className?: string; // Para clases adicionales
+  tone?: 'default' | 'danger'; // Afinación adicional para variantes (ej. link)
+  isLoading?: boolean; // Estado de carga que deshabilita y muestra spinner
 };
 
 const Button: React.FC<ButtonProps> = ({
@@ -24,23 +26,26 @@ const Button: React.FC<ButtonProps> = ({
   disabled = false,
   type = 'button',
   className = '',
+  tone = 'default',
+  isLoading = false,
 }) => {
   // Construimos la lista de clases CSS de forma dinámica
-  const buttonClasses = `
-    btn 
-    btn--${variant} 
-    btn--${size}
-    ${className}
-  `.trim(); // .trim() para eliminar espacios extra
+  const extraTone = variant === 'link' && tone === 'danger' ? 'btn--link-danger' : '';
+  const buttonClasses = `btn btn--${variant} btn--${size} ${extraTone} ${className}`.trim();
 
   return (
     <button
       type={type}
       className={buttonClasses}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || isLoading}
+      aria-busy={isLoading}
     >
-      {icon && <FontAwesomeIcon icon={icon} className="btn__icon" />}
+      {isLoading ? (
+        <span className="btn__spinner" aria-hidden="true" />
+      ) : (
+        icon && <FontAwesomeIcon icon={icon} className="btn__icon" />
+      )}
       <span className="btn__text">{children}</span>
     </button>
   );

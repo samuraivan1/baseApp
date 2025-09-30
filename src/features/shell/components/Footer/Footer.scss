@@ -1,0 +1,21 @@
+.footer {
+  padding: 0.75rem 1rem;
+  background: #e9ecef;
+  border-top: 1px solid #dee2e6;
+  &__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  &__text {
+    font-weight: 500;
+    color: #495057;
+  }
+  &__date {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+}
+

@@ -1,0 +1,58 @@
+// --- ESTILOS PARA COMMAND BAR ---
+.command-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-bottom: 1.5rem;
+  gap: 1.5rem; // Espacio entre búsqueda y acciones
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  &__button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #323130;
+    font-weight: 500;
+    &:hover {
+      color: #0078d4;
+    }
+  }
+}
+
+.search-wrapper {
+  flex-grow: 1; // Permite que crezca por defecto
+
+  // --- AÑADIMOS LA CLASE MODIFICADORA ---
+  // Esto hará que el campo de búsqueda ocupe el 50% del espacio
+  // disponible cuando se active la prop 'searchLarge'.
+  &--large {
+    flex-basis: 50%;
+  }
+}
+
+.search-input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #a1a1a1;
+  border-radius: 4px;
+  width: 100%;
+  max-width: 450px; // Aumentamos el tamaño máximo por defecto
+  font-size: 0.9rem;
+  &:focus {
+    outline: none;
+    border-color: #0078d4;
+  }
+}

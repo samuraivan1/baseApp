@@ -6,9 +6,9 @@
 
 // Nivel 1: acceso a páginas (IDs en BD desde 10000)
 export const PagePermissions = {
-  ADMIN_USERS_VIEW: 'page:administracion_usuarios:view',
-  ADMIN_ROLES_VIEW: 'page:administracion_roles:view',
-  ADMIN_PERMISSIONS_VIEW: 'page:administracion_permisos:view',
+  SEGU_USERS_VIEW: 'page:seguridad_usuarios:view',
+  SEGU_ROLES_VIEW: 'page:seguridad_roles:view',
+  SEGU_PERMISSIONS_VIEW: 'page:seguridad_permisos:view',
   KANBAN_VIEW: 'page:kanban:view',
 } as const;
 
@@ -30,12 +30,18 @@ export type PermissionValue =
   | (typeof ActionPermissions)[keyof typeof ActionPermissions];
 
 // Helpers utilitarios
-export function hasAny(userPerms: string[] | undefined, perms: PermissionValue[]) {
+export function hasAny(
+  userPerms: string[] | undefined,
+  perms: PermissionValue[]
+) {
   if (!userPerms?.length) return false;
   return perms.some((p) => userPerms.includes(p));
 }
 
-export function hasAll(userPerms: string[] | undefined, perms: PermissionValue[]) {
+export function hasAll(
+  userPerms: string[] | undefined,
+  perms: PermissionValue[]
+) {
   if (!userPerms?.length) return false;
   return perms.every((p) => userPerms.includes(p));
 }

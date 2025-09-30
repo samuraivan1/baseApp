@@ -1,11 +1,5 @@
 import apiClient from './apiClient';
-import {
-  NavMenuItem,
-  TableroType,
-  RolType,
-  UsuarioType,
-  PermisoType,
-} from './api.types';
+import { NavMenuItem, TableroType } from './api.types';
 
 // --- Menu API ---
 export const fetchMenu = async (): Promise<NavMenuItem[]> => {
@@ -44,20 +38,4 @@ export const updateTablero = async (
   return Promise.reject(new Error('Error de red simulado'));
 };
 // ✅ --- FIN DE LA SIMULACIÓN --- ✅
-// ✅ Añade la nueva función para obtener los roles
-
-// --- Seguridad API ---
-export const fetchRoles = async (): Promise<RolType[]> => {
-  const { data } = await apiClient.get('/roles');
-  return data;
-};
-
-export const fetchUsuarios = async (): Promise<UsuarioType[]> => {
-  const { data } = await apiClient.get('/usuarios');
-  return data;
-};
-
-export const fetchPermisos = async (): Promise<PermisoType[]> => {
-  const { data } = await apiClient.get('/permisos');
-  return data;
-};
+// (Eliminadas funciones legacy de seguridad: roles/usuarios/permisos)

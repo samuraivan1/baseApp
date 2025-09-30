@@ -3,7 +3,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useProfileMenu } from './hooks/useProfileMenu';
 import { useAuthStore } from '@/store/authStore';
-import { NavMenuItem } from '@/services/api.types';
+import { NavMenuItem } from '@/types/ui';
 import { toast } from 'react-toastify';
 import { authMessages } from '@/constants/commonMessages';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

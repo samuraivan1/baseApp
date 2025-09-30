@@ -2,37 +2,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { login as apiLogin } from '@/services/authService';
-
-// Modelo de usuario en sesión
-export interface UserSession {
-  id: number;
-  nombreCompleto: string;
-  iniciales: string;
-  email: string;
-  rol: string;
-  permisos: string[];
-  permisosIds: number[];
-}
-
-// Estado
-interface AuthState {
-  isLoggedIn: boolean;
-  user: UserSession | null;
-  accessToken: string | null;
-  refreshToken: string | null;
-}
-
-// Acciones
-interface AuthActions {
-  login: (credentials: { username: string; password: string }) => Promise<UserSession>;
-  logout: () => void;
-  setToken: (accessToken: string, refreshToken?: string | null) => void;
-  getToken: () => string | null;
-  getRefreshToken: () => string | null;
-  hasPermission: (permiso: string) => boolean;
-}
-
-type AuthStoreType = AuthState & AuthActions;
+import { AuthStoreType } from './store.types';
 
 export const useAuthStore = create<AuthStoreType>()(
   persist(
@@ -42,8 +12,8 @@ export const useAuthStore = create<AuthStoreType>()(
       accessToken: null,
       refreshToken: null,
 
-      async login(credentials) {
-        const res = await apiLogin(credentials);
+      async login(username, password) {
+        const res = await apiLogin({ username, password });
         set({
           isLoggedIn: true,
           user: res.user,
@@ -77,10 +47,14 @@ export const useAuthStore = create<AuthStoreType>()(
         return get().refreshToken;
       },
 
-      hasPermission(permiso) {
+      hasPermission(permissionString) {
         const u = get().user;
         if (!u) return false;
-        return u.permisos?.includes(permiso) ?? false;
+        return (
+          u.permissions?.some(
+            (p) => p.permission_string === permissionString
+          ) ?? false
+        );
       },
     }),
     {
@@ -95,7 +69,6 @@ export const useAuthStore = create<AuthStoreType>()(
   )
 );
 
-// ✅ Helper seguro para acceder desde servicios e interceptores
 export function getAuthStore() {
   const state = useAuthStore.getState();
   return {

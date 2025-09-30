@@ -7,8 +7,8 @@ const API_BASE_URL = 'http://localhost:3001';
 export const handlers = [
   // --- Endpoints de Seguridad ---
   http.get(`${API_BASE_URL}/roles`, () => {}),
-  http.get(`${API_BASE_URL}/usuarios`, () => {}),
-  http.get(`${API_BASE_URL}/permisos`, () => {}),
+  http.get(`${API_BASE_URL}/users`, () => {}),
+  http.get(`${API_BASE_URL}/permissions`, () => {}),
 
   // --- Endpoints de Menús ---
   http.get(`${API_BASE_URL}/menu`, () => {}),

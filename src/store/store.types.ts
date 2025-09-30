@@ -1,40 +1,33 @@
 // src/store/store.types.ts
 import { TableroType } from '@/services/api.types';
+import { UserSession } from '@/types/security';
 
-// --- Tipos para AuthStore ---
-export interface UserSession {
-  id: number;
-  nombreCompleto: string;
-  iniciales: string;
-  email: string;
-  rol: string;
-  permisos: string[];
-  permisosIds: number[];
-}
-
+// --- Auth Store ---
 export interface AuthState {
   isLoggedIn: boolean;
   user: UserSession | null;
   accessToken: string | null;
   refreshToken: string | null;
-  loading: boolean;
-  // ✅ AÑADIMOS la acción 'hasPermission' para que el estado sepa de ella
-  hasPermission: (requiredPermission: string) => boolean;
 }
 
 export interface AuthActions {
-  login: (emailOrUsername: string, password: string) => Promise<boolean>;
+  // Acepta ambas firmas por conveniencia del UI
+  login: (
+    username: string,
+    password: string
+  ) => Promise<UserSession>;
   logout: () => void;
-  setToken: (accessToken: string, refreshToken?: string) => void;
+  setToken: (accessToken: string, refreshToken?: string | null) => void;
+  getToken: () => string | null;
+  getRefreshToken: () => string | null;
+  hasPermission: (permissionString: string) => boolean;
 }
 
-// --- Tipos para BoardStore ---
+export type AuthStoreType = AuthState & AuthActions;
+
+// --- Board Store ---
 export type BoardState = TableroType;
 
 export interface BoardActions {
   setBoardState: (newState: BoardState) => void;
 }
-
-// --- Tipos para MenuStore (a futuro) ---
-export interface MenuState {}
-export interface MenuActions {}

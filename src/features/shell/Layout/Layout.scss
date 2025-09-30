@@ -1,0 +1,28 @@
+@use '@/styles/variables';
+@use '@/styles/mixins';
+
+// El contenedor principal de toda la aplicación
+.layout {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+// La clase que se aplica a nuestro <main>
+.layout__content {
+  // Por defecto, le decimos que crezca para ocupar el espacio
+  // entre el header y el footer.
+  flex: 1;
+  overflow-y: auto; // Habilita el scroll para el contenido principal
+  position: relative; // Necesario para el contexto de apilamiento (z-index)
+
+  // ✅ Modificador para la página de Login
+  // Cuando esta clase está presente, las reglas de arriba se anulan.
+  &--login {
+    flex: none; // Le quitamos la flexibilidad
+    overflow-y: hidden; // Deshabilitamos el scroll
+    padding: 0;
+    background-color: transparent;
+  }
+}
+

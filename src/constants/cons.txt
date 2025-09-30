@@ -44,7 +44,7 @@ const USER_DATA: UserData = {
 
 
 
-export const REDIRECT = "/admin/init";
+export const REDIRECT = "/segu/init";
 
 
 

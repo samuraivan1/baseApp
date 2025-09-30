@@ -11,7 +11,7 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:3001",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
+        rewrite: (p) => p.replace(/^\/api/, ""),
       },
     },
   },
@@ -22,12 +22,17 @@ export default defineConfig({
     },
   },
 
-  // ✅ Esta es la única configuración de 'test' que necesitamos
   test: {
     globals: true,
     environment: "jsdom",
     setupFiles: "./src/setupTests.js",
-    // Excluimos los archivos de Storybook para que Vitest los ignore
-    exclude: ["node_modules/**", "**/*.stories.jsx", "**/*.stories.js"],
+    // 🔧 Añadimos TS/TSX para evitar que Vitest intente correr stories
+    exclude: [
+      "node_modules/**",
+      "**/*.stories.js",
+      "**/*.stories.jsx",
+      "**/*.stories.ts",
+      "**/*.stories.tsx",
+    ],
   },
 });

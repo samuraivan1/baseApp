@@ -1,6 +1,7 @@
+// src/components/ErrorBoundary/ErrorBoundary.messages.ts
 export const errorBoundaryText = {
-  title: 'Oops. Algo salió mal.',
+  title: 'Algo salió mal',
   message:
-    'Hemos sido notificados del error y estamos trabajando para solucionarlo.',
-  reloadButton: 'Recargar la página',
+    'Estamos trabajando para solucionarlo. Puedes reportarlo para ayudar.',
+  reportButton: 'Reportar error',
 };

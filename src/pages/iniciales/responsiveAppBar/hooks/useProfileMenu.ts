@@ -3,8 +3,10 @@ import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchProfileMenu } from '@/services/api';
 import logger from '@/services/logger';
+import { useAuthStore } from '@/store/authStore';
 
 export const useProfileMenu = () => {
+  const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
   const {
     data = [],
     isLoading,
@@ -13,6 +15,7 @@ export const useProfileMenu = () => {
   } = useQuery({
     queryKey: ['profileMenu'],
     queryFn: fetchProfileMenu,
+    enabled: isLoggedIn,
   });
 
   useEffect(() => {
