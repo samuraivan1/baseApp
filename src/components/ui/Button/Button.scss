@@ -82,18 +82,21 @@
 
   // --- Tamaños ---
   &--small {
-    font-size: 0.8rem;
-    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    padding: 0 var(--spacing-sm);
+    min-height: var(--control-height-sm);
   }
 
   &--medium {
-    font-size: 0.9rem;
-    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-md);
+    padding: 0 var(--spacing-md);
+    min-height: var(--control-height-md);
   }
 
   &--large {
-    font-size: 1rem;
-    padding: var(--spacing-md) var(--spacing-lg);
+    font-size: var(--font-size-md);
+    padding: 0 var(--spacing-lg);
+    min-height: var(--control-height-lg);
   }
 
   // --- Elementos Internos ---
@@ -125,7 +128,9 @@
     background: none;
     border: none;
     color: #0078d4;
-    padding: 0;
+    padding: 0; // sin padding para que no engrose filas
+    min-height: auto; // no forzar altura en variante link
+    font-size: var(--font-size-sm);
     font-weight: 500;
     &:hover:not(:disabled) {
       text-decoration: underline;

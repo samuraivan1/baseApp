@@ -4,28 +4,39 @@
       "idTarea-1": {
         "idTarea": "idTarea-1",
         "contenido": "007306 Check list Equipos de arrastre CDRs",
-        "usuariosAsignados": ["AR"],
+        "usuariosAsignados": [
+          "AR"
+        ],
         "fechaVencimiento": "2025-09-12",
         "diasActivo": 15
       },
       "idTarea-2": {
         "idTarea": "idTarea-2",
         "contenido": "Mejora - Eticolor",
-        "usuariosAsignados": ["AL"],
+        "usuariosAsignados": [
+          "AL"
+        ],
         "fechaVencimiento": "2025-08-20",
         "diasActivo": 6
       },
       "idTarea-3": {
         "idTarea": "idTarea-3",
         "contenido": "006520 Evaluación scanner SUNLUX y NETUM",
-        "usuariosAsignados": ["GV", "RO"],
+        "usuariosAsignados": [
+          "GV",
+          "RO"
+        ],
         "fechaVencimiento": "2025-08-29",
         "diasActivo": 11
       },
       "idTarea-4": {
         "idTarea": "idTarea-4",
         "contenido": "007135 Actualizar logotipo Grupo Truper CIAT",
-        "usuariosAsignados": ["AR", "GV", "AL"],
+        "usuariosAsignados": [
+          "AR",
+          "GV",
+          "AL"
+        ],
         "fechaVencimiento": "2025-09-30",
         "diasActivo": 43
       }
@@ -34,20 +45,31 @@
       "idColumna-1": {
         "idColumna": "idColumna-1",
         "titulo": "PENDIENTES",
-        "tareasIds": ["idTarea-2", "idTarea-1"]
+        "tareasIds": [
+          "idTarea-2",
+          "idTarea-1"
+        ]
       },
       "idColumna-2": {
         "idColumna": "idColumna-2",
         "titulo": "EN PROCESO",
-        "tareasIds": ["idTarea-4"]
+        "tareasIds": [
+          "idTarea-4"
+        ]
       },
       "idColumna-3": {
         "idColumna": "idColumna-3",
         "titulo": "PRUEBAS QAS",
-        "tareasIds": ["idTarea-3"]
+        "tareasIds": [
+          "idTarea-3"
+        ]
       }
     },
-    "ordenColumnas": ["idColumna-1", "idColumna-2", "idColumna-3"]
+    "ordenColumnas": [
+      "idColumna-1",
+      "idColumna-2",
+      "idColumna-3"
+    ]
   },
   "menu": [
     {
@@ -182,237 +204,237 @@
       "description": "Ejemplo de roles dados de alta"
     },
     {
-      "role_id": 1,
+      "role_id": 10066,
       "name": "Super Administrador",
       "description": "Acceso total al sistema. Alex"
     },
     {
-      "role_id": 2,
+      "role_id": 10067,
       "name": "Usuario Básico",
       "description": "Solo puede ver el contenido principal."
     },
     {
-      "role_id": 1002,
+      "role_id": 10068,
       "name": "Promotoría",
       "description": "Rol de promotoría con permisos específicos."
     },
     {
-      "role_id": 1003,
+      "role_id": 10069,
       "name": "ivan alejandro",
       "description": "dfsd"
     },
     {
-      "role_id": 1004,
+      "role_id": 10070,
       "name": "test",
       "description": "ddsgfds"
     },
     {
-      "role_id": 1005,
+      "role_id": 10071,
       "name": "Alex Ejemplo 2",
       "description": "Ejemplo de roles dados de alta"
     },
     {
-      "role_id": 1,
+      "role_id": 10072,
       "name": "Super Administrador",
       "description": "Acceso total al sistema. Alex"
     },
     {
-      "role_id": 2,
+      "role_id": 10073,
       "name": "Usuario Básico",
       "description": "Solo puede ver el contenido principal."
     },
     {
-      "role_id": 1002,
+      "role_id": 10074,
       "name": "Promotoría",
       "description": "Rol de promotoría con permisos específicos."
     },
     {
-      "role_id": 1003,
+      "role_id": 10075,
       "name": "ivan alejandro",
       "description": "dfsd"
     },
     {
-      "role_id": 1004,
+      "role_id": 10076,
       "name": "test",
       "description": "ddsgfds"
     },
     {
-      "role_id": 1005,
+      "role_id": 10077,
       "name": "Alex Ejemplo 2",
       "description": "Ejemplo de roles dados de alta"
     },
     {
-      "role_id": 1,
+      "role_id": 10078,
       "name": "Super Administrador",
       "description": "Acceso total al sistema. Alex"
     },
     {
-      "role_id": 2,
+      "role_id": 10079,
       "name": "Usuario Básico",
       "description": "Solo puede ver el contenido principal."
     },
     {
-      "role_id": 1002,
+      "role_id": 10080,
       "name": "Promotoría",
       "description": "Rol de promotoría con permisos específicos."
     },
     {
-      "role_id": 1003,
+      "role_id": 10081,
       "name": "ivan alejandro",
       "description": "dfsd"
     },
     {
-      "role_id": 1004,
+      "role_id": 10082,
       "name": "test",
       "description": "ddsgfds"
     },
     {
-      "role_id": 1005,
+      "role_id": 10083,
       "name": "Alex Ejemplo 2",
       "description": "Ejemplo de roles dados de alta"
     },
     {
-      "role_id": 1,
+      "role_id": 10084,
       "name": "Super Administrador",
       "description": "Acceso total al sistema. Alex"
     },
     {
-      "role_id": 2,
+      "role_id": 10085,
       "name": "Usuario Básico",
       "description": "Solo puede ver el contenido principal."
     },
     {
-      "role_id": 1002,
+      "role_id": 10086,
       "name": "Promotoría",
       "description": "Rol de promotoría con permisos específicos."
     },
     {
-      "role_id": 1003,
+      "role_id": 10087,
       "name": "ivan alejandro",
       "description": "dfsd"
     },
     {
-      "role_id": 1004,
+      "role_id": 10088,
       "name": "test",
       "description": "ddsgfds"
     },
     {
-      "role_id": 1005,
+      "role_id": 10089,
       "name": "Alex Ejemplo 2",
       "description": "Ejemplo de roles dados de alta"
     },
     {
-      "role_id": 1,
+      "role_id": 10090,
       "name": "Super Administrador",
       "description": "Acceso total al sistema. Alex"
     },
     {
-      "role_id": 2,
+      "role_id": 10091,
       "name": "Usuario Básico",
       "description": "Solo puede ver el contenido principal."
     },
     {
-      "role_id": 1002,
+      "role_id": 10092,
       "name": "Promotoría",
       "description": "Rol de promotoría con permisos específicos."
     },
     {
-      "role_id": 1003,
+      "role_id": 10093,
       "name": "ivan alejandro",
       "description": "dfsd"
     },
     {
-      "role_id": 1004,
+      "role_id": 10094,
       "name": "test",
       "description": "ddsgfds"
     },
     {
-      "role_id": 1005,
+      "role_id": 10095,
       "name": "Alex Ejemplo 2",
       "description": "Ejemplo de roles dados de alta"
     },
     {
-      "role_id": 1,
+      "role_id": 10096,
       "name": "Super Administrador",
       "description": "Acceso total al sistema. Alex"
     },
     {
-      "role_id": 2,
+      "role_id": 10097,
       "name": "Usuario Básico",
       "description": "Solo puede ver el contenido principal."
     },
     {
-      "role_id": 1002,
+      "role_id": 10098,
       "name": "Promotoría",
       "description": "Rol de promotoría con permisos específicos."
     },
     {
-      "role_id": 1003,
+      "role_id": 10099,
       "name": "ivan alejandro",
       "description": "dfsd"
     },
     {
-      "role_id": 1004,
+      "role_id": 10100,
       "name": "test",
       "description": "ddsgfds"
     },
     {
-      "role_id": 1005,
+      "role_id": 10101,
       "name": "Alex Ejemplo 2",
       "description": "Ejemplo de roles dados de alta"
     },
     {
-      "role_id": 1,
+      "role_id": 10102,
       "name": "Super Administrador",
       "description": "Acceso total al sistema. Alex"
     },
     {
-      "role_id": 2,
+      "role_id": 10103,
       "name": "Usuario Básico",
       "description": "Solo puede ver el contenido principal."
     },
     {
-      "role_id": 1002,
+      "role_id": 10104,
       "name": "Promotoría",
       "description": "Rol de promotoría con permisos específicos."
     },
     {
-      "role_id": 1003,
+      "role_id": 10105,
       "name": "ivan alejandro",
       "description": "dfsd"
     },
     {
-      "role_id": 1004,
+      "role_id": 10106,
       "name": "test",
       "description": "ddsgfds"
     },
     {
-      "role_id": 1005,
+      "role_id": 10107,
       "name": "Alex Ejemplo 2",
       "description": "Ejemplo de roles dados de alta"
     },
     {
-      "role_id": 1,
+      "role_id": 10108,
       "name": "Super Administrador",
       "description": "Acceso total al sistema. Alex"
     },
     {
-      "role_id": 2,
+      "role_id": 10109,
       "name": "Usuario Básico",
       "description": "Solo puede ver el contenido principal."
     },
     {
-      "role_id": 1002,
+      "role_id": 10110,
       "name": "Promotoría",
       "description": "Rol de promotoría con permisos específicos."
     },
     {
-      "role_id": 1003,
+      "role_id": 10111,
       "name": "ivan alejandro",
       "description": "dfsd"
     },
     {
-      "role_id": 1004,
+      "role_id": 10112,
       "name": "test",
       "description": "ddsgfds"
     },

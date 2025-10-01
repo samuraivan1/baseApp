@@ -68,8 +68,27 @@ $txt-black: $black;
 
   // Sombras
   --box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --box-shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  // Tipografía
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.85rem;
+  --font-size-md: 1rem;
+
+  // Alturas estándar de controles/botones
+  --control-height-sm: 25px;
+  --control-height-md: 36px;
+  --control-height-lg: 40px;
+
+  // Superficies
+  --surface-bg: #fff;
+  --surface-border: #{$gray-300};
+
+  // Tabla
+  --table-header-bg: var(--color-primary);
+  --table-header-fg: var(--color-text-on-primary);
+  --table-cell-py: 0.25rem; // padding vertical compacto para filas
 }
 
 // --- Variables SCSS (se mantienen por compatibilidad) ---
@@ -88,7 +107,6 @@ $black-bg: #000;
 $light-color: #666;
 $gold-color: gold;
 // ✅ AÑADIMOS LA NUEVA VARIABLE DE MARCA
-
 
 $btn-main-bg: $main-color;
 $btn-main-color: #fff;

@@ -8,8 +8,8 @@
   gap: 1rem;
   align-items: center;
   padding: 0.5rem 1rem;
-  background: #ffffff;
-  border: 1px solid #e1e1e1;
+  background: var(--surface-bg);
+  border: 1px solid var(--surface-border);
   border-radius: 6px 6px 0 0;
 }
 
@@ -21,13 +21,13 @@
 }
 
 .search-input {
-  padding: 0.35rem 0.6rem;
+  padding: 0 var(--spacing-sm);
   border: 1px solid #a1a1a1;
   border-radius: 4px;
   width: 100%;
   max-width: 300px;
-  font-size: 0.85rem;
-  height: 25px;
+  font-size: var(--font-size-sm);
+  height: var(--control-height-sm);
   &:focus {
     outline: none;
     border-color: #ef6b06; /* OrangeAlex */
@@ -42,12 +42,12 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.7rem;
+  font-size: var(--font-size-sm);
   font-weight: 500;
-  padding: 0.25rem 0.5rem;
+  padding: 0 var(--spacing-sm);
   border-radius: 4px;
   color: #323130;
-  height: 25px;
+  height: var(--control-height-sm);
   &:hover {
     background: #eaeaea;
   }
@@ -75,16 +75,16 @@
 .command-bar__filters {
   background: #f1f1f1;
   border: 1px solid #cfcfcf;
-  padding: 0.3rem 0.6rem;
+  padding: 0 var(--spacing-sm);
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   font-weight: 500;
   color: #555;
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  height: 25px;
+  height: var(--control-height-sm);
   &:hover {
     background: #e6e6e6;
   }
@@ -106,15 +106,15 @@
   background: #217346;
   color: #fff;
   border: none;
-  padding: 0.3rem 0.6rem;
+  padding: 0 var(--spacing-sm);
   border-radius: 4px;
-  font-size: 0.8rem;
+  font-size: var(--font-size-sm);
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  height: 25px;
+  height: var(--control-height-sm);
   &:hover {
     background: #1e5d3b;
   }
@@ -127,4 +127,13 @@
   border-top: none;
   border-radius: 0 0 6px 6px;
   background: #fafafa;
+}
+
+/* Inline Dynamic Filter rows */
+.command-bar__dynamic-filters {
+  .df-rows { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+  .df-row { display: flex; align-items: center; gap: var(--spacing-sm); }
+  .df-row select { height: var(--control-height-sm); font-size: var(--font-size-sm); padding: 0 var(--spacing-sm); border: 1px solid var(--surface-border); border-radius: 4px; }
+  .df-row input { height: var(--control-height-sm); font-size: var(--font-size-sm); padding: 0 var(--spacing-sm); border: 1px solid var(--surface-border); border-radius: 4px; flex: 1; }
+  .df-actions { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
 }

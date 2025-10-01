@@ -10,7 +10,7 @@ import { useRoles, useRoleMutations } from '@/features/security/hooks/useRoles';
 import { Role } from '@/types/security';
 import rolesMessages from './Roles.messages';
 import RoleForm from './RoleForm';
-import type { FilterableColumn } from '@/components/common/DynamicFilter/types';
+import type { FilterableColumn } from '@/components/common/CommandBar/types';
 
 import './Roles.scss';
 
@@ -53,8 +53,10 @@ const RolesPage: React.FC = () => {
 
   // Filtrado simple client-side
   const filteredData = useMemo(() => {
+    // 1) Punto de partida
     let data = roles;
 
+    // 2) Texto de búsqueda (en vivo)
     if (searchTerm.trim()) {
       const q = searchTerm.toLowerCase();
       data = data.filter(
@@ -64,7 +66,7 @@ const RolesPage: React.FC = () => {
       );
     }
 
-    // Filtros dinámicos
+    // 3) Filtros dinámicos (AND)
     Object.entries(activeFilters).forEach(([key, value]) => {
       if (!value) return;
       const vq = value.toLowerCase();
@@ -75,7 +77,10 @@ const RolesPage: React.FC = () => {
       );
     });
 
-    return data;
+    // 4) Deduplicar por clave primaria para evitar repetidos del backend
+    const map = new Map<number, Role>();
+    for (const r of data) map.set(r.role_id, r);
+    return Array.from(map.values());
   }, [roles, searchTerm, activeFilters]);
 
   // Paginación calculada
@@ -89,9 +94,23 @@ const RolesPage: React.FC = () => {
     [filteredData, currentPage, rowsPerPage]
   );
 
+  // Volver a la página 1 cuando cambian los criterios de filtrado
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, activeFilters]);
+
   // Handlers
   const handleSearch = () => setCurrentPage(1);
-  const handleToggleFilters = () => setShowFilters((prev) => !prev);
+  const handleToggleFilters = () =>
+    setShowFilters((prev) => {
+      const next = !prev;
+      if (!next) {
+        // Al cerrar filtros, limpiar filtros activos
+        setActiveFilters({});
+        setCurrentPage(1);
+      }
+      return next;
+    });
   const handleRowsPerPageChange = (value: number) => {
     setRowsPerPage(value);
     setCurrentPage(1);
@@ -169,6 +188,7 @@ const RolesPage: React.FC = () => {
               keyField="role_id"
               actionColumnWidth="120px"
               autoFit
+              centered
               renderActions={(role: Role) => (
                 <>
                   <Button variant="link" onClick={() => handleOpenEdit(role)}>

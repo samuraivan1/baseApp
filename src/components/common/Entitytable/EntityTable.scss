@@ -1,21 +1,22 @@
 .entity-table {
   display: flex;
   flex-direction: column;
-  align-items: center; // Asegura centrado horizontal
-  margin-top: 0; // 🔧 elimina espacio extra superior
+  align-items: center; // centrado horizontal como en diseño original
+  margin-top: 0;
 }
 /* Paginación centrada con separación sutil */
 .entity-table__pagination {
   margin-top: 0.5rem;
-  padding: 0.5rem;
-  border: 1px solid #ddd; // 🔧 línea sutil separadora
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-bg);
 }
 
 .table-wrapper {
   max-height: 60vh;
   overflow: auto;
-  background-color: #ffffff;
-  border: 1px solid #e1e1e1;
+  background-color: var(--surface-bg);
+  border: 1px solid var(--surface-border);
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   margin-top: 0.5rem;
@@ -46,29 +47,30 @@
 
   th,
   td {
-    padding: 0.4rem 0.5rem; // 🔧 compacto
+    padding: var(--table-cell-py) 0.5rem; // más compacto
     text-align: left;
     border: none;
-    border-bottom: 1px solid #e1e1e1;
+    border-bottom: 1px solid var(--surface-border);
     word-break: break-word;
-    font-size: 0.85rem; // 🔧 más compacto
+    font-size: var(--font-size-sm);
+    line-height: 1.15; // filas más delgadas
   }
 
   thead th {
-    background-color: #ef6b06;
-    color: #ffffff;
-    font-size: 0.8rem;
+    background-color: var(--table-header-bg);
+    color: var(--table-header-fg);
+    font-size: var(--font-size-sm);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border-bottom: 2px solid #e1e1e1;
+    border-bottom: 2px solid var(--surface-border);
     position: sticky;
     top: 0;
     z-index: 10;
   }
 
   tbody {
-    font-size: 0.85rem; // 🔧 menor tamaño para compactar
+    font-size: var(--font-size-sm);
     tr:last-child td {
       border-bottom: none;
     }
@@ -80,7 +82,8 @@
 
 /* Compactación de botones dentro de tablas */
 .command-bar__button {
-  padding: 0.25rem 0.5rem; // más delgados
-  font-size: 0.8rem;
+  padding: 0 var(--spacing-sm);
+  font-size: var(--font-size-sm);
   border-radius: 4px;
+  min-height: var(--control-height-sm);
 }

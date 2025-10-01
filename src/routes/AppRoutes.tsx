@@ -2,14 +2,11 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Home from '@/pages/Home';
 import Kanban from '@/pages/Kanban';
-import Project from '@/pages/Project';
-import DashProject from '@/pages/DashProject';
 import LoginPage from '@/features/auth/LoginPage';
 import Seguridad from '@/pages/Security';
 import PermisosPage from '@/pages/Security/Permisos';
 import UsuariosPage from '@/pages/Security/Users';
 import RolesPage from '@/pages/Security/Roles';
-import ContactoPage from '@/pages/Contacto/ContactoPage';
 import Unauthorized from '@/pages/Unauthorized';
 import FormLayoutDemo from '@/pages/FormsDemo/FormLayoutDemo';
 import ProtectedRoute from './ProtectedRoute';
@@ -44,24 +41,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute permiso={RP.KANBAN_VIEW}>
             <Kanban />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/project"
-        element={
-          <ProtectedRoute permiso={RP.PROJECT_VIEW}>
-            <Project />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/dashproject"
-        element={
-          <ProtectedRoute permiso={RP.DASHPROJECT_VIEW}>
-            <DashProject />
           </ProtectedRoute>
         }
       />
@@ -110,15 +89,6 @@ const AppRoutes = () => {
           }
         />
       </Route>
-
-      <Route
-        path="/contacto"
-        element={
-          <ProtectedRoute permiso={RP.CONTACTO_VIEW}>
-            <ContactoPage />
-          </ProtectedRoute>
-        }
-      />
 
       {/* Redirects / placeholders */}
       <Route path="/" element={<Navigate to="/home" replace />} />
