@@ -70,15 +70,15 @@ const UsuariosPage: React.FC = () => {
 
   return (
     <div className="segu-users">
-      <FormSection title={usersMessages.title}>
-        <div className="fs-row-span-2" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <FormSection title={usersMessages.title} useGrid={false}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 8 }}>
           <Button variant="primary" onClick={openCreate}>{usersMessages.createButton}</Button>
         </div>
 
       {isLoading ? (
         <p>{usersMessages.loading}</p>
       ) : (
-        <div className="fs-row-span-2 fs-table-container">
+        <div className="fs-table-container">
         <table className="segu-users__table" style={{ width: 'max-content' }}>
           <thead>
             <tr>

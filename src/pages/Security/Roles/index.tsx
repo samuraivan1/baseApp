@@ -145,7 +145,7 @@ const RolesPage: React.FC = () => {
         </div>
       ) : (
         <>
-          <FormSection title={rolesMessages.title} hideHeader dense>
+          <FormSection title={rolesMessages.title} hideHeader dense useGrid={false}>
             <div className="fs-row-span-2 fs-table-container">
               <EntityTable
                 columns={columns}

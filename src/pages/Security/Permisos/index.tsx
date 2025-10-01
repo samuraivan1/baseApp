@@ -34,11 +34,11 @@ const PermisosPage: React.FC = () => {
 
   return (
     <div className="segu-permisos">
-      <FormSection title={permisosMessages.title}>
+      <FormSection title={permisosMessages.title} useGrid={false}>
         {isLoading ? (
           <p>{permisosMessages.loading}</p>
         ) : (
-          <div className="fs-row-span-2 fs-table-container">
+          <div className="fs-table-container">
             <table className="segu-permisos__table" style={{ width: 'max-content' }}>
               <thead>
                 <tr>
