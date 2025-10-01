@@ -1,4 +1,16 @@
-// --- ESTILOS PARA ENTITY TABLE ---
+.entity-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center; // Asegura centrado horizontal
+  margin-top: 0; // 🔧 elimina espacio extra superior
+}
+/* Paginación centrada con separación sutil */
+.entity-table__pagination {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd; // 🔧 línea sutil separadora
+}
+
 .table-wrapper {
   max-height: 60vh;
   overflow: auto;
@@ -6,6 +18,7 @@
   border: 1px solid #e1e1e1;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-top: 0.5rem;
 }
 
 .table-wrapper--centered {
@@ -13,26 +26,38 @@
   margin: 0 auto;
 }
 
+.table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem; // 🔧 espacio entre los botones
+}
+
+.table-actions button {
+  min-width: auto; // que no se estiren demasiado
+  padding: 0.25rem 0.5rem; // compacto
+  font-size: 0.85rem;
+}
+
 .modern-table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto; // 🔧 en lugar de fixed
 
   th,
   td {
-    // ✅ Reducimos el padding vertical
-    padding: 0.4rem 0.5rem;
+    padding: 0.4rem 0.5rem; // 🔧 compacto
     text-align: left;
     border: none;
     border-bottom: 1px solid #e1e1e1;
     word-break: break-word;
+    font-size: 0.85rem; // 🔧 más compacto
   }
 
   thead th {
-    // ✅ Cambiamos el color de fondo y de texto
     background-color: #ef6b06;
     color: #ffffff;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -43,7 +68,7 @@
   }
 
   tbody {
-    font-size: 0.95rem;
+    font-size: 0.85rem; // 🔧 menor tamaño para compactar
     tr:last-child td {
       border-bottom: none;
     }
@@ -53,28 +78,9 @@
   }
 }
 
-// Cuando autoFit está activo, la tabla se ajusta al contenido y queda centrada
-.modern-table--autofit {
-  width: max-content;
-  max-width: 100%;
-}
-
-.cell--nowrap {
-  white-space: nowrap;
-}
-
-.principal-cell {
-  font-weight: 500;
-  color: #323130;
-}
-
-.action-column-header {
-  text-align: right;
-}
-
-.table-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  justify-content: flex-end;
+/* Compactación de botones dentro de tablas */
+.command-bar__button {
+  padding: 0.25rem 0.5rem; // más delgados
+  font-size: 0.8rem;
+  border-radius: 4px;
 }

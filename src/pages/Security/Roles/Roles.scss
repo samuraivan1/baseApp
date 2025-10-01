@@ -1,28 +1,151 @@
-// Este archivo ahora solo contiene los estilos específicos de la página.
-// Los estilos de los componentes de la tabla, etc., vienen de seguUI.scss.
-
-.segu-page-container {
-  background-color: #f0f2f5;
-  height: 100%;
+/* 📌 Contenedor RolesPage */
+.segu-roles {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
+  height: 100%; // ocupa todo el alto disponible
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
 }
 
-// --- Estilos del Modal (se mantienen sin cambios) ---
 .segu-roles__modal {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 100;
+  z-index: 999;
+}
 
-  &-content {
-    background: #fff;
-    padding: 1rem;
-    border-radius: 8px;
-    width: 700px;
+.segu-roles__modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 600px;
+  max-width: 90%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* 📌 Tabla contenedora */
+.fs-table-container {
+  flex: 1; // se expande para ocupar todo el espacio restante
+
+  flex-direction: column;
+  overflow: hidden; // evita scroll doble
+  margin-top: 1rem;
+  background: #fff;
+  border: 1px solid #e1e1e1;
+  border-radius: 6px;
+}
+
+.fs-table-container .table-wrapper {
+  flex: 1;
+  overflow: auto; // scroll interno si hay muchos registros
+  min-height: 0; // truco flexbox
+}
+
+/* 🔹 Centrado opcional para tablas delgadas */
+.table-wrapper--centered {
+  max-width: var(--table-max-width, 960px);
+  margin: 0 auto;
+}
+
+/* 📌 Estado de carga */
+.loading-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* 📌 Estilo OrangeAlex para formularios */
+.orangealex-form {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 6px;
+  width: 480px;
+  max-width: 90vw;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 2px solid #f26822;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+
+    &__icon {
+      color: #f26822;
+      font-size: 1.2rem;
+    }
+
+    &__title {
+      font-weight: bold;
+      font-size: 1rem;
+      color: #333;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+
+    .form-field--full {
+      grid-column: span 2;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+}
+
+/* 📌 Inputs y textareas */
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: #444;
+}
+
+.form-input,
+.form-textarea {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: #f26822;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(242, 104, 34, 0.2);
+}
+
+/* 📌 Botón primario OrangeAlex */
+.btn-orangealex {
+  background-color: #f26822 !important;
+  color: #fff !important;
+
+  &:hover {
+    background-color: #d95511 !important;
   }
 }

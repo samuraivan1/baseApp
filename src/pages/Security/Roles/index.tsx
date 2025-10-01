@@ -1,84 +1,102 @@
-import React, { useState, useMemo } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
-import logger from '@/services/logger';
-import { getRoles, deleteRole, createRole, updateRole } from '@/features/security/api/roleService';
-import RoleForm from './RoleForm';
-import { rolesMessages } from './Roles.messages';
-import './Roles.scss';
-import type { Role } from '@/types/security';
-
+import React, { useMemo, useState } from 'react';
 import PageHeader from '@/components/common/PageHeader';
 import CommandBar from '@/components/common/CommandBar';
-import EntityTable, { ColumnDefinition } from '@/components/common/Entitytable';
-import Pagination from '@/components/common/Pagination';
-import DynamicFilter from '@/components/common/DynamicFilter';
-import { FilterableColumn } from '@/components/common/DynamicFilter/types';
+import EntityTable, {
+  EntityTableColumn,
+} from '@/components/common/Entitytable';
 import Button from '@/components/ui/Button';
-import LoadingOverlay from '@/components/ui/LoadingOverlay';
-import FormSection from '@/components/form/FormSection';
+
+import { useRoles, useRoleMutations } from '@/features/security/hooks/useRoles';
+import { Role } from '@/types/security';
+import rolesMessages from './Roles.messages';
+import RoleForm from './RoleForm';
+import type { FilterableColumn } from '@/components/common/DynamicFilter/types';
+
+import './Roles.scss';
 
 const RolesPage: React.FC = () => {
-  const queryClient = useQueryClient();
+  // Data + Mutations
+  const { data: roles = [], isLoading } = useRoles();
+  const { create, update, remove } = useRoleMutations();
 
+  // UI State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>(
+    {}
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  // Paginación
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
 
-  const { data: roles, isLoading, refetch } = useQuery({
-    queryKey: ['roles'],
-    queryFn: getRoles,
-  });
+  // Columnas visibles en tabla
+  const columns: EntityTableColumn<Role>[] = useMemo(
+    () => [
+      { key: 'name', label: 'Rol', sortable: true },
+      { key: 'description', label: 'Descripción', sortable: true },
+    ],
+    []
+  );
 
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => deleteRole(id),
-    onSuccess: () => {
-      toast.success(rolesMessages.deleteSuccess);
-      queryClient.invalidateQueries({ queryKey: ['roles'] });
-    },
-    onError: (err: unknown) => {
-      const error = err instanceof Error ? err : new Error('Error eliminando rol');
-      logger.error(error, err);
-      toast.error(rolesMessages.genericError);
-    },
-    onSettled: () => setDeletingId(null),
-  });
+  // Columnas filtrables
+  const filterableColumns: FilterableColumn[] = useMemo(
+    () => [
+      { key: 'name', label: 'Rol' },
+      { key: 'description', label: 'Descripción' },
+    ],
+    []
+  );
 
-  const createMutation = useMutation({
-    mutationFn: (payload: Partial<Role>) =>
-      createRole({ name: payload.name ?? '', description: payload.description ?? null }),
-    onSuccess: () => {
-      toast.success(rolesMessages.created);
-      queryClient.invalidateQueries({ queryKey: ['roles'] });
-      setIsModalOpen(false);
-    },
-    onError: (err: unknown) => {
-      const error = err instanceof Error ? err : new Error('Error creando rol');
-      logger.error(error, err);
-      toast.error(rolesMessages.genericError);
-    },
-  });
+  // Filtrado simple client-side
+  const filteredData = useMemo(() => {
+    let data = roles;
 
-  const updateMutation = useMutation({
-    mutationFn: ({ id, payload }: { id: number; payload: Partial<Role> }) =>
-      updateRole(id, { name: payload.name, description: payload.description }),
-    onSuccess: () => {
-      toast.success(rolesMessages.updated);
-      queryClient.invalidateQueries({ queryKey: ['roles'] });
-      setIsModalOpen(false);
-    },
-    onError: (err: unknown) => {
-      const error = err instanceof Error ? err : new Error('Error actualizando rol');
-      logger.error(error, err);
-      toast.error(rolesMessages.genericError);
-    },
-  });
+    if (searchTerm.trim()) {
+      const q = searchTerm.toLowerCase();
+      data = data.filter(
+        (r) =>
+          r.name.toLowerCase().includes(q) ||
+          (r.description ?? '').toLowerCase().includes(q)
+      );
+    }
 
-  const handleOpenCreate = () => {
+    // Filtros dinámicos
+    Object.entries(activeFilters).forEach(([key, value]) => {
+      if (!value) return;
+      const vq = value.toLowerCase();
+      data = data.filter((row) =>
+        String((row as Record<string, unknown>)[key] ?? '')
+          .toLowerCase()
+          .includes(vq)
+      );
+    });
+
+    return data;
+  }, [roles, searchTerm, activeFilters]);
+
+  // Paginación calculada
+  const totalPages = Math.max(1, Math.ceil(filteredData.length / rowsPerPage));
+  const currentTableData = useMemo(
+    () =>
+      filteredData.slice(
+        (currentPage - 1) * rowsPerPage,
+        currentPage * rowsPerPage
+      ),
+    [filteredData, currentPage, rowsPerPage]
+  );
+
+  // Handlers
+  const handleSearch = () => setCurrentPage(1);
+  const handleToggleFilters = () => setShowFilters((prev) => !prev);
+  const handleRowsPerPageChange = (value: number) => {
+    setRowsPerPage(value);
+    setCurrentPage(1);
+  };
+  const handleOpenAdd = () => {
     setEditingRole(null);
     setIsModalOpen(true);
   };
@@ -86,104 +104,104 @@ const RolesPage: React.FC = () => {
     setEditingRole(role);
     setIsModalOpen(true);
   };
+  const handleExportExcel = () => {
+    const rows = filteredData.map((r) => [
+      r.role_id,
+      r.name,
+      r.description ?? '',
+    ]);
+    const csv =
+      'role_id,name,description\n' +
+      rows
+        .map((a) =>
+          a.map((x) => `"${String(x).replace(/"/g, '""')}"`).join(',')
+        )
+        .join('\n');
 
-  const handleRowsPerPageChange = (rows: number) => {
-    setRowsPerPage(rows);
-    setCurrentPage(1);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'roles.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
-  const handleSearchChange = (value: string) => {
-    setSearchTerm(value);
-    setCurrentPage(1);
-  };
-
-  const filteredRoles = useMemo(() => {
-    if (!roles) return [];
-    return roles.filter((role) => {
-      const matchesSearchTerm = searchTerm === '' || role.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesDynamicFilters = Object.entries(activeFilters).every(([field, value]) => {
-        if (value === '') return true;
-        const roleValue = role[field as keyof Role];
-        return typeof roleValue === 'string' && roleValue.toLowerCase().includes(value.toLowerCase());
-      });
-      return matchesSearchTerm && matchesDynamicFilters;
-    });
-  }, [roles, searchTerm, activeFilters]);
-
-  const currentTableData = useMemo(() => {
-    const firstPageIndex = (currentPage - 1) * rowsPerPage;
-    const lastPageIndex = firstPageIndex + rowsPerPage;
-    return filteredRoles.slice(firstPageIndex, lastPageIndex);
-  }, [currentPage, rowsPerPage, filteredRoles]);
-
-  const totalPages = Math.ceil(filteredRoles.length / rowsPerPage);
-  const columns: ColumnDefinition<Role>[] = [
-    { header: 'Rol', accessor: 'name', isPrincipal: true, nowrap: true },
-    { header: 'Descripción', accessor: 'description' },
-  ];
-  const filterableColumns: FilterableColumn[] = [
-    { key: 'name', label: 'Nombre de Rol' },
-    { key: 'description', label: 'Descripción' },
-  ];
 
   return (
-    <div className="segu-page-container">
-      <LoadingOverlay open={createMutation.isPending || updateMutation.isPending} message="Procesando rol..." />
+    <div className="segu-roles">
       <PageHeader title={rolesMessages.title} titleSize="1.75rem" />
+
       <CommandBar
+        // búsqueda
         searchTerm={searchTerm}
-        setSearchTerm={handleSearchChange}
-        onAdd={handleOpenCreate}
-        onRefresh={refetch}
+        setSearchTerm={setSearchTerm}
+        onSearch={handleSearch}
+        // filtros
+        showFilters={showFilters}
+        onToggleFilters={handleToggleFilters}
+        filterableColumns={filterableColumns}
+        onFilterChange={setActiveFilters}
+        // acciones
+        onAdd={handleOpenAdd}
+        onRefresh={() => window.location.reload()}
+        onExportExcel={handleExportExcel}
+        // labels
+        searchPlaceholder={rolesMessages.searchPlaceholder}
+        searchLabel={rolesMessages.searchLabel}
         addLabel={rolesMessages.addLabel}
-        searchLarge={true}
-        searchPlaceholder="Buscar por nombre de rol..."
+        refreshLabel={rolesMessages.refreshLabel}
+        filtersLabel={rolesMessages.filtersLabel}
+        excelLabel={rolesMessages.excelLabel}
       />
-      <DynamicFilter columns={filterableColumns} onFilterChange={setActiveFilters} />
+
       {isLoading ? (
         <div className="loading-container">
           <p>{rolesMessages.loading}</p>
         </div>
       ) : (
         <>
-          <FormSection title={rolesMessages.title} hideHeader dense useGrid={false}>
-            <div className="fs-row-span-2 fs-table-container">
-              <EntityTable
-                columns={columns}
-                data={currentTableData}
-                keyField="role_id"
-                actionColumnWidth="120px"
-                autoFit={true}
-                renderActions={(role) => (
-                  <>
-                    <Button variant="link" onClick={() => handleOpenEdit(role)}>
-                      {rolesMessages.update}
-                    </Button>
-                    <Button
-                      variant="link"
-                      tone="danger"
-                      isLoading={deletingId === role.role_id}
-                      disabled={deletingId != null}
-                      onClick={() => {
-                        setDeletingId(role.role_id);
-                        deleteMutation.mutate(role.role_id);
-                      }}
-                    >
-                      {rolesMessages.delete}
-                    </Button>
-                  </>
-                )}
-              />
-            </div>
-          </FormSection>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-            rowsPerPage={rowsPerPage}
-            onRowsPerPageChange={handleRowsPerPageChange}
-          />
+          <div className="fs-row-span-2 fs-table-container">
+            {/* ⬇️ QUITAMOS el genérico explícito <Role> para evitar el error */}
+            <EntityTable
+              columns={columns}
+              data={currentTableData}
+              keyField="role_id"
+              actionColumnWidth="120px"
+              autoFit
+              renderActions={(role: Role) => (
+                <>
+                  <Button variant="link" onClick={() => handleOpenEdit(role)}>
+                    {rolesMessages.update}
+                  </Button>
+                  <Button
+                    variant="link"
+                    tone="danger"
+                    isLoading={deletingId === role.role_id}
+                    disabled={deletingId != null}
+                    onClick={() => {
+                      setDeletingId(role.role_id);
+                      remove.mutate(role.role_id, {
+                        onSettled: () => setDeletingId(null),
+                      });
+                    }}
+                  >
+                    {rolesMessages.delete}
+                  </Button>
+                </>
+              )}
+              pagination={{
+                currentPage,
+                totalPages,
+                onPageChange: setCurrentPage,
+                rowsPerPage,
+                onRowsPerPageChange: handleRowsPerPageChange,
+              }}
+            />
+          </div>
         </>
       )}
+
       {isModalOpen && (
         <div className="segu-roles__modal">
           <div className="segu-roles__modal-content">
@@ -193,9 +211,9 @@ const RolesPage: React.FC = () => {
               initialValues={editingRole || undefined}
               onSubmit={(values) => {
                 if (editingRole) {
-                  updateMutation.mutate({ id: editingRole.role_id, payload: values });
+                  update.mutate({ id: editingRole.role_id, input: values });
                 } else {
-                  createMutation.mutate(values);
+                  create.mutate(values);
                 }
               }}
             />

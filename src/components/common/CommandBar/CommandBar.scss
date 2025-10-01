@@ -1,58 +1,130 @@
-// --- ESTILOS PARA COMMAND BAR ---
-.command-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  background-color: #ffffff;
-  border: 1px solid #e1e1e1;
-  border-radius: 4px;
-  flex-shrink: 0;
-  margin-bottom: 1.5rem;
-  gap: 1.5rem; // Espacio entre búsqueda y acciones
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  &__button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    color: #323130;
-    font-weight: 500;
-    &:hover {
-      color: #0078d4;
-    }
-  }
+.command-bar__container {
+  margin-bottom: 1rem;
 }
 
-.search-wrapper {
-  flex-grow: 1; // Permite que crezca por defecto
+.command-bar {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr; /* 50% - 25% - 25% */
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e1e1e1;
+  border-radius: 6px 6px 0 0;
+}
 
-  // --- AÑADIMOS LA CLASE MODIFICADORA ---
-  // Esto hará que el campo de búsqueda ocupe el 50% del espacio
-  // disponible cuando se active la prop 'searchLarge'.
-  &--large {
-    flex-basis: 50%;
-  }
+/* búsqueda + filtros */
+.command-bar__search {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .search-input {
-  padding: 0.5rem 0.75rem;
+  padding: 0.35rem 0.6rem;
   border: 1px solid #a1a1a1;
   border-radius: 4px;
   width: 100%;
-  max-width: 450px; // Aumentamos el tamaño máximo por defecto
-  font-size: 0.9rem;
+  max-width: 300px;
+  font-size: 0.85rem;
+  height: 25px;
   &:focus {
     outline: none;
-    border-color: #0078d4;
+    border-color: #ef6b06; /* OrangeAlex */
   }
+}
+
+/* botones base (delgados) */
+.command-bar__button {
+  background: #f4f4f4;
+  border: 1px solid #d1d1d1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: #323130;
+  height: 25px;
+  &:hover {
+    background: #eaeaea;
+  }
+}
+
+/* añadir / actualizar */
+.command-bar__button.add {
+  background: #ef6b06;
+  color: #fff;
+  border: none;
+  &:hover {
+    background: #d65e05;
+  }
+}
+.command-bar__button.refresh {
+  background: #0078d4;
+  color: #fff;
+  border: none;
+  &:hover {
+    background: #0063b1;
+  }
+}
+
+/* botón "más filtros" */
+.command-bar__filters {
+  background: #f1f1f1;
+  border: 1px solid #cfcfcf;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  height: 25px;
+  &:hover {
+    background: #e6e6e6;
+  }
+}
+
+/* contenedores de acciones/export */
+.command-bar__actions {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: flex-start;
+}
+.command-bar__export {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* botón excel (verde MS) */
+.command-bar__button--excel {
+  background: #217346;
+  color: #fff;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  height: 25px;
+  &:hover {
+    background: #1e5d3b;
+  }
+}
+
+/* bloque de filtros dinámicos */
+.command-bar__dynamic-filters {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e1e1e1;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  background: #fafafa;
 }

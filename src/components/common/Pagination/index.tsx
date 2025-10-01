@@ -1,55 +1,66 @@
 import React from 'react';
-import { paginationText } from './Pagination.messages';
 import './Pagination.scss';
 
-interface Props {
+interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
   rowsPerPage: number;
   onRowsPerPageChange: (rows: number) => void;
+  rowsPerPageOptions?: number[];
 }
 
-const Pagination: React.FC<Props> = ({
+const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
   rowsPerPage,
   onRowsPerPageChange,
+  rowsPerPageOptions = [10, 25, 50, 100],
 }) => {
-  if (totalPages <= 1) {
-    return null; // No mostrar paginación si solo hay una página
-  }
+  const handlePrev = () => {
+    if (currentPage > 1) onPageChange(currentPage - 1);
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) onPageChange(currentPage + 1);
+  };
 
   return (
-    <div className="pagination-controls">
-      <div className="pagination-rows-selector">
-        <span>Filas por página:</span>
+    <div className="pagination">
+      <div className="pagination__rows">
+        <label htmlFor="rowsPerPage">Filas por página:</label>
         <select
+          id="rowsPerPage"
           value={rowsPerPage}
           onChange={(e) => onRowsPerPageChange(Number(e.target.value))}
         >
-          <option value={10}>10</option>
-          <option value={15}>15</option>
-          <option value={20}>20</option>
-          <option value={30}>30</option>
+          {rowsPerPageOptions.map((opt) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
+          ))}
         </select>
       </div>
-      <div className="pagination-navigator">
-        <span>
-          Página {currentPage} de {totalPages}
-        </span>
+
+      <div className="pagination__info">
+        Página {currentPage} de {totalPages}
+      </div>
+
+      <div className="pagination__controls">
         <button
-          onClick={() => onPageChange(currentPage - 1)}
+          onClick={handlePrev}
           disabled={currentPage === 1}
+          className="pagination__btn"
         >
-          {paginationText.previous}
+          <span className="pagination-arrow">◀</span>
         </button>
         <button
-          onClick={() => onPageChange(currentPage + 1)}
+          onClick={handleNext}
           disabled={currentPage === totalPages}
+          className="pagination__btn"
         >
-          {paginationText.next}
+          <span className="pagination-arrow">▶</span>
         </button>
       </div>
     </div>
