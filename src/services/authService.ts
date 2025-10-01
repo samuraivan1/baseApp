@@ -1,6 +1,6 @@
 // src/services/authService.ts
 import api from './apiClient';
-import { UserSession } from './security.types';
+import { UserSession } from '@/types/security';
 
 export interface LoginCredentials {
   username: string;

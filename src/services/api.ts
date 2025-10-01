@@ -1,5 +1,5 @@
 import apiClient from './apiClient';
-import { NavMenuItem, TableroType } from './api.types';
+import { NavMenuItem, TableroType } from '@/types/ui';
 
 // --- Menu API ---
 export const fetchMenu = async (): Promise<NavMenuItem[]> => {

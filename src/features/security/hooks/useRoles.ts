@@ -1,7 +1,7 @@
 // src/hooks/useRoles.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createRole, deleteRole, getRoles, updateRole } from '@/features/security/api/roleService';
-import { Role } from '@/types/security';
+import { Role, CreateRoleDTO, UpdateRoleDTO } from '@/types/security';
 
 export function useRoles() {
   return useQuery({ queryKey: ['roles'], queryFn: getRoles });
@@ -11,7 +11,7 @@ export function useRoleMutations() {
   const qc = useQueryClient();
 
   const create = useMutation({
-    mutationFn: (input: Omit<Role, 'role_id'>) => createRole(input),
+    mutationFn: (input: CreateRoleDTO) => createRole(input),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['roles'] }),
   });
 
@@ -21,7 +21,7 @@ export function useRoleMutations() {
       input,
     }: {
       id: number;
-      input: Partial<Omit<Role, 'role_id'>>;
+      input: UpdateRoleDTO;
     }) => updateRole(id, input),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['roles'] }),
   });

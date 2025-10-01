@@ -1,6 +1,6 @@
 // src/services/permissionService.ts
 import api from '@/services/apiClient';
-import type { Permission } from './security.types';
+import type { Permission } from '@/types/security';
 
 export async function getPermissions(): Promise<Permission[]> {
   const { data } = await api.get<Permission[]>('/permissions');

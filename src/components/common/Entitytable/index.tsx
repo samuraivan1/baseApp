@@ -37,6 +37,8 @@ export interface EntityTableProps<T extends object> {
   maxWidth?: string;
   /** Paginación integrada en el pie de la tabla (fuera del scroll) */
   pagination?: EntityTablePaginationProps;
+  /** Slot de pie de tabla. Si se proporciona, tiene prioridad sobre `pagination`. */
+  footer?: React.ReactNode;
 }
 
 type CSSVars = CSSProperties & { ['--table-max-width']?: string };
@@ -51,6 +53,7 @@ function EntityTable<T extends object>({
   centered = false,
   maxWidth = '960px',
   pagination,
+  footer,
 }: EntityTableProps<T>): React.ReactElement {
   // Estado de ordenamiento
   const [sortKey, setSortKey] = useState<keyof T | null>(null);
@@ -176,8 +179,10 @@ function EntityTable<T extends object>({
         </table>
       </div>
 
-      {/* FOOTER fuera del scroll: paginación fija con separación sutil */}
-      {pagination && (
+      {/* FOOTER fuera del scroll: si hay `footer` lo mostramos; si no, usamos paginación integrada */}
+      {footer ? (
+        <div className="entity-table__footer">{footer}</div>
+      ) : pagination ? (
         <div className="entity-table__pagination">
           <Pagination
             currentPage={pagination.currentPage}
@@ -187,7 +192,7 @@ function EntityTable<T extends object>({
             onRowsPerPageChange={pagination.onRowsPerPageChange}
           />
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

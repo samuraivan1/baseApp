@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
-import { Role } from '@/services/security.types';
+import { Role } from '@/types/security';
 import './Roles.scss';
 
 interface RoleFormProps {

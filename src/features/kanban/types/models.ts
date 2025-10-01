@@ -1,4 +1,3 @@
-// Tipos para el Tablero Kanban
 export interface TareaType {
   idTarea: string;
   contenido: string;
@@ -19,11 +18,3 @@ export interface TableroType {
   ordenColumnas: string[];
 }
 
-// Tipos para los Menús
-export interface NavMenuItem {
-  idMenu: number | string;
-  titulo: string;
-  ruta?: string;
-  permisoId?: number | null;
-  items?: NavMenuItem[];
-}

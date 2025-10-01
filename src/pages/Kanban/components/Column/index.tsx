@@ -2,7 +2,7 @@ import React from 'react';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { Task } from '../Task';
 import { usePermission } from '@/features/security/hooks/usePermission';
-import { ColumnaType, TareaType } from '@/services/api.types';
+import { ColumnaType, TareaType } from '@/types/ui';
 import { columnMessages } from './Column.messages';
 
 interface ColumnProps {

@@ -1,5 +1,5 @@
 // src/store/store.types.ts
-import { TableroType } from '@/services/api.types';
+import { TableroType } from '@/types/ui';
 import { UserSession } from '@/types/security';
 
 // --- Auth Store ---

@@ -1,2 +1,2 @@
-import { TareaType as ApiTareaType } from '@/services/api.types';
+import { TareaType as ApiTareaType } from '@/types/ui';
 export type TaskType = ApiTareaType;

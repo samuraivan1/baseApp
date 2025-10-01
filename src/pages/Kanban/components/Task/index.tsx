@@ -2,7 +2,7 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { formatDate, getDateStatus } from '@/utils/dateUtils';
-import { TareaType } from '@/services/api.types';
+import { TareaType } from '@/types/ui';
 import { taskMessages } from './Task.messages';
 
 interface TaskProps {

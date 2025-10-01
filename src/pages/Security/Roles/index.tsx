@@ -5,6 +5,7 @@ import EntityTable, {
   EntityTableColumn,
 } from '@/components/common/Entitytable';
 import Button from '@/components/ui/Button';
+import Pagination from '@/components/common/Pagination';
 
 import { useRoles, useRoleMutations } from '@/features/security/hooks/useRoles';
 import { Role } from '@/types/security';
@@ -210,13 +211,17 @@ const RolesPage: React.FC = () => {
                   </Button>
                 </>
               )}
-              pagination={{
-                currentPage,
-                totalPages,
-                onPageChange: setCurrentPage,
-                rowsPerPage,
-                onRowsPerPageChange: handleRowsPerPageChange,
-              }}
+              footer={
+                <div className="entity-table__pagination">
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleRowsPerPageChange}
+                  />
+                </div>
+              }
             />
           </div>
         </>

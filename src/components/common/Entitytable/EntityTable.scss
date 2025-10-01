@@ -5,7 +5,8 @@
   margin-top: 0;
 }
 /* Paginación centrada con separación sutil */
-.entity-table__pagination {
+.entity-table__pagination,
+.entity-table__footer {
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
   border: 1px solid var(--surface-border);

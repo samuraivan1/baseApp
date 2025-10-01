@@ -1,6 +1,6 @@
 // src/services/userService.ts
 import api from '@/services/apiClient';
-import { User } from './security.types';
+import { User, CreateUserDTO, UpdateUserDTO, UpdateUserFlagsDTO } from '@/types/security';
 
 export async function getUsers(): Promise<User[]> {
   const { data } = await api.get<User[]>('/users');
@@ -12,42 +12,14 @@ export async function getUser(id: number): Promise<User> {
   return data;
 }
 
-export type CreateUserInput = {
-  username: string;
-  email: string;
-  first_name: string;
-  last_name_p: string;
-  last_name_m?: string | null;
-  initials?: string | null;
-  password_hash?: string;
-  is_active?: boolean | 0 | 1;
-  mfa_enabled?: boolean | 0 | 1;
-  // optional profile/identity fields
-  auth_provider?: string | null;
-  email_verified_at?: string | null;
-  avatar_url?: string | null;
-  bio?: string | null;
-  phone_number?: string | null;
-  azure_ad_object_id?: string | null;
-  upn?: string | null;
-  last_login_at?: string | null;
-  created_at?: string;
-  updated_at?: string;
-};
-
-export async function createUser(input: CreateUserInput): Promise<User> {
+export async function createUser(input: CreateUserDTO): Promise<User> {
   const { data } = await api.post<User>('/users', input);
   return data;
 }
 
-export type UpdateUserFlagsInput = {
-  is_active?: boolean;
-  mfa_enabled?: boolean;
-};
-
 export async function updateUserFlags(
   id: number,
-  input: UpdateUserFlagsInput
+  input: UpdateUserFlagsDTO
 ): Promise<User> {
   const patch: Partial<User> = {};
 
@@ -62,16 +34,9 @@ export async function updateUserFlags(
   return data;
 }
 
-export type UpdateUserInput = Partial<
-  Omit<
-    CreateUserInput,
-    'is_active' | 'mfa_enabled'
-  > & { is_active: boolean | 0 | 1; mfa_enabled: boolean | 0 | 1 }
->;
-
 export async function updateUser(
   id: number,
-  input: UpdateUserInput
+  input: UpdateUserDTO
 ): Promise<User> {
   const { data } = await api.patch<User>(`/users/${id}`, input);
   return data;

@@ -15,7 +15,7 @@ import { useBoardStore } from '@/store/boardStore';
 import Column from './components/Column';
 import { Task } from './components/Task';
 import './Kanban.scss';
-import { ColumnaType, TareaType } from '@/services/api.types';
+import { ColumnaType, TareaType } from '@/types/ui';
 import { kanbanMessages } from './Kanban.messages';
 import { useKanbanBoard } from './hooks/useKanbanBoard';
 

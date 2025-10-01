@@ -1,18 +1,18 @@
 // src/services/roleService.ts
 import api from '@/services/apiClient';
-import { Role } from './security.types';
+import { Role, CreateRoleDTO, UpdateRoleDTO } from '@/types/security';
 
 export async function getRoles(): Promise<Role[]> {
   const { data } = await api.get<Role[]>('/roles');
   return data;
 }
-export async function createRole(input: Omit<Role, 'role_id'>): Promise<Role> {
+export async function createRole(input: CreateRoleDTO): Promise<Role> {
   const { data } = await api.post<Role>('/roles', input);
   return data;
 }
 export async function updateRole(
   id: number,
-  input: Partial<Omit<Role, 'role_id'>>
+  input: UpdateRoleDTO
 ): Promise<Role> {
   const { data } = await api.patch<Role>(`/roles/${id}`, input);
   return data;

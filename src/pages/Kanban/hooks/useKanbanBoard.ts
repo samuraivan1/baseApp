@@ -5,7 +5,7 @@ import { fetchTablero, updateTablero } from '@/services/api'; // ✅
 import { useBoardStore } from '@/store/boardStore';
 import logger from '@/services/logger';
 import { kanbanMessages, kanbanLogContexts } from '../Kanban.messages';
-import { TableroType } from '@/services/api.types'; // ✅
+import { TableroType } from '@/types/ui'; // ✅
 
 export const useKanbanBoard = () => {
   const queryClient = useQueryClient();

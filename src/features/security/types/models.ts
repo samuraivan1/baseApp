@@ -3,6 +3,7 @@ export interface Role {
   name: string;
   description?: string | null;
 }
+
 export interface Permission {
   permission_id: number;
   permission_string: string;
@@ -12,6 +13,7 @@ export interface Permission {
   action?: string | null;
   description?: string | null;
 }
+
 export interface User {
   user_id: number;
   username: string;
@@ -36,6 +38,7 @@ export interface User {
   is_active: 0 | 1;
   mfa_enabled: 0 | 1;
 }
+
 export interface UserSession {
   user_id: number;
   username: string;
@@ -50,3 +53,4 @@ export interface UserSession {
   permissions: Permission[];
   full_name: string;
 }
+
