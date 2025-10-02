@@ -1,0 +1,44 @@
+@use '../../../../../styles/_variables' as vars;
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: var(--overlay-bg, rgba(0, 0, 0, 0.65));
+  backdrop-filter: blur(var(--overlay-blur, 1px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal, 1000);
+}
+
+.modal-content {
+  background: var(--surface-bg);
+  color: var(--color-text-primary);
+  border-radius: var(--border-radius-medium);
+  width: clamp(720px, 70vw, 1200px);
+  max-height: 85vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-shadow: var(--box-shadow-md);
+  padding: var(--spacing-6);
+  margin: 0 auto;
+}
+
+/* Variante de ancho contenido para formularios (evita tanto blanco lateral) */
+.modal-content--md {
+  width: clamp(640px, 60vw, 960px);
+}
+
+/* Nuevo: tamaño dedicado para formularios empresariales */
+.modal-content--form {
+  width: clamp(720px, 65vw, 1040px);
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+/* Nuevo: tamaño compacto para confirmaciones */
+.modal-content--confirm {
+  width: clamp(360px, 40vw, 480px);
+  max-width: 480px;
+  margin: 0 auto;
+}

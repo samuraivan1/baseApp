@@ -1,5 +1,5 @@
-import api from '@/services/apiClient';
-import type { RolePermission, UserRole } from '@/types/security';
+import api from '@/shared/api/apiClient';
+import type { RolePermission, UserRole } from '@/shared/types/security';
 
 export async function getRolePermissions(): Promise<RolePermission[]> {
   const { data } = await api.get<RolePermission[]>('/role_permissions');

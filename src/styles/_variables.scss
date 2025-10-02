@@ -2,7 +2,8 @@
 // ----------------------------------------------------
 // Escala base y colores de marca (SCSS)
 // ----------------------------------------------------
-$truper-orange: #ef6b06;
+$truper-orange: #ef6b06; // legado
+$orangealex-primary: #F26822; // naranja corporativo actual
 $black: #000;
 $white: #fff;
 $main-color: #cac8b2;
@@ -19,7 +20,7 @@ $gray-800: #343a40;
 $gray-900: #212529;
 
 // --- Paleta Semántica ---
-$color-primary: $truper-orange;
+$color-primary: $orangealex-primary;
 $color-secondary: $gray-600;
 $color-success: #28a745;
 $color-danger: #dc3545;
@@ -78,17 +79,18 @@ $txt-black: $black;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.85rem;
   --font-size-md: 1rem;
+  --font-size-lg: 1.75rem;
 
   // Alturas estándar de controles/botones
   --control-height-sm: 25px;
-  --control-height-md: 36px;
+  --control-height-md: 36px; // OrangeAlex compacto
   --control-height-lg: 40px;
 
   // Superficies
   --surface-bg: #fff;
   --surface-border: #{$gray-300};
   // Overlay
-  --overlay-bg: rgba(0, 0, 0, 0.65);
+  --overlay-bg: rgba(0, 0, 0, 0.8);
   --overlay-blur: 1px;
 
   // Tabla
@@ -128,3 +130,27 @@ $colors: (
   'red': #ff0000,
 );
 // color module imported at top
+/* OrangeAlex centralized variables */
+:root {
+  /* Colors */
+  --color-primary: #f26822;
+  --color-text-strong: #1b1f25;
+  --color-text-primary: #3b4556;
+  --color-text-muted: #5d6b82;
+
+  --surface-white: #ffffff;
+  --surface-bg: var(--surface-white); /* switch to --surface-muted if needed */
+  --surface-muted: #f6f7f9;
+
+  --border-color: #e7e9ee;
+  --border-color-muted: #e0e0e0;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+
+  /* Typography */
+  --font-size-sm: 0.8rem;
+  --font-size-md: 0.9rem;
+}

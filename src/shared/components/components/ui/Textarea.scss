@@ -1,0 +1,27 @@
+@use '../../../../styles/_mixins' as mix;
+@use '../../../../styles/_variables' as vars;
+
+.ui-textarea {
+  &__label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    margin-bottom: 0.25rem;
+    display: inline-block;
+  }
+  &__control {
+    @include mix.input-compact();
+    width: 100%;
+    min-height: calc(var(--control-height-md) * 2);
+    resize: vertical;
+    &.is-invalid {
+      border-color: var(--color-danger);
+      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.12);
+    }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+  }
+  &__error {
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    margin-top: 4px;
+  }
+}

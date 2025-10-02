@@ -1,0 +1,38 @@
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.25rem;
+  background: transparent;
+  border-bottom: none; /* sin línea de división */
+  color: #1b1f25;
+}
+
+.section-header__left { display: flex; align-items: center; gap: 0.5rem; }
+.section-header__icon { color: var(--color-text-primary); font-size: 1rem; opacity: 0.9; }
+.section-header__title { font-size: 1rem; font-weight: 600; margin: 0; color: var(--color-text-primary); }
+.section-header__subtitle { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 0.1rem; }
+
+.section-header__back {
+  appearance: none;
+  border: 1px solid var(--border-color);
+  background: var(--surface-white);
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.section-header__back:hover { background: var(--surface-muted); }
+
+/* Estilo delgado corporativo para controles cercanos */
+.orangealex-form { --control-height-input: 28px; --oa-padding: 0.5rem; padding: var(--oa-padding); border: 1px solid var(--border-color); margin: 0 auto; background: var(--surface-bg); }
+.orangealex-form.oa-form--left { margin-left: 0; }
+.orangealex-form.oa-form--sm { max-width: 360px; }
+.orangealex-form.oa-form--md { max-width: 480px; }
+.orangealex-form.oa-form--lg { max-width: 680px; }
+.orangealex-form.oa-form--xl { max-width: 880px; }
+.orangealex-form__grid { gap: 0.75rem; }
+.form-label { font-size: var(--font-size-sm); color: var(--color-text-primary); }
+.form-input, .form-textarea { font-size: var(--font-size-md); }

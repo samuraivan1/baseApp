@@ -1,11 +1,7 @@
-import sarttHeader from './SARTT_Header.gif';
-import sarttLogueo from './SARTT_Logueo.gif';
-import truperIcon from './trupicon.png';
-import logoHeader from './logo_header.png';
+import appIcon from './icoApp.png';
+import miologo from './Miologo.png';
 
 export const images = {
-  sarttHeader,
-  sarttLogueo,
-  truperIcon,
-  logoHeader,
+  appIcon,
+  logoHeader: miologo,
 };

@@ -1,6 +1,6 @@
 // src/lib/queryClient.ts
 import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
-import errorService, { normalizeError } from '@/services/errorService';
+import errorService, { normalizeError } from '@/shared/api/errorService';
 
 // ✅ 1. Define la lógica de error para las queries (consultas)
 const queryErrorHandler = (err: unknown) => {

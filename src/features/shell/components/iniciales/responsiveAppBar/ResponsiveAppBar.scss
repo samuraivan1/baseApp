@@ -1,0 +1,154 @@
+@use '@/styles/variables' as vars;
+@use '@/styles/mixins';
+
+.app-bar {
+  width: 100%;
+  height: vars.$header-tablet-height;
+  background-color: var(--color-primary); // Naranja para app-bar
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 100;
+  // sin padding extra ni contorno naranja
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 1rem;
+    /* Toolbar transparente sobre el fondo naranja del app-bar */
+    background-color: transparent;
+    color: var(--color-text-on-primary);
+    padding: 0 12px;
+  }
+
+  &__logo {
+    flex-shrink: 0;
+    img {
+      height: 40px;
+    }
+  }
+
+  &__desktop-menu {
+    flex-grow: 1;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+    // ✅ SE ELIMINA EL OVERFLOW Y LOS ESTILOS DE SCROLLBAR
+    // overflow-x: auto;
+    // overflow-y: hidden;
+    // padding-bottom: 8px;
+
+    .nav-menu {
+      display: flex;
+      justify-content: flex-start;
+    }
+  }
+
+  &__right-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-shrink: 0;
+    color: var(--color-text-on-primary);
+  }
+
+  &__user-profile {
+    position: relative;
+  }
+
+  &__avatar {
+    background-color: #8d8d8d;
+    color: vars.$txt-white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__user-menu {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    z-index: 101;
+  }
+
+  &__hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    span {
+      width: 2rem;
+      height: 0.25rem;
+      background: vars.$txt-black;
+      border-radius: 10px;
+    }
+  }
+
+  &__mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: vars.$box-shadow;
+
+    // ✅ AÑADE ESTOS ESTILOS para que el menú sea vertical
+    .nav-menu {
+      display: flex;
+      flex-direction: column; // Items en columna
+      height: auto;
+    }
+    .nav-menu__item {
+      height: auto;
+      width: 100%;
+    }
+    .nav-menu__link {
+      height: 48px; // Altura fija para cada item
+      padding: 0 16px;
+      &::after {
+        // Oculta el indicador de línea en móvil
+        display: none;
+      }
+    }
+    // Estilo para el divisor que separa el menú principal del de perfil
+    .nav-menu__divider {
+      height: 1px;
+      background-color: #e0e0e0;
+      margin: 8px 16px;
+    }
+  }
+}
+
+// --- Media Queries ---
+@include mixins.mobile {
+  .app-bar__desktop-menu,
+  .app-bar__user-profile {
+    display: none;
+  }
+  .app-bar__hamburger {
+    display: flex;
+  }
+}
+
+@include mixins.tablet-up {
+  .app-bar__mobile-menu {
+    display: none;
+  }
+}

@@ -1,6 +1,6 @@
 // src/routes/ProtectedRoute.tsx
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuthStore } from '@/store/authStore';
+import { useAuthStore } from '@/features/shell/state/authStore';
 
 interface ProtectedRouteProps {
   permiso?: string; // si no se pasa, basta con estar logueado

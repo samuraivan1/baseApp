@@ -1,0 +1,19 @@
+export const permissionFormMessages = {
+  newTitle: 'Nuevo Permiso',
+  editTitle: 'Editar Permiso',
+  fields: {
+    permissionString: 'Cadena del Permiso',
+    resource: 'Recurso',
+    action: 'Acción',
+    scope: 'Ámbito',
+    description: 'Descripción',
+  },
+  errors: {
+    permissionStringRequired: 'La cadena del permiso es obligatoria',
+    permissionStringFormat: 'Formato esperado: recurso:ámbito:acción',
+    max255: 'Máximo 255 caracteres',
+    max80: 'Máximo 80 caracteres',
+    max40: 'Máximo 40 caracteres',
+  },
+};
+

@@ -1,6 +1,6 @@
 // src/services/userService.ts
-import api from '@/services/apiClient';
-import { User, CreateUserDTO, UpdateUserDTO, UpdateUserFlagsDTO } from '@/types/security';
+import api from '@/shared/api/apiClient';
+import { User, CreateUserDTO, UpdateUserDTO, UpdateUserFlagsDTO } from '@/shared/types/security';
 
 export async function getUsers(): Promise<User[]> {
   const { data } = await api.get<User[]>('/users');

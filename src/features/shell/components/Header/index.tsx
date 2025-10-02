@@ -1,5 +1,5 @@
 import React from 'react';
-import ResponsiveAppBar from '@/features/shell/components/ResponsiveAppBar';
+import ResponsiveAppBar from '../ResponsiveAppBar';
 import './Header.scss';
 
 const Header: React.FC = () => {

@@ -1,0 +1,22 @@
+@use '../../../../../styles/_variables' as vars;
+
+.confirm-dialog {
+  padding: var(--spacing-md) var(--spacing-lg);
+  max-width: 480px;
+  .confirm-dialog__title {
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: var(--font-size-md);
+  }
+  .confirm-dialog__message {
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+  .confirm-dialog__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+  }
+}

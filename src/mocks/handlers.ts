@@ -1,4 +1,4 @@
-import { http, HttpResponse } from 'msw';
+import { http } from 'msw';
 
 // Nota: Cuando usas `npx json-server`, estos mocks no se utilizan,
 // pero es buena práctica mantenerlos sincronizados para las pruebas unitarias.

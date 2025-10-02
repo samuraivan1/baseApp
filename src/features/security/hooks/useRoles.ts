@@ -1,7 +1,7 @@
 // src/hooks/useRoles.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createRole, deleteRole, getRoles, updateRole } from '@/features/security/api/roleService';
-import { Role, CreateRoleDTO, UpdateRoleDTO } from '@/types/security';
+import { CreateRoleDTO, UpdateRoleDTO } from '@/shared/types/security';
 
 export function useRoles() {
   return useQuery({ queryKey: ['roles'], queryFn: getRoles });

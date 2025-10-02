@@ -19,6 +19,7 @@ export interface User {
   username: string;
   password_hash: string;
   first_name: string;
+  second_name?: string | null;
   last_name_p: string;
   last_name_m?: string | null;
   initials?: string | null;
@@ -53,4 +54,3 @@ export interface UserSession {
   permissions: Permission[];
   full_name: string;
 }
-

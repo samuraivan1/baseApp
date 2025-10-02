@@ -7,15 +7,20 @@ export const PagePermissions = {
 } as const;
 
 export const ActionPermissions = {
+  // Usuarios (Nivel 2 - entidad)
   USER_CREATE: 'user:system:create',
-  USER_UPDATE: 'user:system:update',
+  USER_EDIT: 'user:system:edit',
   USER_DELETE: 'user:system:delete',
 
+  // Roles
   ROLE_CREATE: 'role:system:create',
-  ROLE_UPDATE: 'role:system:update',
+  ROLE_EDIT: 'role:system:edit',
   ROLE_DELETE: 'role:system:delete',
 
-  PERMISSION_ASSIGN: 'permission:system:assign',
+  // Permisos
+  PERMISSION_CREATE: 'permission:system:create',
+  PERMISSION_EDIT: 'permission:system:edit',
+  PERMISSION_DELETE: 'permission:system:delete',
 } as const;
 
 export type PermissionValue =
@@ -31,4 +36,3 @@ export function hasAll(userPerms: string[] | undefined, perms: PermissionValue[]
   if (!userPerms?.length) return false;
   return perms.every((p) => userPerms.includes(p));
 }
-

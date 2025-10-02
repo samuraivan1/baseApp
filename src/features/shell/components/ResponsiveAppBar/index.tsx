@@ -1,2 +1,1 @@
-export { default } from '@/pages/iniciales/responsiveAppBar';
-
+export { default } from '../iniciales/responsiveAppBar'

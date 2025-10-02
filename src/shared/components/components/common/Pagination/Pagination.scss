@@ -1,0 +1,48 @@
+@use '../../../../../styles/_mixins' as mix;
+@use '../../../../../styles/_variables' as vars;
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+
+  &__rows {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    select { @include mix.input-compact(); height: var(--control-height-sm); }
+  }
+
+  &__info {
+    font-weight: 500;
+  }
+
+  &__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  &__btn {
+    background: var(--surface-bg);
+    border: 1px solid var(--surface-border);
+    padding: 0 var(--spacing-sm);
+    min-height: var(--control-height-sm);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    border-radius: var(--border-radius-small);
+    transition: all 0.2s ease;
+    &:hover:not(:disabled) { background-color: var(--color-primary); color: var(--color-text-on-primary); }
+    &:disabled { opacity: 0.4; cursor: not-allowed; }
+  }
+}
+
+.pagination-arrow {
+  font-weight: bold;
+  font-size: var(--font-size-md);
+  color: var(--color-primary);
+}

@@ -1,16 +1,13 @@
 // src/routes/AppRoutes.tsx
 import { Route, Routes, Navigate } from 'react-router-dom';
-import Home from '@/pages/Home';
-import Kanban from '@/pages/Kanban';
-import LoginPage from '@/features/auth/LoginPage';
-import Seguridad from '@/pages/Security';
-import PermisosPage from '@/pages/Security/Permisos';
-import UsuariosPage from '@/pages/Security/Users';
-import RolesPage from '@/pages/Security/Roles';
-import Unauthorized from '@/pages/Unauthorized';
-import FormLayoutDemo from '@/pages/FormsDemo/FormLayoutDemo';
+import { Home } from '@/features/home';
+import { Kanban } from '@/features/kanban';
+import { LoginPage } from '@/features/auth';
+import { Seguridad, UsuariosPage, RolesPage, PermisosPage } from '@/features/security';
+import { Unauthorized } from '@/features/shell';
+import { FormLayoutDemo } from '@/features/demo';
 import ProtectedRoute from './ProtectedRoute';
-import { RoutePermissions as RP } from '@/features/security/constants/routePermissions';
+import { RoutePermissions as RP } from '@/features/security';
 
 // 🔸 Se mantiene el fondo de Login para pasarlo como prop
 const LOGIN_BACKGROUND_IMAGE =

@@ -9,7 +9,7 @@ module.exports = {
     ecmaFeatures: { jsx: true },
   },
   settings: { react: { version: 'detect' } },
-  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'storybook'],
+  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'storybook', 'import'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -24,6 +24,25 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': [
       'warn',
       { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+    ],
+    // Enforce imports via public API only
+    'import/no-internal-modules': [
+      'error',
+      {
+        allow: [
+          // Solo APIs públicas por feature o shared
+          '@/features/*',
+          '@/shared',
+          // Deep imports necesarios de terceros (documentados)
+          'react',
+          'react-dom/client',
+          'react-router-dom',
+          '@hookform/resolvers/zod',
+          'zustand/middleware',
+          'msw/node',
+          'react-toastify/dist/ReactToastify.css',
+        ],
+      },
     ],
   },
   ignorePatterns: ['dist', 'coverage', 'node_modules'],
