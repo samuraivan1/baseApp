@@ -1,10 +1,4 @@
-// src/constants/permissions.ts
-/**
- * Centraliza y tipa los permisos (nivel página y nivel acción).
- * Convención: recurso:ámbito:acción
- */
-
-// Nivel 1: acceso a páginas (IDs en BD desde 10000)
+// Domain permissions (page-level and action-level)
 export const PagePermissions = {
   SEGU_USERS_VIEW: 'page:seguridad_usuarios:view',
   SEGU_ROLES_VIEW: 'page:seguridad_roles:view',
@@ -12,7 +6,6 @@ export const PagePermissions = {
   KANBAN_VIEW: 'page:kanban:view',
 } as const;
 
-// Nivel 2: acciones específicas (granulares)
 export const ActionPermissions = {
   USER_CREATE: 'user:system:create',
   USER_UPDATE: 'user:system:update',
@@ -29,19 +22,13 @@ export type PermissionValue =
   | (typeof PagePermissions)[keyof typeof PagePermissions]
   | (typeof ActionPermissions)[keyof typeof ActionPermissions];
 
-// Helpers utilitarios
-export function hasAny(
-  userPerms: string[] | undefined,
-  perms: PermissionValue[]
-) {
+export function hasAny(userPerms: string[] | undefined, perms: PermissionValue[]) {
   if (!userPerms?.length) return false;
   return perms.some((p) => userPerms.includes(p));
 }
 
-export function hasAll(
-  userPerms: string[] | undefined,
-  perms: PermissionValue[]
-) {
+export function hasAll(userPerms: string[] | undefined, perms: PermissionValue[]) {
   if (!userPerms?.length) return false;
   return perms.every((p) => userPerms.includes(p));
 }
+

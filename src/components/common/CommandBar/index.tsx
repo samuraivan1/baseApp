@@ -1,12 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPlus,
-  faSync,
-  faSearch,
-  faFilter,
-  faFileExcel,
-} from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSync, faFilter, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import './CommandBar.scss';
 
 import type { FilterableColumn } from '@/components/common/CommandBar/types';
@@ -71,9 +65,12 @@ const CommandBar: React.FC<CommandBarProps> = ({
 
   const addFilter = () => {
     if (filters.some((f) => !f.value) || filterableColumns.length === 0) return;
+    const used = new Set(filters.map((f) => f.field));
+    const firstAvailable = filterableColumns.map((c) => c.key).find((k) => !used.has(k));
+    if (!firstAvailable) return; // no hay campos disponibles
     setFilters((prev) => [
       ...prev,
-      { id: `filter-${Date.now()}`, field: filterableColumns[0].key, value: '' },
+      { id: `filter-${Date.now()}`, field: firstAvailable, value: '' },
     ]);
   };
   const updateFilter = (id: string, field: string, value: string) => {
@@ -106,33 +103,33 @@ const CommandBar: React.FC<CommandBarProps> = ({
             onKeyDown={handleKeyDown}
           />
           {/* Botón de búsqueda removido: búsqueda en vivo por onChange */}
-          <button className="command-bar__filters" onClick={onToggleFilters}>
-            <FontAwesomeIcon icon={faFilter} />
-            <span>{filtersLabel}</span>
-          </button>
+          <Button
+            className="command-bar__filters"
+            variant="secondary"
+            size="small"
+            onClick={onToggleFilters}
+            icon={faFilter}
+          >
+            {filtersLabel}
+          </Button>
         </div>
 
         {/* 2 (25%): añadir + actualizar */}
         <div className="command-bar__actions">
-          <button className="command-bar__button add" onClick={onAdd}>
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{addLabel}</span>
-          </button>
-          <button className="command-bar__button refresh" onClick={onRefresh}>
-            <FontAwesomeIcon icon={faSync} />
-            <span>{refreshLabel}</span>
-          </button>
+          <Button className="command-bar__button add" variant="primary" size="small" onClick={onAdd} icon={faPlus}>
+            {addLabel}
+          </Button>
+          <Button className="command-bar__button refresh" variant="secondary" size="small" onClick={onRefresh} icon={faSync}>
+            {refreshLabel}
+          </Button>
         </div>
 
         {/* 3 (25%): exportar excel (alineado a la derecha) */}
         <div className="command-bar__export">
-          <button
-            className="command-bar__button--excel"
-            onClick={onExportExcel}
-          >
+          <Button className="command-bar__button--excel" variant="secondary" size="small" onClick={onExportExcel}>
             <FontAwesomeIcon icon={faFileExcel} />
             <span>{excelLabel}</span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -147,11 +144,17 @@ const CommandBar: React.FC<CommandBarProps> = ({
                     value={f.field}
                     onChange={(e) => updateFilter(f.id, e.target.value, f.value)}
                   >
-                    {filterableColumns.map((c) => (
-                      <option key={c.key} value={c.key}>
-                        {c.label}
-                      </option>
-                    ))}
+                    {(() => {
+                      const used = new Set(filters.map((x) => x.field));
+                      // Permitimos el campo actual y excluimos otros ya usados
+                      return filterableColumns
+                        .filter((c) => c.key === f.field || !used.has(c.key))
+                        .map((c) => (
+                          <option key={c.key} value={c.key}>
+                            {c.label}
+                          </option>
+                        ));
+                    })()}
                   </select>
                   <input
                     type="text"
@@ -161,7 +164,7 @@ const CommandBar: React.FC<CommandBarProps> = ({
                     }`}
                     onChange={(e) => updateFilter(f.id, f.field, e.target.value)}
                   />
-                  <Button variant="secondary" size="small" onClick={() => removeFilter(f.id)}>
+                  <Button variant="danger" size="small" onClick={() => removeFilter(f.id)}>
                     Eliminar
                   </Button>
                 </div>
@@ -169,10 +172,15 @@ const CommandBar: React.FC<CommandBarProps> = ({
             </div>
           )}
           <div className="df-actions">
-            <Button variant="secondary" size="small" onClick={addFilter}>
+            <Button
+              variant="primary"
+              size="small"
+              onClick={addFilter}
+              disabled={filterableColumns.every((c) => filters.some((f) => f.field === c.key))}
+            >
               Añadir Filtro
             </Button>
-            <Button variant="outline" size="small" onClick={clearFilters} disabled={filters.length === 0}>
+            <Button variant="secondary" size="small" onClick={clearFilters} disabled={filters.length === 0}>
               Limpiar filtros
             </Button>
           </div>

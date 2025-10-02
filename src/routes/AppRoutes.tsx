@@ -10,7 +10,7 @@ import RolesPage from '@/pages/Security/Roles';
 import Unauthorized from '@/pages/Unauthorized';
 import FormLayoutDemo from '@/pages/FormsDemo/FormLayoutDemo';
 import ProtectedRoute from './ProtectedRoute';
-import { RoutePermissions as RP } from '@/constants/routePermissions';
+import { RoutePermissions as RP } from '@/features/security/constants/routePermissions';
 
 // 🔸 Se mantiene el fondo de Login para pasarlo como prop
 const LOGIN_BACKGROUND_IMAGE =

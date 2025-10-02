@@ -8,7 +8,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
 import { createPermission, deletePermission, getPermissions, updatePermission } from '@/features/security/api/permissionService';
 import type { Permission } from '@/types/security';
-import { ActionPermissions, PagePermissions } from '@/constants/permissions';
+import { ActionPermissions, PagePermissions } from '@/features/security/constants/permissions';
 
 // Alias comunes usados en la UI para mapear al string real en BD
 const PermissionAlias: Record<string, string> = {

@@ -1,4 +1,3 @@
-// src/constants/routePermissions.ts
 export const RoutePermissions = {
   HOME_VIEW: 'page:home:view',
   KANBAN_VIEW: 'page:kanban:view',
@@ -10,3 +9,4 @@ export const RoutePermissions = {
 
 export type RoutePermissionValue =
   (typeof RoutePermissions)[keyof typeof RoutePermissions];
+

@@ -9,7 +9,7 @@ import { usersMessages } from './Users.messages';
 import './Users.scss';
 import Button from '@/components/ui/Button';
 import FormSection from '@/components/form/FormSection';
-type Usuario = {
+type UserView = {
   idUsuario: number;
   nombre: string;
   apellidoPaterno?: string;
@@ -24,11 +24,11 @@ import type { User } from '@/types/security';
 const UsuariosPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Usuario | null>(null);
+  const [editing, setEditing] = useState<UserView | null>(null);
 
   const { data: usuarios, isLoading } = useQuery({
     queryKey: ['usuarios'],
-    queryFn: async (): Promise<Usuario[]> => {
+    queryFn: async (): Promise<UserView[]> => {
       const [users, userRoles] = await Promise.all([getUsers(), getUserRoles()]);
       const roleByUser = new Map(userRoles.map((ur) => [ur.user_id, ur.role_id]));
       return users.map((u: User) => ({
@@ -63,7 +63,7 @@ const UsuariosPage: React.FC = () => {
     setEditing(null);
     setIsModalOpen(true);
   };
-  const openEdit = (u: Usuario) => {
+  const openEdit = (u: UserView) => {
     setEditing(u);
     setIsModalOpen(true);
   };

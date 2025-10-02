@@ -1,11 +1,28 @@
 @use '@/styles/_variables' as vars;
-// Estilos estáticos para el componente PageHeader
+// Estilos para el componente PageHeader (alineado a FormSection)
 .page-header {
   margin-bottom: 1.5rem;
 
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__icon {
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-on-primary);
+  }
+
   &__title {
-    margin: 0 0 1rem 0;
-    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+    font-weight: 700;
     color: #333;
   }
 

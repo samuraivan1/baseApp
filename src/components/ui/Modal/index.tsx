@@ -16,7 +16,8 @@ export default function Modal({ open, onClose, children }: ModalProps) {
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.65)', // más opaco para no ver elementos de fondo
+        backdropFilter: 'blur(1px)', // leve blur para atenuar formas
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -41,4 +42,3 @@ export default function Modal({ open, onClose, children }: ModalProps) {
     </div>
   );
 }
-

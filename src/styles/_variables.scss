@@ -1,8 +1,11 @@
 @use 'sass:color';
+// ----------------------------------------------------
+// Escala base y colores de marca (SCSS)
+// ----------------------------------------------------
 $truper-orange: #ef6b06;
 $black: #000;
 $white: #fff;
-$main-color: #cac8b2; // Mantengamos este por aho
+$main-color: #cac8b2;
 
 // --- Paleta de Grises ---
 $gray-100: #f8f9fa;
@@ -24,8 +27,7 @@ $color-warning: #ffc107;
 $color-info: #17a2b8;
 
 // --- Texto ---
-$txt-main-color: $gray-800;
-$txt-main-color: rgb(235, 228, 228);
+$txt-main-color: $gray-800; // color principal de texto
 $txt-second-color: #8d8d8d;
 $txt-secondary-color: $gray-600;
 $txt-filter-color: #370358;
@@ -45,6 +47,7 @@ $txt-black: $black;
   --color-success: #{$color-success};
   --color-danger: #{$color-danger};
   --color-danger-hover: #{color.adjust($color-danger, $lightness: -8%)};
+  --color-danger-strong: #{color.adjust($color-danger, $lightness: -12%)};
   --color-text-primary: #{$txt-main-color};
   --color-text-on-primary: #{$txt-white};
   --color-background-light: #{$gray-100};
@@ -91,16 +94,12 @@ $txt-black: $black;
   --table-cell-py: 0.25rem; // padding vertical compacto para filas
 }
 
-// --- Variables SCSS (se mantienen por compatibilidad) ---
-$header-height: 80px;
-$header-tablet-height: 50px;
-$header-mobile-height: 30px;
-$box-shadow: var(--box-shadow-md); // Usamos la nueva variable
-
+// --- Variables SCSS (compatibilidad con mixins/breakpoints) ---
 $header-height: 80px;
 $header-tablet-height: 50px;
 $header-mobile-height: 30px;
 $header-shrink-height: 20px;
+$box-shadow: var(--box-shadow-md);
 
 $main-bg: #fff;
 $black-bg: #000;
@@ -110,8 +109,6 @@ $gold-color: gold;
 
 $btn-main-bg: $main-color;
 $btn-main-color: #fff;
-
-$box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
 $mobile-width: 600px;
 $tablet-width: 1024px;
