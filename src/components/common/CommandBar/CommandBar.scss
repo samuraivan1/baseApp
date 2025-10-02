@@ -22,7 +22,12 @@
   gap: 0.4rem;
 }
 
-.search-input { @include mix.input-compact(); width: 100%; max-width: 300px; }
+.search-input {
+  @include mix.input-compact();
+  width: 100%;
+  max-width: 240px;
+  height: var(--control-height-sm); // igual a los botones
+}
 
 /* botones base (delgados) */
 .command-bar__button {
@@ -123,7 +128,15 @@
 .command-bar__dynamic-filters {
   .df-rows { display: flex; flex-direction: column; gap: var(--spacing-sm); }
   .df-row { display: flex; align-items: center; gap: var(--spacing-sm); }
-  .df-row select { @include mix.input-compact(); width: 180px; }
-  .df-row input { @include mix.input-compact(); width: 260px; }
+  .df-row select {
+    @include mix.input-compact();
+    width: 150px;
+    height: var(--control-height-sm); // igual a los botones
+  }
+  .df-row input {
+    @include mix.input-compact();
+    width: 200px;
+    height: var(--control-height-sm); // igual a los botones
+  }
   .df-actions { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
 }

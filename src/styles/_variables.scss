@@ -87,6 +87,9 @@ $txt-black: $black;
   // Superficies
   --surface-bg: #fff;
   --surface-border: #{$gray-300};
+  // Overlay
+  --overlay-bg: rgba(0, 0, 0, 0.65);
+  --overlay-blur: 1px;
 
   // Tabla
   --table-header-bg: var(--color-primary);
