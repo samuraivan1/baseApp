@@ -10,7 +10,7 @@ import TableActionsCell from '@/shared/components/common/TableActionsCell';
 // import Pagination from '@/shared/components/common/Pagination';
 import ListLoading from '@/shared/components/common/ListLoading';
 
-import { useRoles, useRoleMutations } from '@/features/security/hooks/useRoles';
+import { useRolesQuery, useCreateRole, useUpdateRole, useDeleteRole } from '@/features/security/api/queries';
 import { Role } from '@/shared/types/security';
 import rolesMessages from './Roles.messages';
 import { useEnsureAllPermsForUserRole } from '@/features/security/hooks/useEnsureAllPermsForUserRole';
@@ -24,8 +24,10 @@ import { ActionPermissions as AP } from '@/features/security/constants/permissio
 
 const RolesPage: React.FC = () => {
   // Data + Mutations
-  const { data: roles = [], isLoading } = useRoles();
-  const { create, update, remove } = useRoleMutations();
+  const { data: roles = [], isLoading, isError, error } = useRolesQuery();
+  const create = useCreateRole();
+  const update = useUpdateRole();
+  const remove = useDeleteRole();
   useEnsureAllPermsForUserRole(['iamendezm'], [1]);
 
   // UI State

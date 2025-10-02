@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useUsersQuery } from '@/features/security/api/queries';
 import { toast } from 'react-toastify';
 import logger from '@/shared/api/logger';
 import { getUsers, deleteUser } from '@/features/security/api/userService';
@@ -42,9 +43,8 @@ const UsuariosPage: React.FC = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  const { data: usuarios = [], isLoading } = useQuery({
-    queryKey: ['usuarios'],
-    queryFn: async (): Promise<UserView[]> => {
+  const { data: usuarios = [], isLoading, isError, error } = useUsersQuery({
+    select: async (): Promise<UserView[]> => {
       const [users, userRoles] = await Promise.all([
         getUsers(),
         getUserRoles(),
@@ -64,7 +64,7 @@ const UsuariosPage: React.FC = () => {
         rolId: roleByUser.get(u.user_id) ?? undefined,
       }));
     },
-  });
+  } as any);
 
   // CommandBar state
   const [searchTerm, setSearchTerm] = useState('');

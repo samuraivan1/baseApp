@@ -1,7 +1,7 @@
 import React from 'react';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { Task } from '../Task';
-import { usePermission } from '@/features/security/hooks/usePermission';
+import { usePermissionsQuery } from '@/features/security/api/queries';
 import { ColumnaType, TareaType } from '@/shared/types/ui';
 import { columnMessages } from './Column.messages';
 
@@ -11,11 +11,12 @@ interface ColumnProps {
 }
 
 const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
+  const { data: permisos = [] } = usePermissionsQuery();
   const { setNodeRef } = useSortable({
     id: column.idColumna,
     data: { type: 'Column', column },
   });
-  const canCreateTask = usePermission('task:kanban:create');
+  const canCreateTask = Array.isArray(permisos) && permisos.some((p: any) => p.key === 'task:kanban:create' || p.permission_key === 'task:kanban:create' || p.name === 'task:kanban:create');
 
   return (
     <div ref={setNodeRef} className="column">
