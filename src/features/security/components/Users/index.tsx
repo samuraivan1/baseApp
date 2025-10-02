@@ -1,9 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useUsersQuery } from '@/features/security/api/queries';
-import { toast } from 'react-toastify';
-import logger from '@/shared/api/logger';
-import { getUsers, deleteUser } from '@/features/security/api/userService';
+import { useQueryClient } from '@tanstack/react-query';
+import { useUsersQuery, useDeleteUser } from '@/features/security/api/queries';
+// UI feedback centralizado en servicios/hooks
+import { getUsers } from '@/features/security/api/userService';
 import { getUserRoles } from '@/features/security/api/relationsService';
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
@@ -23,6 +22,7 @@ import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import PermissionGate from '@/shared/components/common/PermissionGate';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 import ListLoading from '@/shared/components/common/ListLoading';
+import { usersKeys } from '@/features/security/api/queryKeys';
 
 type UserView = {
   idUsuario: number;
@@ -64,7 +64,7 @@ const UsuariosPage: React.FC = () => {
         rolId: roleByUser.get(u.user_id) ?? undefined,
       }));
     },
-  } as any);
+  } as unknown as { select: (rows: unknown[]) => UserView[] } );
 
   // CommandBar state
   const [searchTerm, setSearchTerm] = useState('');
@@ -149,23 +149,7 @@ const UsuariosPage: React.FC = () => {
   }, [searchTerm, activeFilters]);
 
   // Mutations
-  const delMutation = useMutation({
-    mutationFn: (id: number) => deleteUser(id),
-    onSuccess: () => {
-      toast.success(usersMessages.deleteSuccess);
-      queryClient.invalidateQueries({ queryKey: ['usuarios'] });
-    },
-    onError: (err: unknown) => {
-      const error =
-        err instanceof Error ? err : new Error('Error eliminando usuario');
-      logger.error(error, { context: 'deleteUsuario', original: err });
-      toast.error(usersMessages.genericError);
-    },
-    onSettled: () => {
-      setDeletingId(null);
-      setConfirmOpen(false);
-    },
-  });
+  const delMutation = useDeleteUser();
 
   // Handlers
   const openCreate = () => { setEditing(null); setIsFormOpen(true); };
@@ -246,6 +230,11 @@ const UsuariosPage: React.FC = () => {
         layout="centered"
         containerClassName="loading-container loading-container--fullscreen"
       >
+        {isError && (
+          <div className="segu-users__error" role="alert">
+            {(error as Error)?.message ?? usersMessages.error ?? 'Ocurrió un error al cargar los usuarios.'}
+          </div>
+        )}
         {!isFormOpen && (
         <div className="fs-row-span-2 fs-table-container">
           <PaginatedEntityTable
@@ -284,7 +273,7 @@ const UsuariosPage: React.FC = () => {
               onCancel={() => setIsFormOpen(false)}
               onSuccess={() => {
                 setIsFormOpen(false);
-                queryClient.invalidateQueries({ queryKey: ['usuarios'] });
+                queryClient.invalidateQueries({ queryKey: usersKeys.all });
               }}
             />
           </PermissionGate>
@@ -303,7 +292,8 @@ const UsuariosPage: React.FC = () => {
         danger
         onCancel={() => setConfirmOpen(false)}
         onConfirm={() => {
-          if (deletingId != null) delMutation.mutate(deletingId);
+          if (deletingId != null)
+            delMutation.mutate(deletingId, { onSettled: () => setDeletingId(null) });
         }}
       />
     </div>

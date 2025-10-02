@@ -45,5 +45,50 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: [
+        'src/**/components/**/*.{ts,tsx,js,jsx}',
+        'src/features/**/components/**/*.{ts,tsx,js,jsx}',
+        'src/**/pages/**/*.{ts,tsx,js,jsx}',
+      ],
+      rules: {
+        // Prohibir fetch/axios directamente en componentes React
+        'no-restricted-imports': [
+          'error',
+          {
+            paths: [
+              {
+                name: 'axios',
+                message:
+                  'No importes axios en componentes. Usa hooks de api/queries por feature.',
+              },
+            ],
+            patterns: [
+              {
+                group: ['node-fetch', 'whatwg-fetch', 'cross-fetch'],
+                message:
+                  'No uses fetch directo en componentes. Usa hooks de api/queries por feature.',
+              },
+            ],
+          },
+        ],
+        // Bloquear uso de fetch/axios dentro de componentes mediante patrón simple
+        'no-restricted-syntax': [
+          'warn',
+          {
+            selector: "CallExpression[callee.name='fetch']",
+            message:
+              'Evita fetch en componentes. Usa useQuery desde api/queries.',
+          },
+          {
+            selector: "CallExpression[callee.object.name='axios']",
+            message:
+              'Evita axios en componentes. Usa useQuery desde api/queries.',
+          },
+        ],
+      },
+    },
+  ],
   ignorePatterns: ['dist', 'coverage', 'node_modules'],
 };

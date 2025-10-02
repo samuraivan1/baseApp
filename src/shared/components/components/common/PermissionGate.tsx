@@ -13,7 +13,8 @@ export type PermissionGateProps = {
  */
 export default function PermissionGate({ perm, fallback = null, children }: PermissionGateProps) {
   const { data: permisos = [], isLoading } = usePermissionsQuery();
-  const allowed = Array.isArray(permisos) && permisos.some((p: any) => p.key === perm || p.name === perm || p.permission_key === perm);
+  type Perm = { key?: string; name?: string; permission_key?: string };
+  const allowed = Array.isArray(permisos) && (permisos as Perm[]).some((p) => p.key === perm || p.name === perm || p.permission_key === perm);
   if (isLoading) return null;
   return <>{allowed ? children : fallback}</>;
 }

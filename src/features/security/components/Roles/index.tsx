@@ -24,7 +24,7 @@ import { ActionPermissions as AP } from '@/features/security/constants/permissio
 
 const RolesPage: React.FC = () => {
   // Data + Mutations
-  const { data: roles = [], isLoading, isError, error } = useRolesQuery();
+  const { data: roles = [], isLoading } = useRolesQuery();
   const create = useCreateRole();
   const update = useUpdateRole();
   const remove = useDeleteRole();

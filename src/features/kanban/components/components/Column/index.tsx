@@ -16,7 +16,8 @@ const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
     id: column.idColumna,
     data: { type: 'Column', column },
   });
-  const canCreateTask = Array.isArray(permisos) && permisos.some((p: any) => p.key === 'task:kanban:create' || p.permission_key === 'task:kanban:create' || p.name === 'task:kanban:create');
+  type Perm = { key?: string; permission_key?: string; name?: string };
+  const canCreateTask = Array.isArray(permisos) && (permisos as Perm[]).some((p) => p.key === 'task:kanban:create' || p.permission_key === 'task:kanban:create' || p.name === 'task:kanban:create');
 
   return (
     <div ref={setNodeRef} className="column">

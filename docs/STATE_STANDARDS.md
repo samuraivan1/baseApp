@@ -6,3 +6,7 @@
 
 Buenas prácticas: no duplicar estado, no fetch en `useEffect` (usar `useQuery`), documentar hooks/stores con JSDoc, y exponer solo vía `index.ts` de cada feature.
 
+ESLint recomendado
+- No fetch/axios en componentes: usar hooks de `api/queries`.
+- No `useEffect` para fetching: reemplazar por `useQuery`.
+- Importar solo desde barrels de feature: `import/no-internal-modules` aplicado.

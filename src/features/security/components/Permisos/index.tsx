@@ -8,10 +8,9 @@ import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import PermissionGate from '@/shared/components/common/PermissionGate';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 // import Button from '@/shared/components/ui/Button';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
-import logger from '@/shared/api/logger';
-import { getPermissions, deletePermission, createPermission, updatePermission } from '@/features/security/api/permissionService';
+import { useQueryClient } from '@tanstack/react-query';
+import { usePermissionsQuery, useCreatePermission, useUpdatePermission, useDeletePermission } from '@/features/security/api/queries';
+// Servicios y toasts gestionados por hooks centralizados en api/queries
 import { permisosMessages } from './Permisos.messages';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
 import './Permisos.scss';
@@ -22,10 +21,10 @@ import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import ListLoading from '@/shared/components/common/ListLoading';
 
 const PermisosPage: React.FC = () => {
-  const queryClient = useQueryClient();
+  const _qc = useQueryClient();
 
   // Data
-  const { data: permisos = [], isLoading } = useQuery({ queryKey: ['permisos'], queryFn: getPermissions });
+  const { data: permisos = [], isLoading } = usePermissionsQuery();
 
   // UI state
   const [searchTerm, setSearchTerm] = useState('');
@@ -40,31 +39,10 @@ const PermisosPage: React.FC = () => {
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   // Mutations
-  const delMutation = useMutation({
-    mutationFn: (id: number) => deletePermission(id),
-    onSuccess: () => {
-      toast.success(permisosMessages.deleteSuccess);
-      queryClient.invalidateQueries({ queryKey: ['permisos'] });
-    },
-    onError: (err: unknown) => {
-      const error = err instanceof Error ? err : new Error('Error eliminando permiso');
-      logger.error(error, err);
-      toast.error(permisosMessages.genericError);
-    },
-    onSettled: () => {
-      setDeletingId(null);
-      setConfirmOpen(false);
-    },
-  });
+  const delMutation = useDeletePermission();
 
-  const createMut = useMutation({
-    mutationFn: (input: Omit<Permission, 'permission_id'>) => createPermission(input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['permisos'] }),
-  });
-  const updateMut = useMutation({
-    mutationFn: ({ id, input }: { id: number; input: Partial<Omit<Permission, 'permission_id'>> }) => updatePermission(id, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['permisos'] }),
-  });
+  const createMut = useCreatePermission();
+  const updateMut = useUpdatePermission();
 
   // Columns
   const columns: EntityTableColumn<Permission>[] = useMemo(() => [
@@ -227,7 +205,7 @@ const PermisosPage: React.FC = () => {
         cancelLabel={commonDefaultMessages.cancel}
         danger
         onCancel={() => setConfirmOpen(false)}
-        onConfirm={() => { if (deletingId != null) delMutation.mutate(deletingId); }}
+        onConfirm={() => { if (deletingId != null) delMutation.mutate(deletingId, { onSettled: () => { setDeletingId(null); setConfirmOpen(false); } }); }}
       />
     </div>
   );

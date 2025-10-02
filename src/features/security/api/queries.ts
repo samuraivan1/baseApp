@@ -1,17 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { usersKeys } from './queryKeys';
 import { getUsers, createUser, updateUser, deleteUser } from './userService';
 import { getRoles, createRole, updateRole, deleteRole } from './roleService';
 import { getPermissions, createPermission, updatePermission, deletePermission } from './permissionService';
 
 // Users
 export const useUsersQuery = () =>
-  useQuery({ queryKey: ['users'], queryFn: getUsers });
+  useQuery({ queryKey: usersKeys.all, queryFn: getUsers });
 
 export const useCreateUser = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: createUser,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: usersKeys.all }),
   });
 };
 
@@ -19,7 +20,7 @@ export const useUpdateUser = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: updateUser,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: usersKeys.all }),
   });
 };
 
@@ -27,7 +28,7 @@ export const useDeleteUser = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: deleteUser,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: usersKeys.all }),
   });
 };
 
@@ -86,4 +87,3 @@ export const useDeletePermission = () => {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['permissions'] }),
   });
 };
-
