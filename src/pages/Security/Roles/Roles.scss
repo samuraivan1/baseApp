@@ -1,3 +1,4 @@
+@use '@/styles/_mixins' as mix;
 /* 📌 Contenedor RolesPage */
 .segu-roles {
   display: flex;
@@ -125,20 +126,10 @@
 }
 
 .form-input,
-.form-textarea {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 0.5rem;
-  font-size: 0.9rem;
-  width: 100%;
-}
+.form-textarea { @include mix.input-compact(); width: 100%; }
 
 .form-input:focus,
-.form-textarea:focus {
-  border-color: #f26822;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(242, 104, 34, 0.2);
-}
+.form-textarea:focus { /* ya gestionado por mixin */ }
 
 /* 📌 Botón primario OrangeAlex */
 .btn-orangealex {

@@ -1,3 +1,5 @@
+@use '@/styles/_mixins' as mix;
+
 .fs-section {
   background: #fff;
   border: 1px solid #e6e6e6;
@@ -14,26 +16,12 @@
     color: #1f1f1f;
     font-weight: 700;
   }
-  &__icon {
-    display: inline-flex;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-on-primary);
-  }
+  &__icon { @include mix.icon-badge(); }
   &__title {
     margin: 0;
     font-size: 1.05rem;
   }
-  &__divider {
-    height: 2px;
-    background: var(--color-primary);
-    margin: 8px 0 12px;
-    opacity: 0.85;
-  }
+  &__divider { @include mix.divider-primary(); margin: 8px 0 12px; opacity: .85; }
   &__body {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -61,12 +49,7 @@
 .fs-section select,
 .fs-section input[type='text'],
 .fs-section input[type='number'],
-.fs-section input[type='email'] {
-  height: 36px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 6px 10px;
-}
+.fs-section input[type='email'] { @include mix.input-compact(); }
 
 .fs-row-span-2 {
   grid-column: 1 / -1;

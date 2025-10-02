@@ -112,3 +112,33 @@
     box-shadow: 0 0 0 2px rgba(242, 104, 34, 0.15);
   }
 }
+
+// Badge redondo para iconos de encabezado
+@mixin icon-badge($bg: var(--color-primary), $fg: var(--color-text-on-primary)) {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: $bg;
+  color: $fg;
+  align-items: center;
+  justify-content: center;
+}
+
+// Divider principal (línea naranja corporativa)
+@mixin divider-primary($height: 2px, $color: var(--color-primary)) {
+  height: $height;
+  background: $color;
+}
+
+// Sticky header para tablas
+@mixin sticky-header($top: 0) {
+  position: sticky;
+  top: $top;
+  z-index: 10;
+}
+
+// Hover row suave para tablas
+@mixin hover-row($bg: #f8f9fa) {
+  &:hover { background-color: $bg; }
+}

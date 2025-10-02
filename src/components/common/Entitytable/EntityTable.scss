@@ -1,3 +1,5 @@
+@use '../../../styles/_mixins' as mix;
+
 .entity-table {
   display: flex;
   flex-direction: column;
@@ -65,9 +67,7 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 2px solid var(--surface-border);
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    @include mix.sticky-header(0);
   }
 
   tbody {
@@ -75,9 +75,7 @@
     tr:last-child td {
       border-bottom: none;
     }
-    tr:hover {
-      background-color: #f8f9fa;
-    }
+    tr { @include mix.hover-row(); }
   }
 }
 
