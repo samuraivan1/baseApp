@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/features/shell/state/authStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -18,6 +18,7 @@ import { loginSchema, LoginFormData } from './validationSchema';
 import { authMessages } from '@/constants/commonMessages';
 import { loginPageText } from './LoginPage.messages';
 import { ensureSafeUrl } from '@/shared/security/url';
+import { ensureSafeInternalPath } from '@/shared/security/redirect';
 
 interface LoginPageProps {
   backgroundImage: string;
@@ -25,6 +26,7 @@ interface LoginPageProps {
 
 const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const login = useAuthStore((state) => state.login);
   // ✅ 2. Obtenemos el estado de autenticación del store
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
@@ -47,7 +49,9 @@ const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
     try {
       await login(data.emailOrUsername, data.password);
       toast.success(authMessages.loginSuccess);
-      navigate('/home');
+      const from = (location.state as any)?.from?.pathname;
+      const safe = ensureSafeInternalPath(from, '/home');
+      navigate(safe, { replace: true });
     } catch (error) {
       // Asegurarnos de que el error sea del tipo Error
       if (error instanceof Error) {

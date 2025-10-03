@@ -12,7 +12,7 @@ import PaginatedEntityTable from '@/shared/components/common/PaginatedEntityTabl
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import UserForm from './UserForm';
 import { usersMessages } from './Users.messages';
-import './Users.scss';
+// estilos de página centralizados en features/security/styles/index.scss
 import { commonDefaultMessages } from '@/i18n/commonMessages';
 import type { User } from '@/shared/types/security';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';

@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { db, nextId, persistDb } from '../data/db';
 import { requireAuth, ensurePermission } from '../utils/auth';
+import { requireCsrfOnMutation } from '../utils/csrf';
 
 export const relationsHandlers = [
   // user_roles
@@ -15,6 +16,8 @@ export const relationsHandlers = [
   }),
   http.post('/user_roles', async (ctx) => relationsHandlers[3].resolver(ctx)),
   http.post('/api/user_roles', async ({ request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'role:system:edit');
@@ -28,6 +31,8 @@ export const relationsHandlers = [
   }),
   http.delete('/user_roles/:user_id/:role_id', (ctx) => relationsHandlers[5].resolver(ctx)),
   http.delete('/api/user_roles/:user_id/:role_id', ({ params, request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'role:system:edit');
@@ -52,6 +57,8 @@ export const relationsHandlers = [
   }),
   http.post('/role_permissions', async (ctx) => relationsHandlers[9].resolver(ctx)),
   http.post('/api/role_permissions', async ({ request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'permission:system:edit');
@@ -64,6 +71,8 @@ export const relationsHandlers = [
   }),
   http.delete('/role_permissions/:role_id/:permission_id', (ctx) => relationsHandlers[11].resolver(ctx)),
   http.delete('/api/role_permissions/:role_id/:permission_id', ({ params, request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'permission:system:edit');

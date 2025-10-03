@@ -32,7 +32,7 @@ export const useAuthStore = create<AuthStoreType>()(
       },
 
       logout() {
-        try { localStorage.setItem('auth:revoked', '1'); } catch {}
+        try { localStorage.setItem('auth:revoked', '1'); localStorage.removeItem('csrf_token'); } catch {}
         set({
           isLoggedIn: false,
           authReady: true,

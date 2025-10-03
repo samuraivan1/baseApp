@@ -53,7 +53,7 @@ export const useCreateRole = () => {
 export const useUpdateRole = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: updateRole,
+    mutationFn: ({ id, input }: { id: number; input: Parameters<typeof updateRole>[1] }) => updateRole(id, input),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['roles'] }),
   });
 };
@@ -81,7 +81,7 @@ export const useCreatePermission = () => {
 export const useUpdatePermission = () => {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: updatePermission,
+    mutationFn: ({ id, input }: { id: number; input: Parameters<typeof updatePermission>[1] }) => updatePermission(id, input),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['permissions'] }),
   });
 };

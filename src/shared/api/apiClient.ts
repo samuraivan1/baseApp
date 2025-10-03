@@ -37,7 +37,16 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 });
 
 api.interceptors.response.use(
-  (r) => r,
+  (r) => {
+    try {
+      const url = r.config?.url || '';
+      const data: any = r.data;
+      if ((/\/auth\/(login|refresh)/).test(url || '') && data && typeof data.csrf_token === 'string') {
+        window.localStorage.setItem('csrf_token', data.csrf_token);
+      }
+    } catch {}
+    return r;
+  },
   async (error: AxiosError) => {
     const original = error.config as (AxiosRequestConfig & { _retry?: boolean }) | undefined;
     const status = error.response?.status;

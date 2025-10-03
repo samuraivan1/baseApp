@@ -31,19 +31,24 @@ export function requireAuth(req: Request): AuthedUser | HttpResponse {
   return { user, token };
 }
 
-export function hasPermission(userId: number, permId: string): boolean {
-  // Bypass total para usuario 1 (Super Admin) y para tokens que incluyan ':1'
+export function hasPermission(userId: number, permString: string): boolean {
+  // Bypass total para usuario 1 (Super Admin)
   if (Number(userId) === 1) return true;
   const roleIds = db.user_roles
     .filter((ur: any) => Number(ur.user_id) === Number(userId))
     .map((ur: any) => Number(ur.role_id));
   if (!roleIds.length) return false;
-  const perms = new Set(
+  const permIds = new Set(
     db.role_permissions
       .filter((rp: any) => roleIds.includes(Number(rp.role_id)))
-      .map((rp: any) => String(rp.permission_id))
+      .map((rp: any) => Number(rp.permission_id))
   );
-  return perms.has(permId);
+  const assignedPermStrings = new Set(
+    db.permissions
+      .filter((p: any) => permIds.has(Number(p.permission_id)))
+      .map((p: any) => String(p.permission_string))
+  );
+  return assignedPermStrings.has(permString);
 }
 
 export function ensurePermission(userId: number, permId: string): HttpResponse | null {

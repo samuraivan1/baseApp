@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { db, nextId, persistDb } from '../data/db';
 import { requireAuth, ensurePermission } from '../utils/auth';
+import { requireCsrfOnMutation } from '../utils/csrf';
 
 const BASE = '/api/roles';
 
@@ -17,6 +18,8 @@ export const rolesHandlers = [
 
   http.post('/roles', async (ctx) => rolesHandlers[3].resolver(ctx)),
   http.post(BASE, async ({ request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'role:system:create');
@@ -31,6 +34,8 @@ export const rolesHandlers = [
 
   http.delete('/roles/:id', (ctx) => rolesHandlers[5].resolver(ctx)),
   http.delete(`${BASE}/:id`, ({ params, request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'role:system:delete');
@@ -56,6 +61,8 @@ export const rolesHandlers = [
 
   // POST assign permissions to role: { permission_ids: number[] }
   http.post(`${BASE}/:id/permissions`, async ({ params, request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'role:system:edit');

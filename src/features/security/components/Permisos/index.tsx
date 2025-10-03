@@ -12,7 +12,7 @@ import { usePermissionsQuery, useCreatePermission, useUpdatePermission, useDelet
 // Servicios y toasts gestionados por hooks centralizados en api/queries
 import { permisosMessages } from './Permisos.messages';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
-import './Permisos.scss';
+// estilos de página centralizados en features/security/styles/index.scss
 import type { Permission } from '@/shared/types/security';
 import PermissionForm, { PermissionFormValues } from './PermissionForm';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';

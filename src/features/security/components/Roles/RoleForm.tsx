@@ -6,7 +6,7 @@ import SectionHeader from '@/shared/components/common/SectionHeader';
 import { roleFormMessages as m } from './RoleForm.messages';
 import { CreateRoleDTO } from '@/shared/types/security';
 import { faUserShield } from '@fortawesome/free-solid-svg-icons';
-import './Roles.scss';
+// estilos de página centralizados en features/security/styles/index.scss
 import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
 import '@/shared/components/components/common/forms/orangealex-form.scss';

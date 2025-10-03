@@ -72,8 +72,4 @@
   display: block;
 }
 
-.fs-table-container {
-  display: flex;
-  width: 100%;
-  padding: 2px 0 6px;
-}
+/* fs-table-container se unifica en shared/styles/fs-table.scss para todas las vistas */

@@ -23,16 +23,25 @@
   margin-top: 0.5rem;
 }
 
-.table-wrapper--centered { max-width: var(--table-max-width, 960px); margin: 0 auto; }
+.table-wrapper--centered {
+  max-width: var(--table-max-width, 960px);
+  margin: 0 auto;
+}
 
-.table-actions { display: flex; align-items: center; justify-content: flex-end; gap: 0.5rem; }
+.table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
 
 .modern-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: auto;
 
-  th, td {
+  th,
+  td {
     padding: var(--table-cell-py) 0.5rem;
     text-align: left;
     border: none;
@@ -55,7 +64,11 @@
 
   tbody {
     font-size: var(--font-size-sm);
-    tr:last-child td { border-bottom: none; }
-    tr { @include mix.hover-row(); }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr {
+      @include mix.hover-row();
+    }
   }
 }

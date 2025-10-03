@@ -8,6 +8,12 @@ function getCookie(name: string): string | null {
 }
 
 export function getCsrfToken(): string {
-  return getCookie('csrf_token') || '';
+  const cookie = getCookie('csrf_token');
+  if (cookie) return cookie;
+  try {
+    const backup = window.localStorage.getItem('csrf_token');
+    return backup || '';
+  } catch {
+    return '';
+  }
 }
-

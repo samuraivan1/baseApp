@@ -1,0 +1,20 @@
+.fs-table-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1; /* ocupa el espacio disponible para que el wrapper pueda scrollear */
+  padding: 2px 0 6px;
+  margin-top: 1rem; /* caja separada del encabezado */
+  background: var(--surface-white);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  /* El scroll vive dentro del wrapper para evitar scroll doble */
+  overflow: hidden;
+  min-height: 0; /* evita que el flexbox fuerce a crecer y oculte el paginador */
+}
+
+.fs-table-container .table-wrapper {
+  flex: 1;
+  overflow: auto; /* muestra scrollbar interno cuando el contenido excede */
+  min-height: 0;
+}

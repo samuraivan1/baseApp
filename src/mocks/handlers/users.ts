@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { db, nextId, persistDb } from '../data/db';
 import { requireAuth, ensurePermission } from '../utils/auth';
+import { requireCsrfOnMutation } from '../utils/csrf';
 
 const BASE = '/api/users';
 
@@ -29,11 +30,14 @@ export const usersHandlers = [
 
   http.post('/users', async (ctx) => usersHandlers[5].resolver(ctx)),
   http.post(BASE, async ({ request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'user:system:create');
     if (denied) return denied;
-    const body = await request.json();
+    let body: any = {};
+    try { body = await request.json(); } catch {}
     const user_id = nextId('users');
     const row = { ...body, user_id };
     db.users.push(row);
@@ -43,12 +47,15 @@ export const usersHandlers = [
 
   http.put('/users/:id', async (ctx) => usersHandlers[7].resolver(ctx)),
   http.put(`${BASE}/:id`, async ({ params, request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'user:system:edit');
     if (denied) return denied;
     const id = Number(params.id);
-    const body = await request.json();
+    let body: any = {};
+    try { body = await request.json(); } catch {}
     const idx = db.users.findIndex((u: any) => Number(u.user_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
     db.users[idx] = { ...db.users[idx], ...body, user_id: id };
@@ -58,12 +65,15 @@ export const usersHandlers = [
 
   http.patch('/users/:id', async (ctx) => usersHandlers[9].resolver(ctx)),
   http.patch(`${BASE}/:id`, async ({ params, request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'user:system:edit');
     if (denied) return denied;
     const id = Number(params.id);
-    const body = await request.json();
+    let body: any = {};
+    try { body = await request.json(); } catch {}
     const idx = db.users.findIndex((u: any) => Number(u.user_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
     db.users[idx] = { ...db.users[idx], ...body, user_id: id };
@@ -73,6 +83,8 @@ export const usersHandlers = [
 
   http.delete('/users/:id', (ctx) => usersHandlers[11].resolver(ctx)),
   http.delete(`${BASE}/:id`, ({ params, request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
     const denied = ensurePermission(auth.user.user_id, 'user:system:delete');
