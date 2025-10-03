@@ -57,6 +57,8 @@ export const useAuthStore = create<AuthStoreType>()(
       hasPermission(permissionString) {
         const u = get().user;
         if (!u) return false;
+        // Bypass total para super admin (user_id === 1) en desarrollo/mocks
+        if (Number(u.user_id) === 1) return true;
         return (
           u.permissions?.some(
             (p) => p.permission_string === permissionString

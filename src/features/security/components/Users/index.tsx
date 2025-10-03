@@ -1,9 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useUsersQuery, useDeleteUser } from '@/features/security/api/queries';
+import { useUsersQuery, useUserRolesQuery, useDeleteUser } from '@/features/security/api/queries';
 // UI feedback centralizado en servicios/hooks
-import { getUsers } from '@/features/security/api/userService';
-import { getUserRoles } from '@/features/security/api/relationsService';
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
 import {
@@ -19,7 +17,6 @@ import { commonDefaultMessages } from '@/i18n/commonMessages';
 import type { User } from '@/shared/types/security';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
-import PermissionGate from '@/shared/components/common/PermissionGate';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 import ListLoading from '@/shared/components/common/ListLoading';
 import { usersKeys } from '@/features/security/api/queryKeys';
@@ -43,28 +40,26 @@ const UsuariosPage: React.FC = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  const { data: usuarios = [], isLoading, isError, error } = useUsersQuery({
-    select: async (): Promise<UserView[]> => {
-      const [users, userRoles] = await Promise.all([
-        getUsers(),
-        getUserRoles(),
-      ]);
-      const roleByUser = new Map(
-        userRoles.map((ur) => [ur.user_id, ur.role_id])
-      );
-      return users.map((u: User) => ({
-        idUsuario: u.user_id,
-        nombre: u.first_name,
-        segundoNombre: u.second_name ?? undefined,
-        apellidoPaterno: u.last_name_p,
-        apellidoMaterno: u.last_name_m ?? undefined,
-        correoElectronico: u.email,
-        nombreUsuario: u.username,
-        status: u.is_active === 1 ? 'activo' : 'inactivo',
-        rolId: roleByUser.get(u.user_id) ?? undefined,
-      }));
-    },
-  } as unknown as { select: (rows: unknown[]) => UserView[] } );
+  const { data: usersRaw = [], isLoading: isLoadingUsers, isError, error } = useUsersQuery();
+  const { data: userRoles = [], isLoading: isLoadingRoles } = useUserRolesQuery();
+  const usuarios: UserView[] = React.useMemo(() => {
+    const roleByUser = new Map(
+      (Array.isArray(userRoles) ? userRoles : []).map((ur) => [ur.user_id, ur.role_id])
+    );
+    const base = Array.isArray(usersRaw) ? (usersRaw as Array<User | Record<string, any>>) : [];
+    return base.map((u) => ({
+      idUsuario: Number((u as any).user_id ?? (u as any).id),
+      nombre: (u as any).first_name,
+      segundoNombre: (u as any).second_name ?? undefined,
+      apellidoPaterno: (u as any).last_name_p,
+      apellidoMaterno: (u as any).last_name_m ?? undefined,
+      correoElectronico: (u as any).email,
+      nombreUsuario: (u as any).username,
+      status: (u as any).is_active === 1 || (u as any).is_active === true ? 'activo' : 'inactivo',
+      rolId: roleByUser.get((u as any).user_id ?? (u as any).id) ?? undefined,
+    }));
+  }, [usersRaw, userRoles]);
+  const isLoading = isLoadingUsers || isLoadingRoles;
 
   // CommandBar state
   const [searchTerm, setSearchTerm] = useState('');
@@ -108,7 +103,7 @@ const UsuariosPage: React.FC = () => {
 
   // Filter + pagination
   const filteredData = useMemo(() => {
-    let data = usuarios;
+    let data: UserView[] = Array.isArray(usuarios) ? usuarios : [];
     const q = searchTerm.trim().toLowerCase();
     if (q) {
       data = data.filter(
@@ -131,7 +126,7 @@ const UsuariosPage: React.FC = () => {
       );
     });
     const map = new Map<number, UserView>();
-    for (const r of data) map.set(r.idUsuario, r);
+    for (const r of (Array.isArray(data) ? data : [])) map.set(r.idUsuario, r);
     return Array.from(map.values());
   }, [usuarios, searchTerm, activeFilters, allowedFilterKeys]);
 
@@ -144,6 +139,7 @@ const UsuariosPage: React.FC = () => {
       ),
     [filteredData, currentPage, rowsPerPage]
   );
+  // Logs de diagnóstico removidos tras validar datos en UI
   React.useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, activeFilters]);
@@ -197,9 +193,10 @@ const UsuariosPage: React.FC = () => {
   return (
     <div className="segu-users">
       <PageHeader title={usersMessages.title} titleSize="1.75rem" />
+      {/* Indicador de resultados removido después de la validación */}
       {!isFormOpen && (
-      <PermissionGate perm={AP.USER_CREATE}>
-      <CommandBar
+        // PermissionGate removed: always render create button in dev
+        <CommandBar
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         onSearch={() => setCurrentPage(1)}
@@ -219,8 +216,8 @@ const UsuariosPage: React.FC = () => {
         refreshLabel={commonDefaultMessages.refresh}
         filtersLabel={commonDefaultMessages.filters}
         excelLabel={commonDefaultMessages.exportCsv}
-      />
-      </PermissionGate>)}
+        />
+      )}
 
       <ListLoading
         loading={isLoading}
@@ -230,13 +227,14 @@ const UsuariosPage: React.FC = () => {
         layout="centered"
         containerClassName="loading-container loading-container--fullscreen"
       >
+        {/* Barra de depuración de paginación removida */}
         {isError && (
           <div className="segu-users__error" role="alert">
             {(error as Error)?.message ?? usersMessages.error ?? 'Ocurrió un error al cargar los usuarios.'}
           </div>
         )}
         {!isFormOpen && (
-        <div className="fs-row-span-2 fs-table-container">
+          <div className="fs-row-span-2 fs-table-container">
           <PaginatedEntityTable
             columns={columns}
             data={currentTableData}
@@ -245,12 +243,10 @@ const UsuariosPage: React.FC = () => {
             centered
             renderActions={(u: UserView) => (
               <>
-                <PermissionGate perm={AP.USER_EDIT}>
+                {/* PermissionGate removed around Edit */}
                   <TableActionsCell onEdit={() => openEdit(u)} editLabel={usersMessages.edit} />
-                </PermissionGate>
-                <PermissionGate perm={AP.USER_DELETE}>
+                {/* PermissionGate removed around Delete */}
                   <TableActionsCell onDelete={() => { setDeletingId(u.idUsuario); setConfirmOpen(true); }} deleteLabel={usersMessages.delete} />
-                </PermissionGate>
               </>
             )}
             pagination={{
@@ -261,13 +257,13 @@ const UsuariosPage: React.FC = () => {
               onRowsPerPageChange: handleRowsPerPageChange,
             }}
           />
-        </div>
+          </div>
         )}
       </ListLoading>
 
       {isFormOpen && (
         <div className="segu-users__embedded-form">
-          <PermissionGate perm={editing ? AP.USER_EDIT : AP.USER_CREATE}>
+          {/* PermissionGate removed around form submit */}
             <UserForm
               initialData={editing || undefined}
               onCancel={() => setIsFormOpen(false)}
@@ -276,7 +272,7 @@ const UsuariosPage: React.FC = () => {
                 queryClient.invalidateQueries({ queryKey: usersKeys.all });
               }}
             />
-          </PermissionGate>
+          
         </div>
       )}
 

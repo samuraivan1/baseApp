@@ -1,0 +1,1286 @@
+{
+  "tablero": {
+    "tareas": {
+      "idTarea-1": {
+        "idTarea": "idTarea-1",
+        "contenido": "007306 Check list Equipos de arrastre CDRs",
+        "usuariosAsignados": ["AR"],
+        "fechaVencimiento": "2025-09-12",
+        "diasActivo": 15
+      },
+      "idTarea-2": {
+        "idTarea": "idTarea-2",
+        "contenido": "Mejora - Eticolor",
+        "usuariosAsignados": ["AL"],
+        "fechaVencimiento": "2025-08-20",
+        "diasActivo": 6
+      },
+      "idTarea-3": {
+        "idTarea": "idTarea-3",
+        "contenido": "006520 Evaluación scanner SUNLUX y NETUM",
+        "usuariosAsignados": ["GV", "RO"],
+        "fechaVencimiento": "2025-08-29",
+        "diasActivo": 11
+      },
+      "idTarea-4": {
+        "idTarea": "idTarea-4",
+        "contenido": "007135 Actualizar logotipo Grupo Truper CIAT",
+        "usuariosAsignados": ["AR", "GV", "AL"],
+        "fechaVencimiento": "2025-09-30",
+        "diasActivo": 43
+      }
+    },
+    "columnas": {
+      "idColumna-1": {
+        "idColumna": "idColumna-1",
+        "titulo": "PENDIENTES",
+        "tareasIds": ["idTarea-2", "idTarea-1"]
+      },
+      "idColumna-2": {
+        "idColumna": "idColumna-2",
+        "titulo": "EN PROCESO",
+        "tareasIds": ["idTarea-4"]
+      },
+      "idColumna-3": {
+        "idColumna": "idColumna-3",
+        "titulo": "PRUEBAS QAS",
+        "tareasIds": ["idTarea-3"]
+      }
+    },
+    "ordenColumnas": ["idColumna-1", "idColumna-2", "idColumna-3"]
+  },
+  "menu": [
+    {
+      "idMenu": 1,
+      "titulo": "Home",
+      "ruta": "/home",
+      "permisoId": 10000
+    },
+    {
+      "idMenu": 2,
+      "titulo": "Kanban",
+      "ruta": "/kanban",
+      "permisoId": 10001
+    },
+    {
+      "idMenu": 3,
+      "titulo": "Seguridad",
+      "ruta": "/seguridad",
+      "permisoId": 10003
+    }
+  ],
+  "menuPerfil": [
+    {
+      "idMenu": "1",
+      "titulo": "Perfil",
+      "ruta": "/profile",
+      "permisoId": null
+    },
+    {
+      "idMenu": "4",
+      "titulo": "Cerrar Sesión"
+    }
+  ],
+  "contactos": [],
+  "users": [
+    {
+      "user_id": 1,
+      "username": "iamendezm",
+      "password_hash": "$2b$12$...",
+      "first_name": "Alejandro",
+      "second_name": "Andrés",
+      "last_name_p": "Mendez",
+      "last_name_m": "Martinez",
+      "initials": "",
+      "email": "iamendezm@truper.com",
+      "auth_provider": "",
+      "email_verified_at": "2025-01-15T10:00:00Z",
+      "avatar_url": "",
+      "bio": "",
+      "phone_number": "",
+      "azure_ad_object_id": "",
+      "upn": "",
+      "is_active": 1,
+      "mfa_enabled": 0,
+      "last_login_at": "2025-08-27T11:20:00Z",
+      "created_at": "2025-01-15T09:30:00Z",
+      "updated_at": "2025-10-02T18:56:14.546Z"
+    },
+    {
+      "user_id": 2,
+      "username": "arturolopez",
+      "password_hash": "password123",
+      "first_name": "Arturo",
+      "second_name": "",
+      "last_name_p": "López",
+      "last_name_m": "Hernández",
+      "initials": "AL",
+      "email": "arturo.lopez@empresa.com",
+      "auth_provider": "local",
+      "email_verified_at": null,
+      "avatar_url": null,
+      "bio": null,
+      "phone_number": null,
+      "azure_ad_object_id": null,
+      "upn": null,
+      "is_active": 1,
+      "mfa_enabled": 0,
+      "last_login_at": "2025-08-25T09:00:00Z",
+      "created_at": "2025-02-20T14:00:00Z",
+      "updated_at": "2025-07-10T18:30:00Z"
+    },
+    {
+      "user_id": 3,
+      "username": "gabrielavargas",
+      "password_hash": "password123",
+      "first_name": "Gabriela",
+      "second_name": null,
+      "last_name_p": "Vargas",
+      "last_name_m": "Mendoza",
+      "initials": "GV",
+      "email": "gabriela.vargas@empresa.com",
+      "auth_provider": "azure_ad",
+      "email_verified_at": "2025-03-01T12:00:00Z",
+      "avatar_url": "https://example.com/avatars/gv.png",
+      "bio": "Desarrolladora Frontend especializada en React.",
+      "phone_number": "+525587654321",
+      "azure_ad_object_id": "b2c3d4e5-f6a7-8901-2345-67890abcdef1",
+      "upn": "gabriela.vargas@empresa.onmicrosoft.com",
+      "is_active": 0,
+      "mfa_enabled": 0,
+      "last_login_at": "2025-07-30T16:00:00Z",
+      "created_at": "2025-03-01T12:00:00Z",
+      "updated_at": "2025-08-01T15:45:00Z"
+    }
+  ],
+  "roles": [
+    {
+      "role_id": 1,
+      "name": "Super Administrador",
+      "description": "Acceso total al sistema. Alex"
+    },
+    {
+      "role_id": 2,
+      "name": "Usuario Básico",
+      "description": "Solo puede ver el contenido principal."
+    },
+    {
+      "role_id": 1002,
+      "name": "Promotoría",
+      "description": "Rol de promotoría con permisos específicos."
+    },
+    {
+      "role_id": 1003,
+      "name": "ivan alejandro",
+      "description": "dfsd"
+    },
+    {
+      "role_id": 1004,
+      "name": "test",
+      "description": "ddsgfds"
+    },
+    {
+      "role_id": 1005,
+      "name": "Alex Ejemplo 2",
+      "description": "Ejemplo de roles dados de alta"
+    },
+    {
+      "role_id": 10066,
+      "name": "Super Administrador",
+      "description": "Acceso total al sistema. Alex"
+    },
+    {
+      "role_id": 10067,
+      "name": "Usuario Básico",
+      "description": "Solo puede ver el contenido principal."
+    },
+    {
+      "role_id": 10068,
+      "name": "Promotoría",
+      "description": "Rol de promotoría con permisos específicos."
+    },
+    {
+      "role_id": 10072,
+      "name": "Super Administrador",
+      "description": "Acceso total al sistema. Alex"
+    },
+    {
+      "role_id": 10073,
+      "name": "Usuario Básico",
+      "description": "Solo puede ver el contenido principal."
+    },
+    {
+      "role_id": 10074,
+      "name": "Promotoría",
+      "description": "Rol de promotoría con permisos específicos."
+    },
+    {
+      "role_id": 10075,
+      "name": "ivan alejandro",
+      "description": "dfsd"
+    },
+    {
+      "role_id": 10076,
+      "name": "test",
+      "description": "ddsgfds"
+    },
+    {
+      "role_id": 10077,
+      "name": "Alex Ejemplo 2",
+      "description": "Ejemplo de roles dados de alta"
+    },
+    {
+      "role_id": 10078,
+      "name": "Super Administrador",
+      "description": "Acceso total al sistema. Alex"
+    },
+    {
+      "role_id": 10079,
+      "name": "Usuario Básico",
+      "description": "Solo puede ver el contenido principal."
+    },
+    {
+      "role_id": 10080,
+      "name": "Promotoría",
+      "description": "Rol de promotoría con permisos específicos."
+    },
+    {
+      "role_id": 10081,
+      "name": "ivan alejandro",
+      "description": "dfsd"
+    },
+    {
+      "role_id": 10082,
+      "name": "test",
+      "description": "ddsgfds"
+    },
+    {
+      "role_id": 10083,
+      "name": "Alex Ejemplo 2",
+      "description": "Ejemplo de roles dados de alta"
+    },
+    {
+      "role_id": 10084,
+      "name": "Super Administrador",
+      "description": "Acceso total al sistema. Alex"
+    },
+    {
+      "role_id": 10085,
+      "name": "Usuario Básico",
+      "description": "Solo puede ver el contenido principal."
+    },
+    {
+      "role_id": 10086,
+      "name": "Promotoría",
+      "description": "Rol de promotoría con permisos específicos."
+    },
+    {
+      "role_id": 10087,
+      "name": "ivan alejandro",
+      "description": "dfsd"
+    },
+    {
+      "role_id": 10088,
+      "name": "test",
+      "description": "ddsgfds"
+    },
+    {
+      "role_id": 10089,
+      "name": "Alex Ejemplo 2",
+      "description": "Ejemplo de roles dados de alta"
+    },
+    {
+      "role_id": 10090,
+      "name": "Super Administrador",
+      "description": "Acceso total al sistema. Alex"
+    },
+    {
+      "role_id": 10091,
+      "name": "Usuario Básico",
+      "description": "Solo puede ver el contenido principal."
+    },
+    {
+      "role_id": 10092,
+      "name": "Promotoría",
+      "description": "Rol de promotoría con permisos específicos."
+    },
+    {
+      "role_id": 10093,
+      "name": "ivan alejandro",
+      "description": "dfsd"
+    },
+    {
+      "role_id": 10094,
+      "name": "test",
+      "description": "ddsgfds"
+    },
+    {
+      "role_id": 10095,
+      "name": "Alex Ejemplo 2",
+      "description": "Ejemplo de roles dados de alta"
+    },
+    {
+      "role_id": 10096,
+      "name": "Super Administrador",
+      "description": "Acceso total al sistema. Alex"
+    },
+    {
+      "role_id": 10097,
+      "name": "Usuario Básico",
+      "description": "Solo puede ver el contenido principal."
+    },
+    {
+      "role_id": 10098,
+      "name": "Promotoría",
+      "description": "Rol de promotoría con permisos específicos."
+    },
+    {
+      "role_id": 10099,
+      "name": "ivan alejandro",
+      "description": "dfsd"
+    },
+    {
+      "role_id": 10100,
+      "name": "test",
+      "description": "ddsgfds"
+    },
+    {
+      "role_id": 10101,
+      "name": "Alex Ejemplo 2",
+      "description": "Ejemplo de roles dados de alta"
+    },
+    {
+      "role_id": 10102,
+      "name": "Super Administrador",
+      "description": "Acceso total al sistema. Alex"
+    },
+    {
+      "role_id": 10103,
+      "name": "Usuario Básico",
+      "description": "Solo puede ver el contenido principal."
+    },
+    {
+      "role_id": 10104,
+      "name": "Promotoría",
+      "description": "Rol de promotoría con permisos específicos."
+    },
+    {
+      "role_id": 10105,
+      "name": "ivan alejandro",
+      "description": "dfsd"
+    },
+    {
+      "role_id": 10106,
+      "name": "test",
+      "description": "ddsgfds"
+    },
+    {
+      "role_id": 10107,
+      "name": "Alex Ejemplo 2",
+      "description": "Ejemplo de roles dados de alta"
+    },
+    {
+      "role_id": 10108,
+      "name": "Super Administrador",
+      "description": "Acceso total al sistema. Alex"
+    },
+    {
+      "role_id": 10109,
+      "name": "Usuario Básico",
+      "description": "Solo puede ver el contenido principal."
+    },
+    {
+      "role_id": 10110,
+      "name": "Promotoría",
+      "description": "Rol de promotoría con permisos específicos."
+    },
+    {
+      "role_id": 10111,
+      "name": "ivan alejandro",
+      "description": "dfsd"
+    },
+    {
+      "role_id": 10112,
+      "name": "test",
+      "description": "ddsgfds"
+    },
+    {
+      "role_id": 10065,
+      "name": "Alex Ejemplo 2",
+      "description": "Ejemplo de roles dados de alta"
+    }
+  ],
+  "rolesEstandar": [
+    {
+      "idRol": 1,
+      "nombre": "Super Administrador",
+      "descripcion": "Acceso total al módulo Seguridad"
+    },
+    {
+      "idRol": 2,
+      "nombre": "Usuario Básico",
+      "descripcion": "Solo visualización de páginas de Seguridad"
+    },
+    {
+      "idRol": 3,
+      "nombre": "Validador",
+      "descripcion": "Visualiza Seguridad y puede editar Roles"
+    }
+  ],
+  "permissions": [
+    {
+      "permission_id": 4,
+      "permission_string": "task:kanban:create",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "create",
+      "description": "Crear tareas en el Kanban"
+    },
+    {
+      "permission_id": 5,
+      "permission_string": "task:kanban:edit",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "edit",
+      "description": "Editar tareas en el Kanban"
+    },
+    {
+      "permission_id": 6,
+      "permission_string": "task:kanban:delete",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "delete",
+      "description": "Eliminar tareas en el Kanban"
+    },
+    {
+      "permission_id": 7,
+      "permission_string": "role:system:create",
+      "resource": "role",
+      "scope": "system",
+      "action": "create",
+      "description": "Crear nuevos roles"
+    },
+    {
+      "permission_id": 8,
+      "permission_string": "role:system:edit",
+      "resource": "role",
+      "scope": "system",
+      "action": "edit",
+      "description": "Editar roles existentes"
+    },
+    {
+      "permission_id": 9,
+      "permission_string": "role:system:delete",
+      "resource": "role",
+      "scope": "system",
+      "action": "delete",
+      "description": "Eliminar roles"
+    },
+    {
+      "permission_id": 10,
+      "permission_string": "user:system:create",
+      "resource": "user",
+      "scope": "system",
+      "action": "create",
+      "description": "Crear nuevos usuarios"
+    },
+    {
+      "permission_id": 11,
+      "permission_string": "user:system:edit",
+      "resource": "user",
+      "scope": "system",
+      "action": "edit",
+      "description": "Editar usuarios existentes"
+    },
+    {
+      "permission_id": 13,
+      "permission_string": "task:kanban:move",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "move",
+      "description": "Permite mover tareas entre columnas."
+    },
+    {
+      "permission_id": 14,
+      "permission_string": "task:kanban:assign",
+      "resource": "task",
+      "scope": "kanban",
+      "action": "assign",
+      "description": "Permite asignar usuarios a las tareas."
+    },
+    {
+      "permission_id": 20,
+      "permission_string": "user:system:view",
+      "resource": "user",
+      "scope": "system",
+      "action": "view",
+      "description": "Permite ver la lista de usuarios del sistema."
+    },
+    {
+      "permission_id": 21,
+      "permission_string": "user:system:create",
+      "resource": "user",
+      "scope": "system",
+      "action": "create",
+      "description": "Permite crear nuevos usuarios."
+    },
+    {
+      "permission_id": 22,
+      "permission_string": "user:system:edit",
+      "resource": "user",
+      "scope": "system",
+      "action": "edit",
+      "description": "Permite editar la información y el rol de los usuarios."
+    },
+    {
+      "permission_id": 23,
+      "permission_string": "user:system:delete",
+      "resource": "user",
+      "scope": "system",
+      "action": "delete",
+      "description": "Permite eliminar usuarios del sistema."
+    },
+    {
+      "permission_id": 30,
+      "permission_string": "role:system:view",
+      "resource": "role",
+      "scope": "system",
+      "action": "view",
+      "description": "Permite ver la lista de roles del sistema."
+    },
+    {
+      "permission_id": 31,
+      "permission_string": "role:system:create",
+      "resource": "role",
+      "scope": "system",
+      "action": "create",
+      "description": "Permite crear nuevos roles."
+    },
+    {
+      "permission_id": 32,
+      "permission_string": "role:system:edit",
+      "resource": "role",
+      "scope": "system",
+      "action": "edit",
+      "description": "Permite editar los roles y sus permisos asignados."
+    },
+    {
+      "permission_id": 33,
+      "permission_string": "role:system:delete",
+      "resource": "role",
+      "scope": "system",
+      "action": "delete",
+      "description": "Permite eliminar roles del sistema."
+    },
+    {
+      "permission_id": 40,
+      "permission_string": "permission:system:view",
+      "resource": "permission",
+      "scope": "system",
+      "action": "view",
+      "description": "Permite ver el catálogo de permisos."
+    },
+    {
+      "permission_id": 41,
+      "permission_string": "permission:system:create",
+      "resource": "permission",
+      "scope": "system",
+      "action": "create",
+      "description": "Permite crear nuevos permisos en el sistema."
+    },
+    {
+      "permission_id": 42,
+      "permission_string": "permission:system:edit",
+      "resource": "permission",
+      "scope": "system",
+      "action": "edit",
+      "description": "Permite editar los permisos existentes."
+    },
+    {
+      "permission_id": 43,
+      "permission_string": "permission:system:delete",
+      "resource": "permission",
+      "scope": "system",
+      "action": "delete",
+      "description": "Permite eliminar permisos del catálogo."
+    },
+    {
+      "permission_id": 150,
+      "permission_string": "form:contact:create",
+      "resource": "form",
+      "scope": "contact",
+      "action": "create",
+      "description": "Crear envío del formulario de contacto"
+    },
+    {
+      "permission_id": 10000,
+      "permission_string": "page:home:view",
+      "resource": "page",
+      "scope": "home",
+      "action": "view",
+      "description": "Ver la página de Inicio"
+    },
+    {
+      "permission_id": 10001,
+      "permission_string": "page:kanban:view",
+      "resource": "page",
+      "scope": "kanban",
+      "action": "view",
+      "description": "Ver la página de Kanban"
+    },
+    {
+      "permission_id": 10002,
+      "permission_string": "page:seguridad:view",
+      "resource": "page",
+      "scope": "seguridad",
+      "action": "view",
+      "description": "Ver las páginas de seguridad"
+    },
+    {
+      "permission_id": 10004,
+      "permission_string": "page:seguridad_usuarios:view",
+      "resource": "page",
+      "scope": "seguridad_usuarios",
+      "action": "view",
+      "description": "Permite ver la página de Usuarios"
+    },
+    {
+      "permission_id": 10005,
+      "permission_string": "page:seguridad_roles:view",
+      "resource": "page",
+      "scope": "seguridad_roles",
+      "action": "view",
+      "description": "Permite ver la página de Roles"
+    },
+    {
+      "permission_id": 10006,
+      "permission_string": "page:seguridad_permisos:view",
+      "resource": "page",
+      "scope": "seguridad_permisos",
+      "action": "view",
+      "description": "Permite ver la página de Permisos"
+    },
+    {
+      "permission_id": 20010,
+      "permission_string": "user:system:create",
+      "resource": "user",
+      "scope": "system",
+      "action": "create",
+      "description": "Permite crear usuarios del sistema"
+    },
+    {
+      "permission_id": 20011,
+      "permission_string": "user:system:edit",
+      "resource": "user",
+      "scope": "system",
+      "action": "edit",
+      "description": "Permite editar usuarios del sistema"
+    },
+    {
+      "permission_id": 20012,
+      "permission_string": "user:system:delete",
+      "resource": "user",
+      "scope": "system",
+      "action": "delete",
+      "description": "Permite eliminar usuarios del sistema"
+    },
+    {
+      "permission_id": 20020,
+      "permission_string": "role:system:create",
+      "resource": "role",
+      "scope": "system",
+      "action": "create",
+      "description": "Permite crear roles del sistema"
+    },
+    {
+      "permission_id": 20021,
+      "permission_string": "role:system:edit",
+      "resource": "role",
+      "scope": "system",
+      "action": "edit",
+      "description": "Permite editar roles del sistema"
+    },
+    {
+      "permission_id": 20022,
+      "permission_string": "role:system:delete",
+      "resource": "role",
+      "scope": "system",
+      "action": "delete",
+      "description": "Permite eliminar roles del sistema"
+    },
+    {
+      "permission_id": 20030,
+      "permission_string": "permission:system:create",
+      "resource": "permission",
+      "scope": "system",
+      "action": "create",
+      "description": "Permite crear permisos del sistema"
+    },
+    {
+      "permission_id": 20031,
+      "permission_string": "permission:system:edit",
+      "resource": "permission",
+      "scope": "system",
+      "action": "edit",
+      "description": "Permite editar permisos del sistema"
+    },
+    {
+      "permission_id": 20032,
+      "permission_string": "permission:system:delete",
+      "resource": "permission",
+      "scope": "system",
+      "action": "delete",
+      "description": "Permite eliminar permisos del sistema"
+    },
+    {
+      "permission_id": 10003,
+      "permission_string": "page:seguridad:view",
+      "resource": "page",
+      "scope": "seguridad",
+      "action": "view",
+      "description": "Ver la página principal de Seguridad"
+    },
+    {
+      "permission_id": 10004,
+      "permission_string": "page:seguridad_usuarios:view",
+      "resource": "page",
+      "scope": "seguridad_usuarios",
+      "action": "view",
+      "description": "Ver la página de gestión de usuarios"
+    },
+    {
+      "permission_id": 10005,
+      "permission_string": "page:seguridad_roles:view",
+      "resource": "page",
+      "scope": "seguridad_roles",
+      "action": "view",
+      "description": "Ver la página de gestión de roles"
+    },
+    {
+      "permission_id": 10006,
+      "permission_string": "page:seguridad_permisos:view",
+      "resource": "page",
+      "scope": "seguridad_permisos",
+      "action": "view",
+      "description": "Ver el catálogo de permisos"
+    },
+    {
+      "permission_id": 10007,
+      "permission_string": "page:project:view",
+      "resource": "page",
+      "scope": "project",
+      "action": "view",
+      "description": "Ver la página de Proyecto"
+    },
+    {
+      "permission_id": 10008,
+      "permission_string": "page:dashproject:view",
+      "resource": "page",
+      "scope": "dashproject",
+      "action": "view",
+      "description": "Ver la página de Dashboard de Proyecto"
+    },
+    {
+      "permission_id": 10009,
+      "permission_string": "page:contacto:view",
+      "resource": "page",
+      "scope": "contacto",
+      "action": "view",
+      "description": "Ver la página de Contacto"
+    }
+  ],
+  "permisosEstandar": [
+    {
+      "idPermiso": 1,
+      "permiso": "page:seguridad_usuarios:view",
+      "modulo": "seguridad",
+      "entidad": "usuarios",
+      "accion": "view",
+      "descripcion": "Permite ver la página de Usuarios"
+    },
+    {
+      "idPermiso": 2,
+      "permiso": "page:seguridad_roles:view",
+      "modulo": "seguridad",
+      "entidad": "roles",
+      "accion": "view",
+      "descripcion": "Permite ver la página de Roles"
+    },
+    {
+      "idPermiso": 3,
+      "permiso": "page:seguridad_permisos:view",
+      "modulo": "seguridad",
+      "entidad": "permisos",
+      "accion": "view",
+      "descripcion": "Permite ver la página de Permisos"
+    },
+    {
+      "idPermiso": 10,
+      "permiso": "seguridad_usuario:view",
+      "modulo": "seguridad",
+      "entidad": "usuario",
+      "accion": "view",
+      "descripcion": "Permite ver usuarios del sistema"
+    },
+    {
+      "idPermiso": 11,
+      "permiso": "seguridad_usuario:create",
+      "modulo": "seguridad",
+      "entidad": "usuario",
+      "accion": "create",
+      "descripcion": "Permite crear usuarios del sistema"
+    },
+    {
+      "idPermiso": 12,
+      "permiso": "seguridad_usuario:edit",
+      "modulo": "seguridad",
+      "entidad": "usuario",
+      "accion": "edit",
+      "descripcion": "Permite editar usuarios del sistema"
+    },
+    {
+      "idPermiso": 13,
+      "permiso": "seguridad_usuario:delete",
+      "modulo": "seguridad",
+      "entidad": "usuario",
+      "accion": "delete",
+      "descripcion": "Permite eliminar usuarios del sistema"
+    },
+    {
+      "idPermiso": 20,
+      "permiso": "seguridad_rol:view",
+      "modulo": "seguridad",
+      "entidad": "rol",
+      "accion": "view",
+      "descripcion": "Permite ver roles del sistema"
+    },
+    {
+      "idPermiso": 21,
+      "permiso": "seguridad_rol:create",
+      "modulo": "seguridad",
+      "entidad": "rol",
+      "accion": "create",
+      "descripcion": "Permite crear roles del sistema"
+    },
+    {
+      "idPermiso": 22,
+      "permiso": "seguridad_rol:edit",
+      "modulo": "seguridad",
+      "entidad": "rol",
+      "accion": "edit",
+      "descripcion": "Permite editar roles del sistema"
+    },
+    {
+      "idPermiso": 23,
+      "permiso": "seguridad_rol:delete",
+      "modulo": "seguridad",
+      "entidad": "rol",
+      "accion": "delete",
+      "descripcion": "Permite eliminar roles del sistema"
+    },
+    {
+      "idPermiso": 30,
+      "permiso": "seguridad_permiso:view",
+      "modulo": "seguridad",
+      "entidad": "permiso",
+      "accion": "view",
+      "descripcion": "Permite ver el catálogo de permisos"
+    },
+    {
+      "idPermiso": 31,
+      "permiso": "seguridad_permiso:create",
+      "modulo": "seguridad",
+      "entidad": "permiso",
+      "accion": "create",
+      "descripcion": "Permite crear permisos del sistema"
+    },
+    {
+      "idPermiso": 32,
+      "permiso": "seguridad_permiso:edit",
+      "modulo": "seguridad",
+      "entidad": "permiso",
+      "accion": "edit",
+      "descripcion": "Permite editar permisos del sistema"
+    },
+    {
+      "idPermiso": 33,
+      "permiso": "seguridad_permiso:delete",
+      "modulo": "seguridad",
+      "entidad": "permiso",
+      "accion": "delete",
+      "descripcion": "Permite eliminar permisos del sistema"
+    }
+  ],
+  "rolePermisosEstandar": [
+    {
+      "idRol": 1,
+      "idPermiso": 1
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 2
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 3
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 10
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 11
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 12
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 13
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 20
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 21
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 22
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 23
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 30
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 31
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 32
+    },
+    {
+      "idRol": 1,
+      "idPermiso": 33
+    },
+    {
+      "idRol": 2,
+      "idPermiso": 1
+    },
+    {
+      "idRol": 2,
+      "idPermiso": 2
+    },
+    {
+      "idRol": 2,
+      "idPermiso": 3
+    },
+    {
+      "idRol": 3,
+      "idPermiso": 1
+    },
+    {
+      "idRol": 3,
+      "idPermiso": 2
+    },
+    {
+      "idRol": 3,
+      "idPermiso": 3
+    },
+    {
+      "idRol": 3,
+      "idPermiso": 20
+    },
+    {
+      "idRol": 3,
+      "idPermiso": 22
+    },
+    {
+      "idRol": 3,
+      "idPermiso": 10
+    },
+    {
+      "idRol": 3,
+      "idPermiso": 30
+    }
+  ],
+  "userRolesEstandar": [
+    {
+      "user_id": 1,
+      "idRol": 1
+    },
+    {
+      "user_id": 2,
+      "idRol": 2
+    },
+    {
+      "user_id": 3,
+      "idRol": 3
+    }
+  ],
+  "user_roles": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "role_id": 1
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "role_id": 2
+    },
+    {
+      "id": 3,
+      "user_id": 3,
+      "role_id": 1002
+    },
+    {
+      "id": 4,
+      "user_id": 1,
+      "role_id": 1
+    },
+    {
+      "id": 5,
+      "user_id": 1,
+      "role_id": 1
+    }
+  ],
+  "role_permissions": [
+    {
+      "id": 1,
+      "role_id": 1,
+      "permission_id": 4
+    },
+    {
+      "id": 2,
+      "role_id": 1,
+      "permission_id": 5
+    },
+    {
+      "id": 3,
+      "role_id": 1,
+      "permission_id": 6
+    },
+    {
+      "id": 4,
+      "role_id": 1,
+      "permission_id": 7
+    },
+    {
+      "id": 5,
+      "role_id": 1,
+      "permission_id": 8
+    },
+    {
+      "id": 6,
+      "role_id": 1,
+      "permission_id": 9
+    },
+    {
+      "id": 7,
+      "role_id": 1,
+      "permission_id": 10
+    },
+    {
+      "id": 8,
+      "role_id": 1,
+      "permission_id": 11
+    },
+    {
+      "id": 9,
+      "role_id": 1,
+      "permission_id": 13
+    },
+    {
+      "id": 10,
+      "role_id": 1,
+      "permission_id": 14
+    },
+    {
+      "id": 11,
+      "role_id": 1,
+      "permission_id": 20
+    },
+    {
+      "id": 12,
+      "role_id": 1,
+      "permission_id": 21
+    },
+    {
+      "id": 13,
+      "role_id": 1,
+      "permission_id": 22
+    },
+    {
+      "id": 14,
+      "role_id": 1,
+      "permission_id": 23
+    },
+    {
+      "id": 15,
+      "role_id": 1,
+      "permission_id": 30
+    },
+    {
+      "id": 16,
+      "role_id": 1,
+      "permission_id": 31
+    },
+    {
+      "id": 17,
+      "role_id": 1,
+      "permission_id": 32
+    },
+    {
+      "id": 18,
+      "role_id": 1,
+      "permission_id": 33
+    },
+    {
+      "id": 19,
+      "role_id": 1,
+      "permission_id": 40
+    },
+    {
+      "id": 20,
+      "role_id": 1,
+      "permission_id": 41
+    },
+    {
+      "id": 21,
+      "role_id": 1,
+      "permission_id": 42
+    },
+    {
+      "id": 22,
+      "role_id": 1,
+      "permission_id": 43
+    },
+    {
+      "id": 23,
+      "role_id": 1,
+      "permission_id": 150
+    },
+    {
+      "id": 24,
+      "role_id": 1,
+      "permission_id": 10000
+    },
+    {
+      "id": 25,
+      "role_id": 1,
+      "permission_id": 10001
+    },
+    {
+      "id": 26,
+      "role_id": 1,
+      "permission_id": 10002
+    },
+    {
+      "id": 27,
+      "role_id": 1,
+      "permission_id": 10003
+    },
+    {
+      "id": 28,
+      "role_id": 1,
+      "permission_id": 10004
+    },
+    {
+      "id": 29,
+      "role_id": 1,
+      "permission_id": 10005
+    },
+    {
+      "id": 30,
+      "role_id": 1,
+      "permission_id": 10006
+    },
+    {
+      "id": 31,
+      "role_id": 1,
+      "permission_id": 10007
+    },
+    {
+      "id": 32,
+      "role_id": 1,
+      "permission_id": 10008
+    },
+    {
+      "id": 33,
+      "role_id": 1,
+      "permission_id": 10009
+    },
+    {
+      "id": 34,
+      "role_id": 2,
+      "permission_id": 10000
+    },
+    {
+      "id": 35,
+      "role_id": 2,
+      "permission_id": 10001
+    },
+    {
+      "id": 36,
+      "role_id": 1002,
+      "permission_id": 10000
+    },
+    
+    
+    {
+      "id": 100,
+      "role_id": 1,
+      "permission_id": 20010
+    },
+    {
+      "id": 101,
+      "role_id": 1,
+      "permission_id": 20011
+    },
+    {
+      "id": 102,
+      "role_id": 1,
+      "permission_id": 20012
+    },
+    {
+      "id": 103,
+      "role_id": 1,
+      "permission_id": 20020
+    },
+    {
+      "id": 104,
+      "role_id": 1,
+      "permission_id": 20021
+    },
+    {
+      "id": 105,
+      "role_id": 1,
+      "permission_id": 20022
+    },
+    {
+      "id": 106,
+      "role_id": 1,
+      "permission_id": 20030
+    },
+    {
+      "id": 107,
+      "role_id": 1,
+      "permission_id": 20031
+    },
+    {
+      "id": 108,
+      "role_id": 1,
+      "permission_id": 20032
+    }
+  ]
+}

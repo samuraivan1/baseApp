@@ -5,7 +5,11 @@ import { refreshToken } from './authService';
 
 // Usa proxy de Vite por defecto ('/api').
 // Si defines VITE_API_BASE_URL, se usará directamente (ej.: 'http://localhost:3001').
-const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
+// En desarrollo usamos same-origin sin prefijo para evitar proxy del dev server,
+// las rutas MSW ya admiten ambos: con y sin '/api'.
+const baseURL = import.meta.env.MODE === 'development'
+  ? '/api'
+  : (import.meta.env.VITE_API_BASE_URL || '/api');
 const api: AxiosInstance = axios.create({ baseURL });
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {

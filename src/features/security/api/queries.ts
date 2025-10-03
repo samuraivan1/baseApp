@@ -3,10 +3,12 @@ import { usersKeys } from './queryKeys';
 import { getUsers, createUser, updateUser, deleteUser } from './userService';
 import { getRoles, createRole, updateRole, deleteRole } from './roleService';
 import { getPermissions, createPermission, updatePermission, deletePermission } from './permissionService';
+import { getUserRoles } from './relationsService';
 
 // Users
-export const useUsersQuery = () =>
-  useQuery({ queryKey: usersKeys.all, queryFn: getUsers });
+// Permite pasar opciones (e.g., select) para transformar datos en el consumidor
+export const useUsersQuery = (options?: Record<string, unknown>) =>
+  useQuery({ queryKey: usersKeys.all, queryFn: getUsers, ...(options ?? {}) });
 
 export const useCreateUser = () => {
   const qc = useQueryClient();
@@ -31,6 +33,10 @@ export const useDeleteUser = () => {
     onSuccess: () => qc.invalidateQueries({ queryKey: usersKeys.all }),
   });
 };
+
+// User-Roles relations
+export const useUserRolesQuery = () =>
+  useQuery({ queryKey: ['user_roles'], queryFn: getUserRoles });
 
 // Roles
 export const useRolesQuery = () =>

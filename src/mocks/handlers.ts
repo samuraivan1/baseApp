@@ -1,20 +1,32 @@
+import { usersHandlers } from './handlers/users';
+import { rolesHandlers } from './handlers/roles';
+import { permissionsHandlers } from './handlers/permissions';
+import { relationsHandlers } from './handlers/relations';
+import { menuHandlers } from './handlers/menu';
+import { tableroHandlers } from './handlers/tablero';
+import { authHandlers } from './handlers/auth';
+import { genericHandlers } from './handlers/generic';
 import { http } from 'msw';
 
-// Nota: Cuando usas `npx json-server`, estos mocks no se utilizan,
-// pero es buena práctica mantenerlos sincronizados para las pruebas unitarias.
-const API_BASE_URL = 'http://localhost:3001';
-
 export const handlers = [
-  // --- Endpoints de Seguridad ---
-  http.get(`${API_BASE_URL}/roles`, () => {}),
-  http.get(`${API_BASE_URL}/users`, () => {}),
-  http.get(`${API_BASE_URL}/permissions`, () => {}),
-
-  // --- Endpoints de Menús ---
-  http.get(`${API_BASE_URL}/menu`, () => {}),
-  http.get(`${API_BASE_URL}/menuPerfil`, () => {}),
-
-  // --- Endpoint del Tablero ---
-  http.get(`${API_BASE_URL}/tablero`, () => {}),
-  http.put(`${API_BASE_URL}/tablero`, () => {}),
+  ...authHandlers,
+  ...usersHandlers,
+  ...rolesHandlers,
+  ...permissionsHandlers,
+  ...relationsHandlers,
+  ...menuHandlers,
+  ...tableroHandlers,
+  // Generic fallback: expone CRUD para cualquier colección de db.json via /api/:collection
+  ...genericHandlers,
+  // Dev-only catch-all logger: forward to network (no interception)
+  http.all('*', ({ request }) => {
+    try {
+      if (typeof window !== 'undefined' && import.meta && import.meta.env && import.meta.env.MODE === 'development') {
+        // eslint-disable-next-line no-console
+        console.debug('[MSW][passthrough]', request.method, new URL(request.url).pathname);
+      }
+    } catch {}
+    // Use the special symbol to bypass mocking in MSW v2
+    return undefined as any; // returning undefined lets MSW fall through to network
+  }),
 ];

@@ -10,7 +10,7 @@ Este proyecto está construido con **Vite** y utiliza las siguientes tecnología
 - 📡 Axios con interceptores
 - 📘 Storybook
 - 🧪 Vitest + Testing Library + Playwright
-- 🛠️ json-server (API mock)
+- 🛠️ MSW (API mock)
 
 ---
 
@@ -33,7 +33,27 @@ Sirve localmente el build ya generado.
 
 ### `npm run server`
 
-Ejecuta `json-server` usando `db.json` en el puerto `3001`.
+MSW intercepta las peticiones en desarrollo y en tests usando los handlers en `src/mocks`. Los datos semilla provienen de `src/mocks/db.json`.
+
+#### Inicializar/actualizar Service Worker de MSW
+
+Genera el archivo oficial del worker en `public/mockServiceWorker.js`:
+
+```
+npx msw init public --save
+```
+
+- Ejecútalo cuando actualices la versión de `msw`.
+- El repo incluye un placeholder mínimo para desarrollo, pero se recomienda usar el archivo oficial.
+
+#### Persistencia de los mocks (solo dev)
+
+- Los cambios en runtime se guardan en `localStorage` bajo la clave `msw:db`.
+- Para resetear a la semilla de `src/mocks/db.json` usa el botón flotante “Reset seed” o ejecuta:
+
+```
+localStorage.removeItem('msw:db'); location.reload();
+```
 
 ### `npm run test`
 
@@ -77,7 +97,7 @@ src/
 
 ## 📦 Mock API
 
-El proyecto incluye `json-server` con el archivo `db.json` para simular un backend.  
+El proyecto usa MSW con `src/mocks/db.json` para simular un backend sin levantar servidores adicionales.  
 Se ejecuta con:
 
 ```bash

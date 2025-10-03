@@ -14,8 +14,12 @@ import { store } from '@/app/store';
 const rootElement = document.getElementById('root') as HTMLElement;
 const root = ReactDOM.createRoot(rootElement);
 
-// ✅ Inicializa configuración y luego monta la App
+// ✅ Inicializa MSW en desarrollo, luego configuración y monta la App
 const initializeApp = async () => {
+  if (import.meta.env.MODE === 'development') {
+    const { startWorker } = await import('@/mocks/browser');
+    await startWorker();
+  }
   await loadConfig();
 
   root.render(

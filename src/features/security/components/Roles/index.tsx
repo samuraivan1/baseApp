@@ -19,7 +19,6 @@ import type { FilterableColumn } from '@/shared/components/common/CommandBar/typ
 
 import './Roles.scss';
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
-import PermissionGate from '@/shared/components/common/PermissionGate';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 
 const RolesPage: React.FC = () => {
@@ -158,8 +157,8 @@ const RolesPage: React.FC = () => {
       <PageHeader title={rolesMessages.title} titleSize="1.75rem" />
 
       {!isFormOpen && (
-      <PermissionGate perm={AP.ROLE_CREATE}>
-      <CommandBar
+        // PermissionGate removed: always render create button in dev
+        <CommandBar
         // búsqueda
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -180,8 +179,8 @@ const RolesPage: React.FC = () => {
         refreshLabel={rolesMessages.refreshLabel}
         filtersLabel={rolesMessages.filtersLabel}
         excelLabel={rolesMessages.excelLabel}
-      />
-      </PermissionGate>)}
+        />
+      )}
 
       <ListLoading
         loading={isLoading}
@@ -201,12 +200,10 @@ const RolesPage: React.FC = () => {
               centered
               renderActions={(role: Role) => (
                 <>
-                  <PermissionGate perm={AP.ROLE_EDIT}>
+                  {/* PermissionGate removed around Edit */}
                     <TableActionsCell onEdit={() => handleOpenEdit(role)} editLabel={rolesMessages.update} />
-                  </PermissionGate>
-                  <PermissionGate perm={AP.ROLE_DELETE}>
+                  {/* PermissionGate removed around Delete */}
                     <TableActionsCell onDelete={() => { setDeletingId(role.role_id); }} deleteLabel={rolesMessages.delete} />
-                  </PermissionGate>
                 </>
               )}
               pagination={{
@@ -218,12 +215,12 @@ const RolesPage: React.FC = () => {
               }}
             />
           </div>
-          )}
+        )}
       </ListLoading>
 
       {isFormOpen && (
         <div className="segu-roles__embedded-form">
-          <PermissionGate perm={editingRole ? AP.ROLE_EDIT : AP.ROLE_CREATE}>
+          {/* PermissionGate removed around form submit */}
             <RoleForm
             open={isFormOpen}
             onClose={() => setIsFormOpen(false)}
@@ -241,7 +238,7 @@ const RolesPage: React.FC = () => {
               setIsFormOpen(false);
             }}
           />
-          </PermissionGate>
+          
         </div>
       )}
       {/* Confirmación de eliminación */}

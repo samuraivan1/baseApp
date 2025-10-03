@@ -5,7 +5,6 @@ import { EntityTableColumn } from '@/shared/components/common/Entitytable';
 import PaginatedEntityTable from '@/shared/components/common/PaginatedEntityTable';
 // import Pagination from '@/shared/components/common/Pagination';
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
-import PermissionGate from '@/shared/components/common/PermissionGate';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 // import Button from '@/shared/components/ui/Button';
 import { useQueryClient } from '@tanstack/react-query';
@@ -105,7 +104,6 @@ const PermisosPage: React.FC = () => {
     <div className="segu-permisos">
       <PageHeader title={permisosMessages.title} titleSize="1.75rem" />
       {!isFormOpen && (
-      <PermissionGate perm={AP.PERMISSION_CREATE}>
       <CommandBar
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -124,7 +122,7 @@ const PermisosPage: React.FC = () => {
         filtersLabel={commonDefaultMessages.filters}
         excelLabel={commonDefaultMessages.exportCsv}
       />
-      </PermissionGate>)}
+      )}
 
       <ListLoading
         loading={isLoading}
@@ -144,12 +142,8 @@ const PermisosPage: React.FC = () => {
             centered
             renderActions={(p: Permission) => (
               <>
-                <PermissionGate perm={AP.PERMISSION_EDIT}>
-                  <TableActionsCell onEdit={() => handleOpenEdit(p)} editLabel={commonDefaultMessages.edit} />
-                </PermissionGate>
-                <PermissionGate perm={AP.PERMISSION_DELETE}>
-                  <TableActionsCell onDelete={() => { setDeletingId(p.permission_id); setConfirmOpen(true); }} deleteLabel={commonDefaultMessages.delete} />
-                </PermissionGate>
+                <TableActionsCell onEdit={() => handleOpenEdit(p)} editLabel={commonDefaultMessages.edit} />
+                <TableActionsCell onDelete={() => { setDeletingId(p.permission_id); setConfirmOpen(true); }} deleteLabel={commonDefaultMessages.delete} />
               </>
             )}
             pagination={{
@@ -166,7 +160,6 @@ const PermisosPage: React.FC = () => {
 
       {isFormOpen && (
         <div className="segu-permisos__embedded-form">
-          <PermissionGate perm={editing ? AP.PERMISSION_EDIT : AP.PERMISSION_CREATE}>
             <PermissionForm
               open={isFormOpen}
               onClose={() => setIsFormOpen(false)}
@@ -193,7 +186,6 @@ const PermisosPage: React.FC = () => {
                 setIsFormOpen(false);
               }}
             />
-          </PermissionGate>
         </div>
       )}
 

@@ -30,7 +30,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "server": "json-server --watch db.json --port 3001",
+    "server": "echo 'MSW activo: no es necesario json-server'",
     "mock": "node server.js",
     "test": "vitest",
     "storybook": "storybook dev -p 6006",
@@ -85,6 +85,11 @@
   "eslintConfig": {
     "extends": [
       "plugin:storybook/recommended"
+    ]
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
     ]
   }
 }
