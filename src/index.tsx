@@ -19,6 +19,9 @@ const initializeApp = async () => {
   if (import.meta.env.MODE === 'development') {
     const { startWorker } = await import('@/mocks/browser');
     await startWorker();
+    // Exponer helpers de auth en modo desarrollo
+    const { exposeAuth } = await import('@/dev/exposeAuth');
+    exposeAuth();
   }
   await loadConfig();
 

@@ -13,6 +13,10 @@ export type AuthedUser = { user: any; token: string };
 export function requireAuth(req: Request): AuthedUser | HttpResponse {
   const token = getBearer(req);
   if (!token) return new HttpResponse(null, { status: 401 });
+  // Simular expiración: si el token contiene 'expired', responder 401
+  if (token.toLowerCase().includes('expired')) {
+    return new HttpResponse(null, { status: 401 });
+  }
   // En mock, resolvemos usuario por token fijo o por primer usuario si hay sesión mock.
   // Alternativa: mapear token->user en localStorage, pero aquí usamos primer usuario válido.
   // Intentar extraer user_id codificado en token (mock-access-token[:id])

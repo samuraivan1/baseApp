@@ -18,14 +18,12 @@ export const useAuthStore = create<AuthStoreType>()(
         const accessToken = (res as Record<string, unknown>)?.['access_token'] as string | undefined
           ?? (res as Record<string, unknown>)?.['accessToken'] as string | undefined
           ?? null;
-        const refreshToken = (res as Record<string, unknown>)?.['refresh_token'] as string | undefined
-          ?? (res as Record<string, unknown>)?.['refreshToken'] as string | undefined
-          ?? null;
+        // No persistimos refreshToken en frontend: se usará cookie HttpOnly
         set({
           isLoggedIn: true,
           user: res.user,
           accessToken,
-          refreshToken: refreshToken ?? null,
+          refreshToken: null,
         });
         return res.user;
       },
@@ -39,11 +37,9 @@ export const useAuthStore = create<AuthStoreType>()(
         });
       },
 
-      setToken(accessToken: string, refreshToken?: string | null) {
-        set({
-          accessToken,
-          refreshToken: refreshToken ?? get().refreshToken ?? null,
-        });
+      setToken(accessToken: string, _refreshToken?: string | null) {
+        // Solo actualizamos accessToken. El refresh va por cookie HttpOnly
+        set({ accessToken });
       },
 
       getToken() {
@@ -51,7 +47,8 @@ export const useAuthStore = create<AuthStoreType>()(
       },
 
       getRefreshToken() {
-        return get().refreshToken;
+        // Devolvemos siempre null para forzar uso de cookie HttpOnly en el refresh
+        return null;
       },
 
       hasPermission(permissionString) {
@@ -72,7 +69,7 @@ export const useAuthStore = create<AuthStoreType>()(
         isLoggedIn: state.isLoggedIn,
         user: state.user,
         accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
+        // refreshToken NO se persiste en almacenamiento
       }),
     }
   )
