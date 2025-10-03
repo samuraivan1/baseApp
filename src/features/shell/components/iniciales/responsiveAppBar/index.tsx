@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuthStore } from '@/features/shell/state/authStore';
 import CustomNavMenu from './CustomNavMenu';
 import { images } from '@/assets/images';
+import SafeImg from '@/shared/components/common/SafeImg';
 import './ResponsiveAppBar.scss';
 import { useMainMenu } from './hooks/useMainMenu';
 import UserProfileMenu from './UserProfileMenu';
@@ -37,7 +38,7 @@ const ResponsiveAppBar: React.FC = () => {
     <div className="app-bar">
       <div className="app-bar__toolbar">
         <Link to="/home" className="app-bar__logo">
-          <img src={images.logoHeader} alt="Logo" />
+          <SafeImg src={images.logoHeader} alt="Logo" allowRelative />
         </Link>
         <nav className="app-bar__desktop-menu">
           <CustomNavMenu items={menuItems} />

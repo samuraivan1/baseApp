@@ -8,6 +8,7 @@ export const useAuthStore = create<AuthStoreType>()(
   persist(
     (set, get) => ({
       isLoggedIn: false,
+      authReady: false,
       user: null,
       accessToken: null,
       refreshToken: null,
@@ -21,16 +22,20 @@ export const useAuthStore = create<AuthStoreType>()(
         // No persistimos refreshToken en frontend: se usará cookie HttpOnly
         set({
           isLoggedIn: true,
+          authReady: true,
           user: res.user,
           accessToken,
           refreshToken: null,
         });
+        try { localStorage.removeItem('auth:revoked'); } catch {}
         return res.user;
       },
 
       logout() {
+        try { localStorage.setItem('auth:revoked', '1'); } catch {}
         set({
           isLoggedIn: false,
+          authReady: true,
           user: null,
           accessToken: null,
           refreshToken: null,
@@ -51,6 +56,18 @@ export const useAuthStore = create<AuthStoreType>()(
         return null;
       },
 
+      setLoggedIn(flag: boolean) {
+        set({ isLoggedIn: flag });
+      },
+
+      setUser(user) {
+        set({ user });
+      },
+
+      setAuthReady(flag: boolean) {
+        set({ authReady: flag });
+      },
+
       hasPermission(permissionString) {
         const u = get().user;
         if (!u) return false;
@@ -65,12 +82,20 @@ export const useAuthStore = create<AuthStoreType>()(
     }),
     {
       name: 'auth',
-      partialize: (state) => ({
-        isLoggedIn: state.isLoggedIn,
-        user: state.user,
-        accessToken: state.accessToken,
-        // refreshToken NO se persiste en almacenamiento
-      }),
+      version: 2,
+      migrate: (persistedState: any, version) => {
+        // Elimina claves antiguas (isLoggedIn, tokens) y conserva solo user
+        const user = persistedState?.user ?? null;
+        return { user };
+      },
+      partialize: (state) => ({ user: state.user }),
+      onRehydrateStorage: () => (state) => {
+        // Al finalizar la rehidratación indicamos que el store está listo;
+        // si hay usuario persistido, marcamos sesión mientras llega el token.
+        const next: Partial<ReturnType<typeof useAuthStore.getState>> = { authReady: true } as any;
+        if (state?.user) Object.assign(next, { isLoggedIn: true });
+        useAuthStore.setState(next);
+      },
     }
   )
 );
@@ -82,5 +107,9 @@ export function getAuthStore() {
     getRefreshToken: () => state.getRefreshToken(),
     setToken: state.setToken,
     logout: state.logout,
+    getUser: () => state.user,
+    setLoggedIn: state.setLoggedIn,
+    setUser: state.setUser,
+    setAuthReady: state.setAuthReady,
   };
 }

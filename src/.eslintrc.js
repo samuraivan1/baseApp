@@ -21,6 +21,8 @@ module.exports = {
   rules: {
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
+    // Prohibir HTML crudo en React; use SafeHtml + sanitizeHtml
+    'react/no-danger': 'error',
     '@typescript-eslint/no-unused-vars': [
       'warn',
       { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },

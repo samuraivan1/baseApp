@@ -3,6 +3,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useProfileMenu } from './hooks/useProfileMenu';
 import { useAuthStore } from '@/features/shell/state/authStore';
+import { logout as apiLogout } from '@/shared/api/authService';
 import { NavMenuItem } from '@/shared/types/ui';
 import { toast } from 'react-toastify';
 import { authMessages } from '@/constants/commonMessages';
@@ -80,7 +81,8 @@ const UserProfileMenu: React.FC = () => {
   const { profileMenuItems } = useProfileMenu();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try { await apiLogout(); } catch {}
     logout();
     toast.info(authMessages.logoutSuccess);
     navigate('/login');

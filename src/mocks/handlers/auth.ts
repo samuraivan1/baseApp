@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { db, persistDb } from '../data/db';
+import { requireAuth } from '../utils/auth';
 
 type LoginBody = { username?: string; email?: string; password: string };
 
@@ -36,5 +37,12 @@ export const authHandlers = [
   http.post('/auth/logout', async (ctx) => authHandlers[5].resolver(ctx)),
   http.post('/api/auth/logout', async () => {
     return new HttpResponse(null, { status: 204 });
+  }),
+
+  // Sesión actual a partir del Authorization (Bearer) o token mock
+  http.get('/api/auth/session', ({ request }) => {
+    const auth = requireAuth(request);
+    if (auth instanceof HttpResponse) return auth;
+    return HttpResponse.json({ user: auth.user }, { status: 200 });
   }),
 ];

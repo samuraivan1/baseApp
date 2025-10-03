@@ -1,5 +1,6 @@
-export const HOME_BACKGROUND_IMAGE =
-  'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?q=80&w=2070&auto=format&fit=crop';
+import { images } from '@/assets/images';
+export const HOME_BACKGROUND_IMAGE = images.homeImg;
+export const LOGIN_BACKGROUND_IMAGE = images.loginImg;
 
 // Constant Parameters
 export const MESSAGE_ERROR_CLAVE = 'El campo "Clave"';

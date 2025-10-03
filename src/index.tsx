@@ -24,6 +24,18 @@ const initializeApp = async () => {
     exposeAuth();
   }
   await loadConfig();
+  // Silent refresh antes de renderizar, para restaurar sesión sin exponer tokens
+  try {
+    const { silentRefresh } = await import('@/shared/auth/silentRefresh');
+    await silentRefresh();
+  } catch {
+    // no-op: si falla, la app renderiza no autenticada
+  }
+  // Marcamos authReady en caso de que silentRefresh no lo haya hecho (errores previos)
+  try {
+    const { getAuthStore } = await import('@/features/shell/state/authStore');
+    getAuthStore().setAuthReady(true);
+  } catch {}
 
   root.render(
     <React.StrictMode>

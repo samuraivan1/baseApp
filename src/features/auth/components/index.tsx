@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuthStore } from '@/features/shell/state/authStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,6 +17,7 @@ import { loginSchema, LoginFormData } from './validationSchema';
 // ✅ 1. Importa desde las dos nuevas fuentes
 import { authMessages } from '@/constants/commonMessages';
 import { loginPageText } from './LoginPage.messages';
+import { ensureSafeUrl } from '@/shared/security/url';
 
 interface LoginPageProps {
   backgroundImage: string;
@@ -65,14 +66,18 @@ const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
     alert(loginPageText.winSSOSimulated);
   };
 
+  const safeBg = useMemo(
+    () => ensureSafeUrl(backgroundImage, { allowRelative: true, allowHttpSameOrigin: true }),
+    [backgroundImage]
+  );
+
   if (isLoggedIn) {
     return <Navigate to="/home" replace />;
   }
-
   return (
     <div
       className="login" // ✅ Bloque BEM
-      style={{ backgroundImage: `url(${backgroundImage})` }}
+      style={safeBg ? { backgroundImage: `url(${safeBg})` } : undefined}
     >
       <div className="login__container">
         <h1 className="login__title">Iniciar Sesión</h1>

@@ -26,3 +26,8 @@ export async function refreshToken(refresh_token: string): Promise<{ access_toke
 export async function logout(): Promise<void> {
   await api.post('/auth/logout');
 }
+
+export async function getSession(): Promise<{ user: UserSession }> {
+  const { data } = await api.get<{ user: UserSession }>('/auth/session');
+  return data;
+}
