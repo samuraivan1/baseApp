@@ -1,5 +1,20 @@
-// Disabled in development: components should not depend on PermissionGate.
-// Keeping a no-op export to avoid breaking imports if any remain.
-export default function NoopPermissionGate(props: { children: React.ReactNode }) {
-  return <>{props.children}</>;
+import React from 'react';
+import { usePermissionsQuery } from '@/features/security/api/queries';
+
+export type PermissionGateProps = {
+  perm: string; // código o string de permiso
+  fallback?: React.ReactNode;
+  children: React.ReactNode;
+};
+
+/**
+ * Wrapper de autorización simple para ocultar/mostrar contenido según permisos.
+ * Mantiene la UI actual: no altera estilos ni props de hijos.
+ */
+export default function PermissionGate({ perm, fallback = null, children }: PermissionGateProps) {
+  const { data: permisos = [], isLoading } = usePermissionsQuery();
+  type Perm = { key?: string; name?: string; permission_key?: string };
+  const allowed = Array.isArray(permisos) && (permisos as Perm[]).some((p) => p.key === perm || p.name === perm || p.permission_key === perm);
+  if (isLoading) return null;
+  return <>{allowed ? children : fallback}</>;
 }

@@ -1,7 +1,7 @@
-@use '../../../../styles/_mixins' as mix;
-@use '../../../../styles/_variables' as vars;
+@use '@/styles/_mixins' as mix;
+@use '@/styles/_variables' as vars;
 
-.ui-input {
+.ui-textarea {
   &__label {
     font-size: var(--font-size-sm);
     color: var(--color-text-primary);
@@ -11,6 +11,8 @@
   &__control {
     @include mix.input-compact();
     width: 100%;
+    min-height: calc(var(--control-height-md) * 2);
+    resize: vertical;
     &.is-invalid {
       border-color: var(--color-danger);
       box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.12);

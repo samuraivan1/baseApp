@@ -6,12 +6,19 @@ import { useCreateUser, useUpdateUser } from '@/features/security/api/queries';
 import { toast } from 'react-toastify';
 import logger from '@/shared/api/logger';
 import { createUser, updateUser } from '@/features/security/api/userService';
-import { toCreateUserDto, toUpdateUserDto } from '@/features/security/api/user.dto';
-import { addUserRole, getUserRoles, removeUserRole } from '@/features/security/api/relationsService';
+import {
+  toCreateUserDto,
+  toUpdateUserDto,
+} from '@/features/security/api/user.dto';
+import {
+  addUserRole,
+  getUserRoles,
+  removeUserRole,
+} from '@/features/security/api/relationsService';
 import { userSchema, UserFormValues } from './validationSchema';
 import { userFormMessages } from './UserForm.messages';
 import './UserForm.scss';
-import '@/shared/components/components/common/forms/orangealex-form.scss';
+import '@/shared/components/common/forms/orangealex-form.scss';
 import SectionHeader from '@/shared/components/common/SectionHeader';
 import { usersMessages } from './Users.messages';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
@@ -40,7 +47,12 @@ interface Props {
 const UserForm: React.FC<Props> = ({ initialData, onSuccess, onCancel }) => {
   const _qc = useQueryClient();
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<UserFormValues>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
     defaultValues: initialData ?? {
       nombre: '',
@@ -96,43 +108,55 @@ const UserForm: React.FC<Props> = ({ initialData, onSuccess, onCancel }) => {
 
   const createMutation = useCreateUser();
   const createUserWrapped = async (payload: UserFormValues) => {
-      const created = await createUser(toCreateUserDto(payload));
-      if (payload.rolId != null) {
-        try {
-          await addUserRole(created.user_id, Number(payload.rolId));
-  } catch {
-          // noop: asignar rol es best-effort tras crear usuario
-        }
+    const created = await createUser(toCreateUserDto(payload));
+    if (payload.rolId != null) {
+      try {
+        await addUserRole(created.user_id, Number(payload.rolId));
+      } catch {
+        // noop: asignar rol es best-effort tras crear usuario
       }
-      return created;
+    }
+    return created;
   };
 
   const updateMutation = useUpdateUser();
   const updateUserWrapped = async ({ id, payload }: UpdateUsuarioVariables) => {
-      const updated = await updateUser(id, toUpdateUserDto(payload));
+    const updated = await updateUser(id, toUpdateUserDto(payload));
 
-      if (payload.rolId !== undefined) {
-        const relations = await getUserRoles();
-        const current = relations.find((ur) => ur.user_id === id);
-        if (current && current.role_id !== Number(payload.rolId)) {
-          await removeUserRole(current.id);
-        }
-        if (payload.rolId != null) {
-          await addUserRole(id, Number(payload.rolId));
-        }
+    if (payload.rolId !== undefined) {
+      const relations = await getUserRoles();
+      const current = relations.find((ur) => ur.user_id === id);
+      if (current && current.role_id !== Number(payload.rolId)) {
+        await removeUserRole(current.id);
       }
-      return updated;
+      if (payload.rolId != null) {
+        await addUserRole(id, Number(payload.rolId));
+      }
+    }
+    return updated;
   };
 
   const submit = (data: UserFormValues) => {
     if (initialData?.idUsuario) {
       updateUserWrapped({ id: initialData.idUsuario, payload: data })
-        .then(() => { toast.success(userFormMessages.updateSuccess); onSuccess?.(); })
-        .catch((err) => { logger.error(err, { context: 'updateUsuario' }); toast.error(userFormMessages.genericError); });
+        .then(() => {
+          toast.success(userFormMessages.updateSuccess);
+          onSuccess?.();
+        })
+        .catch((err) => {
+          logger.error(err, { context: 'updateUsuario' });
+          toast.error(userFormMessages.genericError);
+        });
     } else {
       createUserWrapped(data)
-        .then(() => { toast.success(userFormMessages.createSuccess); onSuccess?.(); })
-        .catch((err) => { logger.error(err, { context: 'createUsuario' }); toast.error(userFormMessages.genericError); });
+        .then(() => {
+          toast.success(userFormMessages.createSuccess);
+          onSuccess?.();
+        })
+        .catch((err) => {
+          logger.error(err, { context: 'createUsuario' });
+          toast.error(userFormMessages.genericError);
+        });
     }
   };
 
@@ -145,48 +169,133 @@ const UserForm: React.FC<Props> = ({ initialData, onSuccess, onCancel }) => {
       />
       <form className="user-form" onSubmit={handleSubmit(submit)}>
         <LoadingOverlay
-          open={isSubmitting || createMutation.isPending || updateMutation.isPending}
+          open={
+            isSubmitting || createMutation.isPending || updateMutation.isPending
+          }
           message={usersMessages.savingUser ?? commonDefaultMessages.saving}
         />
         <div className="orangealex-form__grid">
           {/* Fila 1: 4 columnas */}
-          <FormInput label={usersMessages.form?.nombre ?? 'Nombre'} {...register('nombre')} error={errors.nombre?.message} />
-          <FormInput label={usersMessages.form?.segundoNombre ?? 'Segundo nombre'} {...register('segundoNombre')} />
-          <FormInput label={usersMessages.form?.apellidoPaterno ?? 'Apellido paterno'} {...register('apellidoPaterno')} />
-          <FormInput label={usersMessages.form?.apellidoMaterno ?? 'Apellido materno'} {...register('apellidoMaterno')} />
+          <FormInput
+            label={usersMessages.form?.nombre ?? 'Nombre'}
+            {...register('nombre')}
+            error={errors.nombre?.message}
+          />
+          <FormInput
+            label={usersMessages.form?.segundoNombre ?? 'Segundo nombre'}
+            {...register('segundoNombre')}
+          />
+          <FormInput
+            label={usersMessages.form?.apellidoPaterno ?? 'Apellido paterno'}
+            {...register('apellidoPaterno')}
+          />
+          <FormInput
+            label={usersMessages.form?.apellidoMaterno ?? 'Apellido materno'}
+            {...register('apellidoMaterno')}
+          />
           {/* Fila 2: correo span-3 + usuario */}
-          <FormInput wrapperClassName="form-field--span-3" label={usersMessages.form?.correoElectronico ?? 'Correo electrónico'} {...register('correoElectronico')} error={errors.correoElectronico?.message} />
-          <FormInput label={usersMessages.form?.nombreUsuario ?? 'Usuario'} {...register('nombreUsuario')} error={errors.nombreUsuario?.message} />
+          <FormInput
+            wrapperClassName="form-field--span-3"
+            label={
+              usersMessages.form?.correoElectronico ?? 'Correo electrónico'
+            }
+            {...register('correoElectronico')}
+            error={errors.correoElectronico?.message}
+          />
+          <FormInput
+            label={usersMessages.form?.nombreUsuario ?? 'Usuario'}
+            {...register('nombreUsuario')}
+            error={errors.nombreUsuario?.message}
+          />
           {/* Fila 3: rol, estatus, iniciales, proveedor */}
-          <FormInput type="number" label={usersMessages.form?.rolId ?? 'Rol (id)'} {...register('rolId', { valueAsNumber: true })} error={errors.rolId?.message} />
-          <FormSelect label={usersMessages.form?.status ?? 'Estatus'} {...register('status')}>
+          <FormInput
+            type="number"
+            label={usersMessages.form?.rolId ?? 'Rol (id)'}
+            {...register('rolId', { valueAsNumber: true })}
+            error={errors.rolId?.message}
+          />
+          <FormSelect
+            label={usersMessages.form?.status ?? 'Estatus'}
+            {...register('status')}
+          >
             <option value="activo">Activo</option>
             <option value="inactivo">Inactivo</option>
           </FormSelect>
-          <FormInput label={usersMessages.form?.initials ?? 'Iniciales'} {...register('initials')} />
-          <FormInput label={usersMessages.form?.auth_provider ?? 'Proveedor'} {...register('auth_provider')} />
+          <FormInput
+            label={usersMessages.form?.initials ?? 'Iniciales'}
+            {...register('initials')}
+          />
+          <FormInput
+            label={usersMessages.form?.auth_provider ?? 'Proveedor'}
+            {...register('auth_provider')}
+          />
           {/* Fila 4: teléfono, MFA, avatar span-2 */}
-          <FormInput label={usersMessages.form?.phone_number ?? 'Teléfono'} {...register('phone_number')} />
-          <FormSelect label={usersMessages.form?.mfa_enabled ?? 'MFA'} {...register('mfa_enabled', { setValueAs: (v) => (typeof v === 'boolean' ? v : String(v) === 'true') })}>
+          <FormInput
+            label={usersMessages.form?.phone_number ?? 'Teléfono'}
+            {...register('phone_number')}
+          />
+          <FormSelect
+            label={usersMessages.form?.mfa_enabled ?? 'MFA'}
+            {...register('mfa_enabled', {
+              setValueAs: (v) =>
+                typeof v === 'boolean' ? v : String(v) === 'true',
+            })}
+          >
             <option value="false">{commonDefaultMessages.no}</option>
             <option value="true">{commonDefaultMessages.yes}</option>
           </FormSelect>
-          <FormInput wrapperClassName="form-field--span-2" label={usersMessages.form?.avatar_url ?? 'Avatar URL'} {...register('avatar_url')} />
+          <FormInput
+            wrapperClassName="form-field--span-2"
+            label={usersMessages.form?.avatar_url ?? 'Avatar URL'}
+            {...register('avatar_url')}
+          />
           {/* Fila 5: bio span-2, azure, upn */}
-          <FormInput wrapperClassName="form-field--span-2" label={usersMessages.form?.bio ?? 'Bio'} {...register('bio')} />
-          <FormInput label={usersMessages.form?.azure_ad_object_id ?? 'Azure AD Object Id'} {...register('azure_ad_object_id')} />
-          <FormInput label={usersMessages.form?.upn ?? 'UPN'} {...register('upn')} />
+          <FormInput
+            wrapperClassName="form-field--span-2"
+            label={usersMessages.form?.bio ?? 'Bio'}
+            {...register('bio')}
+          />
+          <FormInput
+            label={
+              usersMessages.form?.azure_ad_object_id ?? 'Azure AD Object Id'
+            }
+            {...register('azure_ad_object_id')}
+          />
+          <FormInput
+            label={usersMessages.form?.upn ?? 'UPN'}
+            {...register('upn')}
+          />
           {/* Metadatos: 2x2 en filas separadas */}
-          <FormInput label={usersMessages.form?.email_verified_at ?? 'Email verificado'} {...register('email_verified_at')} readOnly />
-          <FormInput label={usersMessages.form?.last_login_at ?? 'Último acceso'} {...register('last_login_at')} readOnly />
-          <FormInput label={usersMessages.form?.created_at ?? 'Creado'} {...register('created_at')} readOnly />
-          <FormInput label={usersMessages.form?.updated_at ?? 'Actualizado'} {...register('updated_at')} readOnly />
+          <FormInput
+            label={usersMessages.form?.email_verified_at ?? 'Email verificado'}
+            {...register('email_verified_at')}
+            readOnly
+          />
+          <FormInput
+            label={usersMessages.form?.last_login_at ?? 'Último acceso'}
+            {...register('last_login_at')}
+            readOnly
+          />
+          <FormInput
+            label={usersMessages.form?.created_at ?? 'Creado'}
+            {...register('created_at')}
+            readOnly
+          />
+          <FormInput
+            label={usersMessages.form?.updated_at ?? 'Actualizado'}
+            {...register('updated_at')}
+            readOnly
+          />
         </div>
         <div className="user-form__actions">
           <FormActions
             onCancel={onCancel}
             onAccept={() => {}}
-            isAccepting={isSubmitting || createMutation.isPending || updateMutation.isPending}
+            isAccepting={
+              isSubmitting ||
+              createMutation.isPending ||
+              updateMutation.isPending
+            }
           />
         </div>
       </form>

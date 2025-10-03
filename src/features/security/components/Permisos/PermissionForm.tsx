@@ -4,7 +4,7 @@ import SectionHeader from '@/shared/components/common/SectionHeader';
 import FormActions from '@/shared/components/common/FormActions';
 import { permissionFormMessages as m } from './PermissionForm.messages';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
-import '@/shared/components/components/common/forms/orangealex-form.scss';
+import '@/shared/components/common/forms/orangealex-form.scss';
 import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 // import FormSelect from '@/shared/components/common/forms/inputs/FormSelect';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
@@ -24,8 +24,18 @@ type PermissionFormProps = {
   onSubmit: (values: PermissionFormValues) => void;
 };
 
-export default function PermissionForm({ open, onClose, initialValues, onSubmit }: PermissionFormProps) {
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<PermissionFormValues>({
+export default function PermissionForm({
+  open,
+  onClose,
+  initialValues,
+  onSubmit,
+}: PermissionFormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<PermissionFormValues>({
     defaultValues: {
       permission_string: initialValues?.permission_string ?? '',
       resource: initialValues?.resource ?? '',
@@ -51,7 +61,11 @@ export default function PermissionForm({ open, onClose, initialValues, onSubmit 
 
   return (
     <div className="orangealex-form oa-form--md oa-form--left">
-      <SectionHeader title={initialValues ? m.editTitle : m.newTitle} icon={faKey} onBack={onClose} />
+      <SectionHeader
+        title={initialValues ? m.editTitle : m.newTitle}
+        icon={faKey}
+        onBack={onClose}
+      />
       <form onSubmit={handleSubmit(onValid)} className="orangealex-form__body">
         <div className="orangealex-form__grid">
           <FormInput
@@ -61,18 +75,50 @@ export default function PermissionForm({ open, onClose, initialValues, onSubmit 
               required: m.errors.permissionStringRequired,
               minLength: { value: 5, message: m.errors.max80 },
               maxLength: { value: 80, message: m.errors.max80 },
-              pattern: { value: /^[a-z]+:[a-z]+:[a-z]+(-[a-z]+)?$/i, message: m.errors.permissionStringFormat },
+              pattern: {
+                value: /^[a-z]+:[a-z]+:[a-z]+(-[a-z]+)?$/i,
+                message: m.errors.permissionStringFormat,
+              },
             })}
             error={errors.permission_string?.message}
           />
-          <FormInput label={m.fields.resource} {...register('resource', { maxLength: { value: 40, message: m.errors.max40 } })} error={errors.resource?.message} />
-          <FormInput label={m.fields.action} {...register('action', { maxLength: { value: 40, message: m.errors.max40 } })} error={errors.action?.message} />
-          <FormInput label={m.fields.scope} {...register('scope', { maxLength: { value: 40, message: m.errors.max40 } })} error={errors.scope?.message} />
-          <FormTextarea wrapperClassName="form-field--full" label={m.fields.description} {...register('description', { maxLength: { value: 255, message: m.errors.max255 } })} error={errors.description?.message} />
+          <FormInput
+            label={m.fields.resource}
+            {...register('resource', {
+              maxLength: { value: 40, message: m.errors.max40 },
+            })}
+            error={errors.resource?.message}
+          />
+          <FormInput
+            label={m.fields.action}
+            {...register('action', {
+              maxLength: { value: 40, message: m.errors.max40 },
+            })}
+            error={errors.action?.message}
+          />
+          <FormInput
+            label={m.fields.scope}
+            {...register('scope', {
+              maxLength: { value: 40, message: m.errors.max40 },
+            })}
+            error={errors.scope?.message}
+          />
+          <FormTextarea
+            wrapperClassName="form-field--full"
+            label={m.fields.description}
+            {...register('description', {
+              maxLength: { value: 255, message: m.errors.max255 },
+            })}
+            error={errors.description?.message}
+          />
         </div>
 
         <div className="orangealex-form__footer">
-          <FormActions onCancel={onClose} onAccept={() => {}} isAccepting={isSubmitting} />
+          <FormActions
+            onCancel={onClose}
+            onAccept={() => {}}
+            isAccepting={isSubmitting}
+          />
         </div>
       </form>
     </div>

@@ -1,1 +1,5 @@
-export * from '@/shared/components/components/common/CommandBar/types'
+export interface FilterableColumn {
+  key: string;
+  label: string;
+}
+
