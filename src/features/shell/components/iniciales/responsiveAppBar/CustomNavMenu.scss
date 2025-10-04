@@ -62,21 +62,19 @@
     flex-grow: 1;
   }
 
-  &__icon {
-    width: 16px;
-  }
+  &__icon { width: 14px; }
 
   &__submenu {
     display: none;
     position: absolute;
     top: 90%;
     left: 0;
-    min-width: 220px;
-    background-color: #fff;
-    border-radius: 8px;
+    min-width: 190px;
+    background-color: var(--surface-white, #ffffff); // fondo claro con fallback
+    border-radius: 4px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border: 1px solid #e0e0e0;
-    padding: 8px 0;
+    padding: 2px 0;
     z-index: 100;
     height: auto;
     opacity: 0;
@@ -87,15 +85,29 @@
 
     .nav-menu__link {
       height: auto;
-      padding: 6px 10px;
-      &::after {
-        display: none;
-      }
+      padding: 2px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.95rem;
+      color: var(--color-text-strong, #2f2f2f); // fallback para contraste
+      &::after { display: none; }
     }
+
+    .nav-menu__title { color: inherit; flex: 1; }
+
+    /* Asegurar color legible en todos los estados y frente a overrides */
+    .nav-menu__link,
+    .nav-menu__link:visited,
+    .nav-menu__link:hover,
+    .nav-menu__link:active {
+      color: var(--color-text-strong, #2f2f2f) !important;
+    }
+    .nav-menu__title { color: var(--color-text-strong, #2f2f2f) !important; }
   }
 
   &__indicator {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #999;
     margin-left: auto;
   }
@@ -105,6 +117,12 @@
     background-color: #e0e0e0;
     margin: 8px 16px;
   }
+}
+
+/* Posicionamiento de subniveles: los submenús dentro de otro submenú se abren a la derecha */
+.nav-menu__submenu .nav-menu__item > .nav-menu__submenu {
+  top: -8px;
+  left: 100%;
 }
 
 /* Override when the nav is inside the orange toolbar */

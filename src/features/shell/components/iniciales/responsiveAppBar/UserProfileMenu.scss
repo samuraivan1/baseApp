@@ -7,10 +7,10 @@
   right: 0;
   width: 240px;
   background-color: var(--surface-white);
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--border-color-muted);
-  padding: 8px 0;
+  padding: 4px 0;
   z-index: 101; // z-index alto para que se muestre sobre el menú principal
 
   &__header {
@@ -53,15 +53,15 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
+    gap: 6px;
     width: 100%;
-    padding: 6px 16px;
+    padding: 3px 10px;
     background: none;
     border: none;
     cursor: pointer;
     text-align: left;
-    font-size: 1.1rem;
-    color: var(--color-text-strong);
+    font-size: 1rem;
+    color: var(--color-text-strong, #2f2f2f);
     text-decoration: none;
     transition: background-color 0.2s ease;
 
@@ -72,14 +72,23 @@
     &:hover { background-color: var(--surface-muted); }
   }
 
+  /* Forzar color legible en todos los estados del item */
+  &__button,
+  a.user-menu__button,
+  &__button:visited,
+  &__button:hover,
+  &__button:active {
+    color: var(--color-text-strong, #2f2f2f) !important;
+  }
+
   &__icon {
-    width: 16px;
+    width: 14px;
     color: var(--color-text-primary);
     flex-shrink: 0;
   }
 
   &__indicator {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #999;
   }
 
@@ -98,5 +107,11 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border: 1px solid var(--border-color-muted);
     z-index: 102; // Un z-index mayor para el sub-sub-menú
+  }
+
+  /* Asegurar color legible dentro de submenús */
+  &__submenu .user-menu__button,
+  &__submenu a.user-menu__button {
+    color: var(--color-text-strong, #2f2f2f);
   }
 }

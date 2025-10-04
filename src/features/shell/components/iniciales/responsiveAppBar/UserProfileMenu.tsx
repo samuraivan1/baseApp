@@ -37,7 +37,7 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
       <li className="user-menu__item">
         <button onClick={onLogout} className="user-menu__button">
           <FontAwesomeIcon
-            icon={iconMap[item.titulo]}
+            icon={iconMap[item.iconKey ?? item.titulo]}
             className="user-menu__icon"
           />
           {item.titulo}
@@ -49,9 +49,9 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
   return (
     <li className="user-menu__item">
       <NavLink to={item.ruta || '#'} className="user-menu__button">
-        {iconMap[item.titulo] && (
+        {iconMap[item.iconKey ?? item.titulo] && (
           <FontAwesomeIcon
-            icon={iconMap[item.titulo]}
+            icon={iconMap[item.iconKey ?? item.titulo]}
             className="user-menu__icon"
           />
         )}
@@ -76,12 +76,22 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
 };
 
 // --- Componente principal ---
-const UserProfileMenu: React.FC = () => {
-  const { user, logout } = useAuthStore();
+type UserProfileMenuProps = {
+  items?: NavMenuItem[];
+  user?: { full_name?: string | null; email?: string | null } | null;
+  onLogout?: () => Promise<void> | void;
+};
+
+const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ items, user: userProp, onLogout }) => {
+  const { user: userStore, logout } = useAuthStore();
   const { profileMenuItems } = useProfileMenu();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    if (onLogout) {
+      await onLogout();
+      return;
+    }
     try { await apiLogout(); } catch {}
     logout();
     toast.info(authMessages.logoutSuccess);
@@ -91,12 +101,12 @@ const UserProfileMenu: React.FC = () => {
   return (
     <div className="user-menu">
       <div className="user-menu__header">
-        <span className="user-menu__name">{user?.full_name}</span>
-        <span className="user-menu__email">{user?.email}</span>
+        <span className="user-menu__name">{(userProp ?? userStore)?.full_name}</span>
+        <span className="user-menu__email">{(userProp ?? userStore)?.email}</span>
       </div>
       <hr className="user-menu__divider" />
       <ul className="user-menu__list">
-        {profileMenuItems.map((item) => (
+        {(items ?? profileMenuItems).map((item) => (
           <MenuItem key={item.idMenu} item={item} onLogout={handleLogout} />
         ))}
       </ul>

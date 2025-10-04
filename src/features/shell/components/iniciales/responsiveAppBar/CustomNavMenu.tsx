@@ -32,7 +32,7 @@ interface CustomNavMenuProps {
 const MenuItem: React.FC<MenuItemProps> = ({ item, onItemClick }) => {
   const hasSubmenu = item.items && item.items.length > 0;
 
-  if (item.titulo === 'divider') {
+  if (item.kind === 'divider' || item.titulo === 'divider') {
     return <li className="nav-menu__divider" />;
   }
 
@@ -53,9 +53,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ item, onItemClick }) => {
         className="nav-menu__link"
         onClick={handleClick}
       >
-        {iconMap[item.titulo] && (
+        {iconMap[item.iconKey ?? item.titulo] && (
           <FontAwesomeIcon
-            icon={iconMap[item.titulo]}
+            icon={iconMap[item.iconKey ?? item.titulo]}
             className="nav-menu__icon"
           />
         )}

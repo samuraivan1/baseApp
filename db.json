@@ -4,39 +4,28 @@
       "idTarea-1": {
         "idTarea": "idTarea-1",
         "contenido": "007306 Check list Equipos de arrastre CDRs",
-        "usuariosAsignados": [
-          "AR"
-        ],
+        "usuariosAsignados": ["AR"],
         "fechaVencimiento": "2025-09-12",
         "diasActivo": 15
       },
       "idTarea-2": {
         "idTarea": "idTarea-2",
         "contenido": "Mejora - Eticolor",
-        "usuariosAsignados": [
-          "AL"
-        ],
+        "usuariosAsignados": ["AL"],
         "fechaVencimiento": "2025-08-20",
         "diasActivo": 6
       },
       "idTarea-3": {
         "idTarea": "idTarea-3",
         "contenido": "006520 Evaluación scanner SUNLUX y NETUM",
-        "usuariosAsignados": [
-          "GV",
-          "RO"
-        ],
+        "usuariosAsignados": ["GV", "RO"],
         "fechaVencimiento": "2025-08-29",
         "diasActivo": 11
       },
       "idTarea-4": {
         "idTarea": "idTarea-4",
         "contenido": "007135 Actualizar logotipo Grupo Truper CIAT",
-        "usuariosAsignados": [
-          "AR",
-          "GV",
-          "AL"
-        ],
+        "usuariosAsignados": ["AR", "GV", "AL"],
         "fechaVencimiento": "2025-09-30",
         "diasActivo": 43
       }
@@ -45,31 +34,20 @@
       "idColumna-1": {
         "idColumna": "idColumna-1",
         "titulo": "PENDIENTES",
-        "tareasIds": [
-          "idTarea-2",
-          "idTarea-1"
-        ]
+        "tareasIds": ["idTarea-2", "idTarea-1"]
       },
       "idColumna-2": {
         "idColumna": "idColumna-2",
         "titulo": "EN PROCESO",
-        "tareasIds": [
-          "idTarea-4"
-        ]
+        "tareasIds": ["idTarea-4"]
       },
       "idColumna-3": {
         "idColumna": "idColumna-3",
         "titulo": "PRUEBAS QAS",
-        "tareasIds": [
-          "idTarea-3"
-        ]
+        "tareasIds": ["idTarea-3"]
       }
     },
-    "ordenColumnas": [
-      "idColumna-1",
-      "idColumna-2",
-      "idColumna-3"
-    ]
+    "ordenColumnas": ["idColumna-1", "idColumna-2", "idColumna-3"]
   },
   "menu": [
     {

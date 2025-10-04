@@ -58,15 +58,63 @@
     },
     {
       "idMenu": 2,
-      "titulo": "Kanban",
+      "titulo": "Kanban 2",
       "ruta": "/kanban",
       "permisoId": 10001
     },
     {
       "idMenu": 3,
-      "titulo": "Seguridad",
+      "titulo": "Seguridad 2",
       "ruta": "/seguridad",
-      "permisoId": 10003
+      "permisoId": 10003,
+      "items": [
+        {
+          "idMenu": 31,
+          "titulo": "Usuarios",
+          "ruta": "/seguridad/usuarios",
+          "items": [
+            {
+              "idMenu": 311,
+              "titulo": "Listado",
+              "ruta": "/seguridad/usuarios/listado"
+            },
+            {
+              "idMenu": 312,
+              "titulo": "Crear",
+              "ruta": "/seguridad/usuarios/crear",
+              "items": [
+                {
+                  "idMenu": 3121,
+                  "titulo": "Rápido",
+                  "ruta": "/seguridad/usuarios/crear/rapido"
+                },
+                {
+                  "idMenu": 3122,
+                  "titulo": "Avanzado",
+                  "ruta": "/seguridad/usuarios/crear/avanzado"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "idMenu": 32,
+          "titulo": "Permisos",
+          "ruta": "/seguridad/permisos",
+          "items": [
+            {
+              "idMenu": 321,
+              "titulo": "Roles",
+              "ruta": "/seguridad/permisos/roles"
+            },
+            {
+              "idMenu": 322,
+              "titulo": "Asignaciones",
+              "ruta": "/seguridad/permisos/asignaciones"
+            }
+          ]
+        }
+      ]
     }
   ],
   "menuPerfil": [
@@ -75,6 +123,15 @@
       "titulo": "Perfil",
       "ruta": "/profile",
       "permisoId": null
+    },
+    {
+      "idMenu": "2",
+      "titulo": "Cuenta",
+      "ruta": "/account",
+      "items": [
+        { "idMenu": "21", "titulo": "Preferencias", "ruta": "/account/preferences" },
+        { "idMenu": "22", "titulo": "Notificaciones", "ruta": "/account/notifications" }
+      ]
     },
     {
       "idMenu": "4",
@@ -1235,8 +1292,7 @@
       "role_id": 1002,
       "permission_id": 10000
     },
-    
-    
+
     {
       "id": 100,
       "role_id": 1,
