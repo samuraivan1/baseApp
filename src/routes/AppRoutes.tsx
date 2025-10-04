@@ -7,7 +7,7 @@ import {
   Seguridad,
   UsuariosPage,
   RolesPage,
-  PermisosPage,
+  PermissionsPage,
 } from '@/features/security';
 import { Unauthorized } from '@/features/shell';
 import { FormLayoutDemo } from '@/features/demo';
@@ -86,7 +86,7 @@ const AppRoutes = () => {
           path="permisos"
           element={
             <ProtectedRoute permiso={RP.SEGU_PERMISSIONS_VIEW}>
-              <PermisosPage />
+              <PermissionsPage />
             </ProtectedRoute>
           }
         />

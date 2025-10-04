@@ -10,7 +10,7 @@ import { assignPermissionsToRole, getRolePermissions } from '@/features/security
 export function useEnsureAllPermsForUserRole(targetUsernames: string[] = ['iamendezm'], targetIds: number[] = [1]) {
   const { data: users = [] } = useQuery({ queryKey: ['usuarios'], queryFn: getUsers });
   const { data: relations = [] } = useQuery({ queryKey: ['userRoles'], queryFn: getUserRoles });
-  const { data: perms = [] } = useQuery({ queryKey: ['permisos'], queryFn: getPermissions });
+  const { data: perms = [] } = useQuery({ queryKey: ['permissions'], queryFn: getPermissions });
 
   useEffect(() => {
     if (!users.length || !relations.length || !perms.length) return;

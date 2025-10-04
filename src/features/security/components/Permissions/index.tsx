@@ -10,7 +10,7 @@ import { ActionPermissions as AP } from '@/features/security/constants/permissio
 import { useQueryClient } from '@tanstack/react-query';
 import { usePermissionsQuery, useCreatePermission, useUpdatePermission, useDeletePermission } from '@/features/security/api/queries';
 // Servicios y toasts gestionados por hooks centralizados en api/queries
-import { permisosMessages } from './Permisos.messages';
+import { permissionsMessages } from './Permissions.messages';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
 // estilos de página centralizados en features/security/styles/index.scss
 import type { Permission } from '@/shared/types/security';
@@ -19,11 +19,11 @@ import type { FilterableColumn } from '@/shared/components/common/CommandBar/typ
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import ListLoading from '@/shared/components/common/ListLoading';
 
-const PermisosPage: React.FC = () => {
+const PermissionsPage: React.FC = () => {
   const _qc = useQueryClient();
 
   // Data
-  const { data: permisos = [], isLoading } = usePermissionsQuery();
+  const { data: permissions = [], isLoading } = usePermissionsQuery();
 
   // UI state
   const [searchTerm, setSearchTerm] = useState('');
@@ -45,24 +45,24 @@ const PermisosPage: React.FC = () => {
 
   // Columns
   const columns: EntityTableColumn<Permission>[] = useMemo(() => [
-    { key: 'permission_string', label: permisosMessages.table.key, sortable: true },
-    { key: 'resource', label: permisosMessages.table.resource, sortable: true },
-    { key: 'action', label: permisosMessages.table.action, sortable: true },
-    { key: 'scope', label: permisosMessages.table.scope, sortable: true },
-    { key: 'description', label: permisosMessages.table.description },
+    { key: 'permission_string', label: permissionsMessages.table.key, sortable: true },
+    { key: 'resource', label: permissionsMessages.table.resource, sortable: true },
+    { key: 'action', label: permissionsMessages.table.action, sortable: true },
+    { key: 'scope', label: permissionsMessages.table.scope, sortable: true },
+    { key: 'description', label: permissionsMessages.table.description },
   ], []);
 
   const filterableColumns: FilterableColumn[] = useMemo(() => [
-    { key: 'permission_string', label: permisosMessages.table.key },
-    { key: 'resource', label: permisosMessages.table.resource },
-    { key: 'action', label: permisosMessages.table.action },
-    { key: 'scope', label: permisosMessages.table.scope },
+    { key: 'permission_string', label: permissionsMessages.table.key },
+    { key: 'resource', label: permissionsMessages.table.resource },
+    { key: 'action', label: permissionsMessages.table.action },
+    { key: 'scope', label: permissionsMessages.table.scope },
   ], []);
   const allowedFilterKeys = useMemo(() => filterableColumns.map(c => c.key) as Array<keyof Permission>, [filterableColumns]);
 
   // Filter + search + dedupe
   const filteredData = useMemo(() => {
-    let data = permisos;
+    let data = permissions;
     const q = searchTerm.trim().toLowerCase();
     if (q) {
       data = data.filter(p => (
@@ -81,7 +81,7 @@ const PermisosPage: React.FC = () => {
     const map = new Map<number, Permission>();
     for (const r of data) map.set(r.permission_id, r);
     return Array.from(map.values());
-  }, [permisos, searchTerm, activeFilters, allowedFilterKeys]);
+  }, [permissions, searchTerm, activeFilters, allowedFilterKeys]);
 
   const totalPages = Math.max(1, Math.ceil(filteredData.length / rowsPerPage));
   const currentTableData = useMemo(() => filteredData.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage), [filteredData, currentPage, rowsPerPage]);
@@ -97,12 +97,12 @@ const PermisosPage: React.FC = () => {
     const rows = filteredData.map(p => [p.permission_id, p.permission_string, p.resource ?? '', p.action ?? '', p.scope ?? '', p.description ?? '']);
     const csv = 'permission_id,permission_string,resource,action,scope,description\n' + rows.map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'permisos.csv'; a.click(); URL.revokeObjectURL(url);
+    const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'permissions.csv'; a.click(); URL.revokeObjectURL(url);
   };
 
   return (
     <div className="segu-permisos">
-      <PageHeader title={permisosMessages.title} titleSize="1.75rem" />
+      <PageHeader title={permissionsMessages.title} titleSize="1.75rem" />
       {!isFormOpen && (
       <CommandBar
         searchTerm={searchTerm}
@@ -115,9 +115,9 @@ const PermisosPage: React.FC = () => {
         onAdd={handleOpenAdd}
         onRefresh={() => window.location.reload()}
         onExportExcel={handleExportCSV}
-        searchPlaceholder={permisosMessages.searchPlaceholder}
-        searchLabel={permisosMessages.searchLabel}
-        addLabel={permisosMessages.createButton}
+        searchPlaceholder={permissionsMessages.searchPlaceholder}
+        searchLabel={permissionsMessages.searchLabel}
+        addLabel={permissionsMessages.createButton}
         refreshLabel={commonDefaultMessages.refresh}
         filtersLabel={commonDefaultMessages.filters}
         excelLabel={commonDefaultMessages.exportCsv}
@@ -126,7 +126,7 @@ const PermisosPage: React.FC = () => {
 
       <ListLoading
         loading={isLoading}
-        message={permisosMessages.loading}
+        message={permissionsMessages.loading}
         showSpinner
         spinnerSize="lg"
         layout="centered"
@@ -191,8 +191,8 @@ const PermisosPage: React.FC = () => {
 
       <ConfirmDialog
         open={confirmOpen}
-        title={permisosMessages.deleteTitle}
-        message={permisosMessages.deleteMessage}
+        title={permissionsMessages.deleteTitle}
+        message={permissionsMessages.deleteMessage}
         confirmLabel={commonDefaultMessages.delete}
         cancelLabel={commonDefaultMessages.cancel}
         danger
@@ -203,4 +203,4 @@ const PermisosPage: React.FC = () => {
   );
 };
 
-export default PermisosPage;
+export default PermissionsPage;

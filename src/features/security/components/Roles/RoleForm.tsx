@@ -10,6 +10,8 @@ import { faUserShield } from '@fortawesome/free-solid-svg-icons';
 import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
 import '@/shared/components/common/forms/orangealex-form.scss';
+import LoadingOverlay from '@/shared/components/ui/LoadingOverlay';
+import { commonDefaultMessages } from '@/i18n/commonMessages';
 
 type RoleFormValues = {
   name: string;
@@ -68,6 +70,7 @@ export default function RoleForm({
 
       {/* Contenido */}
       <form onSubmit={handleSubmit(onSubmit)} className="orangealex-form__body">
+        <LoadingOverlay open={isSubmitting} message={commonDefaultMessages.saving} />
         <div className="orangealex-form__grid">
           <FormInput
             label={m.fields.name}

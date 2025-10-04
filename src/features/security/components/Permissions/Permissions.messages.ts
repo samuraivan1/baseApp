@@ -1,4 +1,4 @@
-export const permisosMessages = {
+export const permissionsMessages = {
   title: 'Permisos',
   loading: 'Cargando permisos...',
   searchPlaceholder: 'Buscar por string, acción, recurso...',
@@ -19,3 +19,4 @@ export const permisosMessages = {
   deleteSuccess: 'Permiso eliminado correctamente',
   genericError: 'Ocurrió un error al realizar la operación',
 };
+

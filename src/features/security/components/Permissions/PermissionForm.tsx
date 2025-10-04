@@ -8,6 +8,8 @@ import '@/shared/components/common/forms/orangealex-form.scss';
 import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 // import FormSelect from '@/shared/components/common/forms/inputs/FormSelect';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
+import LoadingOverlay from '@/shared/components/ui/LoadingOverlay';
+import { commonDefaultMessages } from '@/i18n/commonMessages';
 
 export type PermissionFormValues = {
   permission_string: string;
@@ -67,6 +69,7 @@ export default function PermissionForm({
         onBack={onClose}
       />
       <form onSubmit={handleSubmit(onValid)} className="orangealex-form__body">
+        <LoadingOverlay open={isSubmitting} message={commonDefaultMessages.saving} />
         <div className="orangealex-form__grid">
           <FormInput
             wrapperClassName="form-field--full"

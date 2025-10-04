@@ -11,13 +11,13 @@ interface ColumnProps {
 }
 
 const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
-  const { data: permisos = [] } = usePermissionsQuery();
+  const { data: permissions = [] } = usePermissionsQuery();
   const { setNodeRef } = useSortable({
     id: column.idColumna,
     data: { type: 'Column', column },
   });
   type Perm = { key?: string; permission_key?: string; name?: string };
-  const canCreateTask = Array.isArray(permisos) && (permisos as Perm[]).some((p) => p.key === 'task:kanban:create' || p.permission_key === 'task:kanban:create' || p.name === 'task:kanban:create');
+  const canCreateTask = Array.isArray(permissions) && (permissions as Perm[]).some((p) => p.key === 'task:kanban:create' || p.permission_key === 'task:kanban:create' || p.name === 'task:kanban:create');
 
   return (
     <div ref={setNodeRef} className="column">
