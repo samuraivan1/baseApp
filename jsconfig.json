@@ -6,5 +6,5 @@
       "@/*": ["*"]
     }
   },
-  "include": ["src", "tsconfig.json", "server.js"]
+  "include": ["src", "tsconfig.json"]
 }

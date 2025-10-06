@@ -8,7 +8,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const dbPath = path.resolve(__dirname, '..', 'db.json');
+// Updated to use the centralized seed under src/mocks/db.json
+const dbPath = path.resolve(__dirname, '..', 'src', 'mocks', 'db.json');
 const backupPath = path.resolve(__dirname, '..', `db.backup.${Date.now()}.json`);
 
 function main() {
@@ -57,4 +58,3 @@ if (require.main === module) {
     process.exit(1);
   }
 }
-

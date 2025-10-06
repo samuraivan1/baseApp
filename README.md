@@ -97,7 +97,7 @@ src/
 
 ## 📦 Mock API
 
-El proyecto usa MSW con `src/mocks/db.json` para simular un backend sin levantar servidores adicionales.  
+El proyecto usa MSW con `src/mocks/db.json` para simular un backend sin levantar servidores adicionales (no se requiere json-server ni server.js).  
 Se ejecuta con:
 
 ```bash
