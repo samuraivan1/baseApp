@@ -5,7 +5,7 @@ import { requireAuth } from '../utils/auth';
 type LoginBody = { username?: string; email?: string; password: string };
 
 export const authHandlers = [
-  // Aliases without /api prefix for legacy calls
+// DEPRECATED: Aliases without /api prefix kept for temporary legacy compatibility
   http.post('/auth/login', async (ctx) => authHandlers[1].resolver(ctx)),
   http.post('/api/auth/login', async ({ request }) => {
     const body = (await request.json()) as LoginBody;

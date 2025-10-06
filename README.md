@@ -35,6 +35,12 @@ Sirve localmente el build ya generado.
 
 MSW intercepta las peticiones en desarrollo y en tests usando los handlers en `src/mocks`. Los datos semilla provienen de `src/mocks/db.json`.
 
+### Estándar de llamadas HTTP
+- Usa siempre `apiClient` desde `src/shared/api/apiClient.ts` para cualquier llamada HTTP.
+- `baseURL` por defecto: `'/api'` (puede sobrescribirse con `VITE_API_BASE_URL`).
+- Evita `axios` directo o `fetch` para endpoints backend; si es necesario, compón las URLs con el mismo `baseURL` del cliente.
+- Define rutas relativas al `baseURL` (ej.: `apiClient.post('/auth/login', ...)`).
+
 #### Inicializar/actualizar Service Worker de MSW
 
 Genera el archivo oficial del worker en `public/mockServiceWorker.js`:

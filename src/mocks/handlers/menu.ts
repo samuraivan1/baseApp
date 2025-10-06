@@ -18,7 +18,7 @@ function mapItemToLegacy(raw: any): any {
 }
 
 export const menuHandlers = [
-  // Alias legado y compatibilidad: /api/menus y /api/menu
+  // DEPRECATED: alias sin '/api' sólo por compatibilidad temporal
   http.get('/api/menus', ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;

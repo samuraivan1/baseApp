@@ -7,6 +7,7 @@ function getTable(name: string): any[] | null {
   return Array.isArray(anyDb[name]) ? anyDb[name] : null;
 }
 
+// NOTE: use '/api' prefix from the client; do not add non-prefixed aliases.
 export const genericHandlers = [
   // GET /api/:collection
   http.get('/api/:collection', ({ params, request }) => {

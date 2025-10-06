@@ -15,9 +15,9 @@ export const loadConfig = async (): Promise<void> => {
   } catch (error) {
     console.error(configLogContexts.loadError, error);
     // Opcional: Podrías tener una configuración por defecto como fallback
+    // Fallback estándar: usar VITE_API_BASE_URL si está definida, de lo contrario '/api'
     config = {
-      API_BASE_URL:
-        import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001',
+      API_BASE_URL: import.meta.env.VITE_API_BASE_URL || '/api',
     };
   }
 };

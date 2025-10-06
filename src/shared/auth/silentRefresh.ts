@@ -1,4 +1,5 @@
 import axios from 'axios';
+import apiClient from '@/shared/api/apiClient';
 import { getAuthStore } from '@/features/shell/state/authStore';
 import { getSession } from '@/shared/api/authService';
 
@@ -16,8 +17,8 @@ export async function silentRefresh(): Promise<boolean> {
         return false;
       }
     } catch {}
-    // Llamamos directo con axios para evitar interferencias de interceptores
-    const res = await axios.post('/api/auth/refresh', null, { withCredentials: true });
+    // Usar el apiClient para mantener baseURL y withCredentials consistentes
+    const res = await apiClient.post('/auth/refresh', null);
     const access = (res.data as any)?.access_token as string | undefined;
     if (!access) throw new Error('no access_token');
     // Marca sesión activa inmediatamente para evitar redirecciones tempranas
