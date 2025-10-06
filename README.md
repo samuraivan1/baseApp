@@ -80,6 +80,7 @@ Genera el build estático de Storybook.
 - **API Base URL**: se carga dinámicamente desde `public/config.json` al iniciar la app.
 - **Alias**: el alias `@` apunta a `./src`.
 - **Estilos globales**: definidos en `src/styles/_variables.scss` y `src/styles/_mixins.scss`.
+ - **Compatibilidad**: los handlers de MSW ahora sólo exponen rutas con prefijo `/api`. Los alias sin `/api` fueron eliminados.
 
 ---
 

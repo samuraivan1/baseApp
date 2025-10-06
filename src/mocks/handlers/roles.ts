@@ -6,8 +6,6 @@ import { requireCsrfOnMutation } from '../utils/csrf';
 const BASE = '/api/roles';
 
 export const rolesHandlers = [
-// DEPRECATED: legacy aliases without '/api'
-  http.get('/roles', (ctx) => rolesHandlers[1].resolver(ctx)),
   http.get(BASE, ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;

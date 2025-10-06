@@ -12,6 +12,8 @@ const baseURL = import.meta.env.MODE === 'development'
   ? '/api'
   : (import.meta.env.VITE_API_BASE_URL || '/api');
 const api: AxiosInstance = axios.create({ baseURL, withCredentials: true });
+// Helper para obtener el baseURL actual cuando se requiera componer URLs externas puntuales
+export const getBaseURL = (): string => (api.defaults.baseURL as string) || '/api';
 
 // Control de refresco concurrente
 let isRefreshing = false;

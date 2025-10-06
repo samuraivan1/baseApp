@@ -5,8 +5,6 @@ import { requireAuth } from '../utils/auth';
 type LoginBody = { username?: string; email?: string; password: string };
 
 export const authHandlers = [
-// DEPRECATED: Aliases without /api prefix kept for temporary legacy compatibility
-  http.post('/auth/login', async (ctx) => authHandlers[1].resolver(ctx)),
   http.post('/api/auth/login', async ({ request }) => {
     const body = (await request.json()) as LoginBody;
     const { username, email } = body;
@@ -34,7 +32,6 @@ export const authHandlers = [
     });
   }),
 
-  http.post('/auth/refresh', async (ctx) => authHandlers[3].resolver(ctx)),
   http.post('/api/auth/refresh', async () => {
     const access_token = 'mock-access-token-refreshed';
     const refresh_token = 'mock-refresh-token';
@@ -50,7 +47,6 @@ export const authHandlers = [
     );
   }),
 
-  http.post('/auth/logout', async (ctx) => authHandlers[5].resolver(ctx)),
   http.post('/api/auth/logout', async () => {
     return new HttpResponse(null, {
       status: 204,
