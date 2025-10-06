@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { fetchTablero, updateTablero } from '@/shared/api/api'; // ✅
+import { fetchTablero, updateTablero } from '@/features/kanban';
 import { useBoardStore } from '@/features/shell/state/boardStore';
 import logger from '@/shared/api/logger';
 import { kanbanMessages, kanbanLogContexts } from '../Kanban.messages';

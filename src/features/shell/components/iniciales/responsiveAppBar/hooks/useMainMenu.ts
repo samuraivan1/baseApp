@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { fetchMenu } from '@/shared/api/api';
+import { fetchMenu } from '@/features/shell';
 import logger from '@/shared/api/logger';
 import { useAuthStore } from '@/features/shell/state/authStore';
 

@@ -1,7 +1,7 @@
 // src/hooks/useProfileMenu.ts
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchProfileMenu } from '@/shared/api/api';
+import { fetchProfileMenu } from '@/features/shell';
 import logger from '@/shared/api/logger';
 import { useAuthStore } from '@/features/shell/state/authStore';
 
