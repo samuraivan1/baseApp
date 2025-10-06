@@ -3,20 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { NavMenuItem } from '@/shared/types/ui';
 import './CustomNavMenu.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faHome,
-  faColumns,
-  faTasks,
-  faChartBar,
-  faChevronRight,
-} from '@fortawesome/free-solid-svg-icons';
-
-const iconMap: Record<string, unknown> = {
-  Home: faHome,
-  Kanban: faColumns,
-  seguistración: faTasks,
-  Dashboard: faChartBar,
-};
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import iconMap from './iconMap';
 
 // --- Interfaces ---
 interface MenuItemProps {

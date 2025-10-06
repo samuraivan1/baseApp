@@ -8,28 +8,21 @@ import { NavMenuItem } from '@/shared/types/ui';
 import { toast } from 'react-toastify';
 import { authMessages } from '@/constants/commonMessages';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faUser,
-  faCog,
-  faTachometerAlt,
-  faSignOutAlt,
-  faChevronRight,
-} from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import iconMap from './iconMap';
 import './UserProfileMenu.scss';
 
-// Mapa de iconos (sin cambios)
-const iconMap: Record<string, unknown> = {
-  Perfil: faUser,
-  Account: faCog,
-  Dashboard: faTachometerAlt,
-  'Cerrar Sesión': faSignOutAlt,
-};
+// Iconos vienen de un mapa centralizado y se seleccionan por `iconKey`.
 
 // --- Componente interno recursivo para los items del menú ---
 const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
   item,
   onLogout,
 }) => {
+  // Divider tipado o legado por titulo
+  if ((item as any).kind === 'divider' || item.titulo === 'divider') {
+    return <li className="user-menu__divider" role="separator" />;
+  }
   const hasSubmenu = item.items && item.items.length > 0;
 
   if (item.titulo === 'Cerrar Sesión') {

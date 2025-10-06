@@ -53,44 +53,52 @@
     {
       "idMenu": 1,
       "titulo": "Home",
+      "iconKey": "Home",
       "ruta": "/home",
       "permisoId": 10000
     },
     {
       "idMenu": 2,
       "titulo": "Kanban 2",
+      "iconKey": "Kanban",
       "ruta": "/kanban",
       "permisoId": 10001
     },
     {
       "idMenu": 3,
       "titulo": "Seguridad 2",
+      "iconKey": "Dashboard",
       "ruta": "/seguridad",
       "permisoId": 10003,
       "items": [
         {
           "idMenu": 31,
           "titulo": "Usuarios",
+          "iconKey": "Users",
           "ruta": "/seguridad/usuarios",
           "items": [
             {
               "idMenu": 311,
               "titulo": "Listado",
+              "iconKey": "List",
               "ruta": "/seguridad/usuarios/listado"
             },
             {
               "idMenu": 312,
               "titulo": "Crear",
+              "iconKey": "Add",
               "ruta": "/seguridad/usuarios/crear",
               "items": [
                 {
                   "idMenu": 3121,
                   "titulo": "Rápido",
+                  "iconKey": "Flash",
                   "ruta": "/seguridad/usuarios/crear/rapido"
                 },
                 {
                   "idMenu": 3122,
                   "titulo": "Avanzado",
+                  "iconKey": "Advanced",
                   "ruta": "/seguridad/usuarios/crear/avanzado"
                 }
               ]
@@ -100,16 +108,19 @@
         {
           "idMenu": 32,
           "titulo": "Permisos",
+          "iconKey": "Shield",
           "ruta": "/seguridad/permisos",
           "items": [
             {
               "idMenu": 321,
               "titulo": "Roles",
+              "iconKey": "Roles",
               "ruta": "/seguridad/permisos/roles"
             },
             {
               "idMenu": 322,
               "titulo": "Asignaciones",
+              "iconKey": "Link",
               "ruta": "/seguridad/permisos/asignaciones"
             }
           ]
@@ -121,21 +132,28 @@
     {
       "idMenu": "1",
       "titulo": "Perfil",
+      "iconKey": "Perfil",
       "ruta": "/profile",
       "permisoId": null
     },
+    { "idMenu": "divider-1", "titulo": "divider", "kind": "divider" },
     {
       "idMenu": "2",
       "titulo": "Cuenta",
+      "iconKey": "Account",
       "ruta": "/account",
       "items": [
-        { "idMenu": "21", "titulo": "Preferencias", "ruta": "/account/preferences" },
-        { "idMenu": "22", "titulo": "Notificaciones", "ruta": "/account/notifications" }
+        { "idMenu": "21", "titulo": "Preferencias", "iconKey": "Settings", "ruta": "/account/preferences" },
+        { "idMenu": "22", "titulo": "Notificaciones", "iconKey": "Bell", "ruta": "/account/notifications" }
       ]
     },
+    { "idMenu": "5", "titulo": "Actividad", "iconKey": "List", "ruta": "/account/activity" },
+    { "idMenu": "6", "titulo": "Soporte", "iconKey": "Link", "ruta": "/support" },
+    { "idMenu": "divider-2", "titulo": "divider", "kind": "divider" },
     {
       "idMenu": "4",
-      "titulo": "Cerrar Sesión"
+      "titulo": "Cerrar Sesión",
+      "iconKey": "Cerrar Sesión"
     }
   ],
   "contactos": [],
