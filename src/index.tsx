@@ -16,9 +16,9 @@ const root = ReactDOM.createRoot(rootElement);
 
 // ✅ Inicializa MSW en desarrollo, luego configuración y monta la App
 const initializeApp = async () => {
-  if (import.meta.env.MODE === 'development') {
-    const { startWorker } = await import('@/mocks/browser');
-    await startWorker();
+  if (import.meta.env.DEV) {
+    const { worker } = await import('@/mocks/browser');
+    await worker.start({ onUnhandledRequest: 'bypass' });
     // Exponer helpers de auth en modo desarrollo
     const { exposeAuth } = await import('@/dev/exposeAuth');
     exposeAuth();

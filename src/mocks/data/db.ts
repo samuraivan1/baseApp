@@ -1,3 +1,4 @@
+// Centralized seed lives here to avoid root-level db.json
 import seed from '../db.json';
 
 type TableName = keyof typeof seed;
