@@ -53,21 +53,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
       const safe = ensureSafeInternalPath(from, '/home');
       navigate(safe, { replace: true });
     } catch (error) {
-      // Asegurarnos de que el error sea del tipo Error
-      if (error instanceof Error) {
-        logger.error(error, { context: 'Error en el inicio de sesión' });
-        toast.error(error.message || authMessages.loginGenericError);
-      } else {
-        logger.error(new Error('Error desconocido durante el login'), {
-          originalError: error,
-        });
+      try {
+        const { mapAppErrorMessage } = await import('@/shared/utils/errorI18n');
+        toast.error(mapAppErrorMessage(error));
+      } catch {
         toast.error(authMessages.loginGenericError);
       }
     }
   };
 
   const handleWindowsLogin = () => {
-    alert(loginPageText.winSSOSimulated);
+    toast.info(loginPageText.winSSOSimulated);
   };
 
   const safeBg = useMemo(

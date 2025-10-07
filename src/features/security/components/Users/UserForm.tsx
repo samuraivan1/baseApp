@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useUsersCrud } from '@/features/security';
 import { toast } from 'react-toastify';
 import logger from '@/shared/api/logger';
+import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
 import { createUser, updateUser } from '@/features/security';
 import {
   toCreateUserDto,
@@ -140,7 +141,7 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
       await onSubmit?.(data);
     } catch (err) {
       logger.error(err, { context: 'submitUsuario' });
-      toast.error(userFormMessages.genericError);
+      toast.error(mapAppErrorMessage(err));
     }
   };
 

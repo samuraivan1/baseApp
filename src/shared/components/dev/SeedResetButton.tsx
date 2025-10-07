@@ -7,7 +7,8 @@ const SeedResetButton: React.FC = () => {
     try {
       localStorage.removeItem('msw:db');
       // eslint-disable-next-line no-alert
-      alert('Snapshot de MSW eliminado. Recargando...');
+      // Toast en vez de alert para UX consistente
+      import('react-toastify').then(({ toast }) => toast.info('Snapshot de MSW eliminado. Recargando...'));
       location.reload();
     } catch {
       // noop

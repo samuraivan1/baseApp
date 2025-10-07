@@ -1,20 +1,33 @@
 // src/services/userService.ts
 import api from '@/shared/api/apiClient';
+import { handleApiError } from '@/shared/api/errorService';
 import { User, CreateUserDTO, UpdateUserDTO, UpdateUserFlagsDTO } from '@/shared/types/security';
 
 export async function getUsers(): Promise<User[]> {
-  const { data } = await api.get<User[]>('/users');
-  return data;
+  try {
+    const { data } = await api.get<User[]>('/users');
+    return data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
 }
 
 export async function getUser(id: number): Promise<User> {
-  const { data } = await api.get<User>(`/users/${id}`);
-  return data;
+  try {
+    const { data } = await api.get<User>(`/users/${id}`);
+    return data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
 }
 
 export async function createUser(input: CreateUserDTO): Promise<User> {
-  const { data } = await api.post<User>('/users', input);
-  return data;
+  try {
+    const { data } = await api.post<User>('/users', input);
+    return data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
 }
 
 export async function updateUserFlags(
@@ -30,18 +43,30 @@ export async function updateUserFlags(
     patch.mfa_enabled = input.mfa_enabled ? 1 : 0;
   }
 
-  const { data } = await api.patch<User>(`/users/${id}`, patch);
-  return data;
+  try {
+    const { data } = await api.patch<User>(`/users/${id}`, patch);
+    return data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
 }
 
 export async function updateUser(
   id: number,
   input: UpdateUserDTO
 ): Promise<User> {
-  const { data } = await api.patch<User>(`/users/${id}`, input);
-  return data;
+  try {
+    const { data } = await api.patch<User>(`/users/${id}`, input);
+    return data;
+  } catch (error) {
+    throw handleApiError(error);
+  }
 }
 
 export async function deleteUser(id: number): Promise<void> {
-  await api.delete(`/users/${id}`);
+  try {
+    await api.delete(`/users/${id}`);
+  } catch (error) {
+    throw handleApiError(error);
+  }
 }

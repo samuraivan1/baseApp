@@ -1,5 +1,6 @@
 // src/routes/AppRoutes.tsx
 import { Route, Routes, Navigate } from 'react-router-dom';
+import React, { Suspense } from 'react';
 import { Home } from '@/features/home';
 import { Kanban } from '@/features/kanban';
 import { LoginPage } from '@/features/auth';
@@ -21,6 +22,27 @@ const LOGIN_BACKGROUND_IMAGE = images.loginImg;
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Ruta de playground solo en desarrollo */}
+      {import.meta.env.DEV && (
+        <Route
+          path="/dev/mutation"
+          element={
+            <Suspense fallback={<div style={{ padding: 24 }}>Cargando playground…</div>}>
+              {React.createElement(React.lazy(() => import('@/dev/DevMutationPlayground')))}
+            </Suspense>
+          }
+        />
+      )}
+      {import.meta.env.DEV && (
+        <Route
+          path="/dev/products"
+          element={
+            <Suspense fallback={<div style={{ padding: 24 }}>Cargando products…</div>}>
+              {React.createElement(React.lazy(() => import('@/features/products/components')))}
+            </Suspense>
+          }
+        />
+      )}
       {/* Públicas */}
       <Route
         path="/login"

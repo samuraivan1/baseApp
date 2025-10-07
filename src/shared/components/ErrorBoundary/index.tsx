@@ -1,6 +1,7 @@
 // src/components/ErrorBoundary/index.tsx
 import React from 'react';
 import errorService, { normalizeError } from '@/shared/api/errorService';
+import { toast } from 'react-toastify';
 import { errorBoundaryText } from './ErrorBoundary.messages';
 
 type Props = { children: React.ReactNode };
@@ -28,6 +29,10 @@ class ErrorBoundary extends React.Component<Props, State> {
     errorService.logError(normalized);
   }
 
+  private handleReset = () => {
+    this.setState({ hasError: false, error: null });
+  };
+
   private handleReport = () => {
     const { error } = this.state;
     if (!error) return;
@@ -37,8 +42,8 @@ class ErrorBoundary extends React.Component<Props, State> {
     });
     errorService.logError(normalized);
 
-    // Aquí podrías mostrar un toast o redirigir a soporte
-    alert('El error ha sido registrado. Gracias por reportarlo.');
+    // Notificación no intrusiva en lugar de alert()
+    toast.error('Ha ocurrido un error inesperado. Por favor contacte al administrador.');
   };
 
   render() {
@@ -49,6 +54,9 @@ class ErrorBoundary extends React.Component<Props, State> {
           <p>{errorBoundaryText.message}</p>
           <button onClick={this.handleReport}>
             {errorBoundaryText.reportButton}
+          </button>
+          <button style={{ marginLeft: 12 }} onClick={this.handleReset}>
+            Reintentar
           </button>
         </div>
       );

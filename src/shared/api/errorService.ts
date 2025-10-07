@@ -183,3 +183,22 @@ export function normalizeError(
     context,
   };
 }
+
+// AppError y manejador delgado para servicios
+export interface AppError {
+  message: string;
+  code?: string | number;
+  context?: string;
+  timestamp: string;
+}
+
+export function handleApiError(error: unknown): AppError {
+  const timestamp = new Date().toISOString();
+  if (typeof error === 'object' && error && 'message' in (error as any)) {
+    const maybeAxios = error as any;
+    const status = maybeAxios?.response?.status as number | undefined;
+    const msg = maybeAxios?.response?.data?.message || maybeAxios?.message || 'Error de comunicación con el servidor.';
+    return { message: msg, code: status, timestamp };
+  }
+  return { message: 'Error desconocido.', timestamp };
+}

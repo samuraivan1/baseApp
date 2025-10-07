@@ -17,6 +17,7 @@ export const useMainMenu = () => {
     queryKey: ['mainMenu'],
     queryFn: fetchMenu,
     enabled: isLoggedIn,
+    onError: (err) => toast.error(String((err as any)?.message ?? 'No se pudo cargar la navegación.')),
   });
 
   useEffect(() => {
@@ -24,7 +25,6 @@ export const useMainMenu = () => {
       logger.error(error as Error, {
         context: 'Error al cargar el menú principal',
       });
-      toast.error('No se pudo cargar la navegación.');
     }
   }, [isError, error]);
 

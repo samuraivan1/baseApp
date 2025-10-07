@@ -5,11 +5,13 @@ import { relationsHandlers } from './handlers/relations';
 import { menuHandlers } from './handlers/menu';
 import { tableroHandlers } from './handlers/tablero';
 import { authHandlers } from './handlers/auth';
+import { devHandlers } from './handlers/dev';
 import { genericHandlers } from './handlers/generic';
 import { http } from 'msw';
 
 export const handlers = [
   ...authHandlers,
+  ...devHandlers,
   ...usersHandlers,
   ...rolesHandlers,
   ...permissionsHandlers,

@@ -9,6 +9,8 @@ import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 // import FormSelect from '@/shared/components/common/forms/inputs/FormSelect';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
 import LoadingOverlay from '@/shared/components/ui/LoadingOverlay';
+import { toast } from 'react-toastify';
+import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
 
 export type PermissionFormValues = {
@@ -59,7 +61,10 @@ export default function PermissionForm({
 
   if (!open) return null;
 
-  const onValid = (data: PermissionFormValues) => onSubmit(data);
+  const onValid = async (data: PermissionFormValues) => {
+    try { await onSubmit(data); }
+    catch (err) { toast.error(mapAppErrorMessage(err)); }
+  };
 
   return (
     <div className="orangealex-form oa-form--md oa-form--left">

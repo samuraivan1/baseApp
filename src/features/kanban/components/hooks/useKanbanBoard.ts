@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
+import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
+import errorService, { normalizeError } from '@/shared/api/errorService';
 import { fetchTablero, updateTablero } from '@/features/kanban';
 import { useBoardStore } from '@/features/shell/state/boardStore';
 import logger from '@/shared/api/logger';
@@ -18,6 +20,10 @@ export const useKanbanBoard = () => {
   } = useQuery({
     queryKey: ['tablero'], // ✅
     queryFn: fetchTablero, // ✅
+    onError: (err) => {
+      toast.error(mapAppErrorMessage(err));
+      errorService.logError(normalizeError(err, { where: 'kanban:list' }));
+    },
   });
 
   const boardMutation = useMutation({
@@ -34,7 +40,8 @@ export const useKanbanBoard = () => {
         setBoardState(context.previousState);
       }
       logger.error(err as Error, { context: kanbanLogContexts.boardSave });
-      toast.error(kanbanMessages.saveError);
+      toast.error(mapAppErrorMessage(err));
+      errorService.logError(normalizeError(err, { where: 'kanban:save' }));
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['tablero'] });

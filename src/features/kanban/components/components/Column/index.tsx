@@ -3,6 +3,7 @@ import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { Task } from '../Task';
 import { usePermissionsCrud } from '@/features/security';
 import { ColumnaType, TareaType } from '@/shared/types/ui';
+import { toast } from 'react-toastify';
 import { columnMessages } from './Column.messages';
 
 interface ColumnProps {
@@ -26,7 +27,7 @@ const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
       {canCreateTask && (
         <div
           className="column__add-task-button"
-          onClick={() => alert('Crear tarea')}
+          onClick={() => toast.info(columnMessages.addTask)}
         >
           <span aria-hidden>+</span> {columnMessages.addTask}
         </div>
