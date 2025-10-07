@@ -6,8 +6,8 @@
   padding: 2px 0 6px;
   margin-top: 1rem; /* caja separada del encabezado */
   background: var(--surface-white);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius-medium);
   /* El scroll vive dentro del wrapper para evitar scroll doble */
   overflow: hidden;
   min-height: 0; /* evita que el flexbox fuerce a crecer y oculte el paginador */
