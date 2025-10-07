@@ -47,8 +47,12 @@ This repo follows a feature‑oriented architecture designed for production apps
 
 ## State, Data & Pagination
 
-- Fetch and filter data in hooks/pages; pass results to tables/components.
-- Pagination should be controlled by the page. Prefer passing a custom footer (slot) to tables.
+- Datos remotos (API): usa TanStack Query (queries.ts por feature) para fetch, caché e invalidación.
+- Estado global de UI/sesión: usa Zustand (stores por feature o transversales en shell).
+- No uses Zustand como fuente de verdad de datos remotos; sincroniza con Query y guarda sólo estado interactivo/derivado.
+- No uses Query para datos puramente locales; ese estado vive en componentes o stores.
+- Persistencia en localStorage sólo para UI (preferencias) o auth flags (p.ej., `auth:revoked`, `csrf_token`).
+- Paginación controlada por la página; pasa footers/slots a tablas según sea necesario.
 
 ## Styling (SCSS modular)
 
