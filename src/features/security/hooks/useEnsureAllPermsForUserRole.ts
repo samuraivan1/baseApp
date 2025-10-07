@@ -1,13 +1,27 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
 import { getUsers, getUserRoles, getPermissions, assignPermissionsToRole, getRolePermissions as getRolePermissionsForRole } from '@/features/security';
 
 // This hook ensures the role assigned to the target user has all permissions.
 // It is idempotent and only runs once after data is loaded.
 export function useEnsureAllPermsForUserRole(targetUsernames: string[] = ['iamendezm'], targetIds: number[] = [1]) {
-  const { data: users = [] } = useQuery({ queryKey: ['usuarios'], queryFn: getUsers });
-  const { data: relations = [] } = useQuery({ queryKey: ['userRoles'], queryFn: getUserRoles });
-  const { data: perms = [] } = useQuery({ queryKey: ['permissions'], queryFn: getPermissions });
+  const { data: users = [] } = useQuery({
+    queryKey: ['usuarios'],
+    queryFn: getUsers,
+    onError: (err) => { if (isDev) toast.error(mapAppErrorMessage(err)); },
+  });
+  const { data: relations = [] } = useQuery({
+    queryKey: ['userRoles'],
+    queryFn: getUserRoles,
+    onError: (err) => { if (isDev) toast.error(mapAppErrorMessage(err)); },
+  });
+  const { data: perms = [] } = useQuery({
+    queryKey: ['permissions'],
+    queryFn: getPermissions,
+    onError: (err) => { if (isDev) toast.error(mapAppErrorMessage(err)); },
+  });
 
   useEffect(() => {
     if (!users.length || !relations.length || !perms.length) return;
