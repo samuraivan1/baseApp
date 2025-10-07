@@ -7,6 +7,8 @@ import './Home.scss';
 import Button from '@/shared/components/ui/Button';
 import { faPlus, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { ensureSafeUrl } from '@/shared/security/url';
+import { toast } from 'react-toastify';
+import { useTheme } from '@/core';
 
 const Home: React.FC = () => {
   const user = useAuthStore((state) => state.user);
@@ -36,15 +38,46 @@ const Home: React.FC = () => {
         <div style={{ marginTop: 24 }}>
           <h3 style={{ marginBottom: 12 }}>Demo de Botones</h3>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <Button variant="primary" icon={faPlus}>{homeMessages.btnPrimary}</Button>
+            <Button variant="primary" icon={faPlus}>
+              {homeMessages.btnPrimary}
+            </Button>
             <Button variant="secondary">{homeMessages.btnSecondary}</Button>
-            <Button variant="danger" icon={faTrash}>{homeMessages.btnDanger}</Button>
+            <Button variant="danger" icon={faTrash}>
+              {homeMessages.btnDanger}
+            </Button>
             <Button variant="outline">{homeMessages.btnOutline}</Button>
             <Button variant="ghost">{homeMessages.btnGhost}</Button>
             <Button variant="subtle">{homeMessages.btnSubtle}</Button>
-            <Button variant="link" icon={faEdit}>{homeMessages.btnLink}</Button>
-            <Button variant="link" tone="danger">{homeMessages.btnLinkDanger}</Button>
-            <Button variant="primary" isLoading>{homeMessages.btnLoading}</Button>
+            <Button variant="link" icon={faEdit}>
+              {homeMessages.btnLink}
+            </Button>
+            <Button variant="link" tone="danger">
+              {homeMessages.btnLinkDanger}
+            </Button>
+            <Button variant="primary" isLoading>
+              {homeMessages.btnLoading}
+            </Button>
+          </div>
+        </div>
+
+        {/* Core Demo */}
+        <div style={{ marginTop: 24 }}>
+          <h3 style={{ marginBottom: 12 }}>{homeMessages.coreDemoTitle}</h3>
+          <div
+            style={{
+              display: 'flex',
+              gap: 12,
+              alignItems: 'center',
+              flexWrap: 'wrap',
+            }}
+          >
+            <Button
+              variant="primary"
+              onClick={() => toast.success(homeMessages.notifySuccessMessage)}
+            >
+              {homeMessages.notifySuccess}
+            </Button>
+            <ThemedTokenPreview />
           </div>
         </div>
       </div>
@@ -53,3 +86,12 @@ const Home: React.FC = () => {
 };
 
 export default Home;
+
+function ThemedTokenPreview() {
+  const theme = useTheme();
+  return (
+    <span style={{ color: theme.primary }}>
+      {homeMessages.themePrimaryLabel} <code>{String(theme.primary)}</code>
+    </span>
+  );
+}

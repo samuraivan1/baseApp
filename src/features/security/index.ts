@@ -27,3 +27,5 @@ export {
 } from './api/roleService';
 export * from './api/user.dto';
 export * from './hooks/useEnsureAllPermsForUserRole';
+export * from './api/hooks/useEntityCrud';
+export * from './api/hooks/useUsersCrud';

@@ -12,4 +12,8 @@ export const homeMessages = {
   btnLink: 'Link',
   btnLinkDanger: 'Link Danger',
   btnLoading: 'Loading',
+  coreDemoTitle: 'Core Demo',
+  notifySuccess: 'Notificar éxito',
+  notifySuccessMessage: 'Operación exitosa',
+  themePrimaryLabel: 'Tema primario:',
 };
