@@ -10,14 +10,14 @@
 .segu-layout__sidebar {
   width: 240px;
   background-color: #ffffff;
-  border-right: 1px solid #e0e0e0;
+  border-right: 1px solid var(--surface-border);
   padding: 1.5rem 1rem;
   flex-shrink: 0;
 
   .sidebar__title {
     font-size: 1.25rem;
     font-weight: 600;
-    padding: 0 0.5rem;
+    padding: 0 var(--spacing-sm);
     margin-bottom: 1.5rem;
     color: #333;
   }

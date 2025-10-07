@@ -4,8 +4,8 @@
 .error-boundary {
   padding: 40px 20px;
   text-align: center;
-  border: 1px solid #f0f0f0;
-  border-radius: 8px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius-medium);
   background-color: #fafafa;
   margin: 20px;
 
@@ -20,9 +20,9 @@
   }
 
   &__button {
-    padding: 10px 20px;
+    padding: var(--spacing-md) var(--spacing-lg);
     border: none;
-    border-radius: 5px;
+    border-radius: var(--border-radius-small);
     background-color: vars.$main-color;
     color: vars.$txt-white;
     font-size: 1rem;

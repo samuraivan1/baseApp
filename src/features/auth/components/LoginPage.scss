@@ -56,9 +56,9 @@
 
   &__input {
     width: 100%;
-    padding: 12px 15px 12px 45px;
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-lg) 45px;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 8px;
+    border-radius: var(--border-radius-medium);
     background: rgba(255, 255, 255, 0.1);
     color: vars.$txt-white;
     font-size: 1rem;
@@ -108,9 +108,9 @@
 
   &__button {
     width: 100%;
-    padding: 12px;
+    padding: var(--spacing-lg);
     border: none;
-    border-radius: 8px;
+    border-radius: var(--border-radius-medium);
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;

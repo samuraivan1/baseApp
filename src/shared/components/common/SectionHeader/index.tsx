@@ -1,4 +1,5 @@
 import React from 'react';
+import { sectionHeaderMessages } from './section-header.messages';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './section-header.scss';
@@ -15,7 +16,7 @@ const SectionHeader: React.FC<Props> = ({ title, subtitle, icon, onBack }) => {
     <div className="section-header">
       <div className="section-header__left">
         {onBack && (
-          <button className="section-header__back" onClick={onBack} aria-label="Volver">
+          <button className="section-header__back" onClick={onBack} aria-label={sectionHeaderMessages.back}>
             ←
           </button>
         )}
@@ -31,4 +32,3 @@ const SectionHeader: React.FC<Props> = ({ title, subtitle, icon, onBack }) => {
 };
 
 export default SectionHeader;
-

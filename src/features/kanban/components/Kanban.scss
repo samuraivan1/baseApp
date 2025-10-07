@@ -12,23 +12,23 @@
 // ✅ Estilos para el bloque 'column'
 .column {
   background-color: kanban.$color-fondo-columna;
-  border-radius: 8px;
+  border-radius: var(--border-radius-medium);
   width: 280px;
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  padding: var(--spacing-md);
 
   // ✅ Estilos para los Elementos
   &__title {
-    padding: 8px;
+    padding: var(--spacing-sm);
     font-size: 14px;
     font-weight: 600;
     color: kanban.$color-texto-principal;
   }
 
   &__add-task-button {
-    padding: 8px 10px;
-    border-radius: 5px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-small);
     cursor: pointer;
     margin: 0 8px 8px;
     display: flex;
@@ -47,7 +47,7 @@
   }
 
   &__task-list {
-    padding: 8px;
+    padding: var(--spacing-sm);
     flex-grow: 1;
     min-height: 100px;
   }
@@ -56,8 +56,8 @@
 // --- Estilos de las Tareas (ya refactorizados a BEM) ---
 .task {
   background-color: kanban.$color-fondo-tarjeta;
-  border-radius: 5px;
-  padding: 10px 12px;
+  border-radius: var(--border-radius-small);
+  padding: var(--spacing-md) var(--spacing-lg);
   margin-bottom: 8px;
   box-shadow: kanban.$sombra-tarjeta;
   font-size: 14px;

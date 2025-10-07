@@ -27,7 +27,7 @@ const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
           className="column__add-task-button"
           onClick={() => alert('Crear tarea')}
         >
-          <span>+</span> {columnMessages.addTask}
+          <span aria-hidden>+</span> {columnMessages.addTask}
         </div>
       )}
       <SortableContext items={tasks.map((task) => task.idTarea)}>

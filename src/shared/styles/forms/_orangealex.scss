@@ -5,7 +5,7 @@
   --control-height-input: 25px;
   background: var(--surface-bg);
   padding: var(--spacing-md);
-  border-radius: 6px;
+  border-radius: var(--border-radius-medium);
   width: clamp(560px, 70ch, 880px);
   max-width: 100%;
 
@@ -43,4 +43,3 @@
   @media (max-width: 1024px) { .orangealex-form__grid { grid-template-columns: 1.5fr 1fr; } }
   @media (max-width: 640px) { .orangealex-form__grid { grid-template-columns: 1fr; } }
 }
-

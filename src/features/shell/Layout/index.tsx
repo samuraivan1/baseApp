@@ -1,4 +1,5 @@
 import React from 'react';
+import { shellLayoutMessages } from './Layout.messages';
 import { useLocation } from 'react-router-dom';
 import AppRoutes from '@/routes/AppRoutes';
 import Footer from '../components/Footer';
@@ -24,7 +25,7 @@ const Layout: React.FC = () => {
       <main className={contentClassName}>
         {!authReady ? (
           <div style={{ display: 'grid', placeItems: 'center', minHeight: '40vh' }}>
-            <div style={{ textAlign: 'center', color: '#666' }}>Restaurando sesión…</div>
+            <div style={{ textAlign: 'center', color: '#666' }}>{shellLayoutMessages.restoringSession}</div>
           </div>
         ) : (
           <ErrorBoundary>

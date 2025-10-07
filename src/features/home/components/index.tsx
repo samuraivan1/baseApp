@@ -36,25 +36,15 @@ const Home: React.FC = () => {
         <div style={{ marginTop: 24 }}>
           <h3 style={{ marginBottom: 12 }}>Demo de Botones</h3>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <Button variant="primary" icon={faPlus}>
-              Primary
-            </Button>
-            <Button variant="secondary">Secondary</Button>
-            <Button variant="danger" icon={faTrash}>
-              Danger
-            </Button>
-            <Button variant="outline">Outline</Button>
-            <Button variant="ghost">Ghost</Button>
-            <Button variant="subtle">Subtle</Button>
-            <Button variant="link" icon={faEdit}>
-              Link
-            </Button>
-            <Button variant="link" tone="danger">
-              Link Danger
-            </Button>
-            <Button variant="primary" isLoading>
-              Loading
-            </Button>
+            <Button variant="primary" icon={faPlus}>{homeMessages.btnPrimary}</Button>
+            <Button variant="secondary">{homeMessages.btnSecondary}</Button>
+            <Button variant="danger" icon={faTrash}>{homeMessages.btnDanger}</Button>
+            <Button variant="outline">{homeMessages.btnOutline}</Button>
+            <Button variant="ghost">{homeMessages.btnGhost}</Button>
+            <Button variant="subtle">{homeMessages.btnSubtle}</Button>
+            <Button variant="link" icon={faEdit}>{homeMessages.btnLink}</Button>
+            <Button variant="link" tone="danger">{homeMessages.btnLinkDanger}</Button>
+            <Button variant="primary" isLoading>{homeMessages.btnLoading}</Button>
           </div>
         </div>
       </div>

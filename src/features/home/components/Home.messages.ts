@@ -3,4 +3,13 @@ export const homeMessages = {
   defaultUser: 'Usuario',
   tagline: 'Gestiona tus proyectos y tareas de forma eficiente.',
   button: 'Ir a mi Tablero Kanban',
+  btnPrimary: 'Primary',
+  btnSecondary: 'Secondary',
+  btnDanger: 'Danger',
+  btnOutline: 'Outline',
+  btnGhost: 'Ghost',
+  btnSubtle: 'Subtle',
+  btnLink: 'Link',
+  btnLinkDanger: 'Link Danger',
+  btnLoading: 'Loading',
 };

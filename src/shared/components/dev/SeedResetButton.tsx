@@ -1,4 +1,5 @@
 import React from 'react';
+import { devMessages } from './SeedResetButton.messages';
 
 const SeedResetButton: React.FC = () => {
   if (import.meta.env.MODE !== 'development') return null;
@@ -26,11 +27,10 @@ const SeedResetButton: React.FC = () => {
     zIndex: 9999,
   };
   return (
-    <button type="button" style={style} onClick={handleReset} title="Resetear seed MSW">
+    <button type="button" style={style} onClick={handleReset} title={devMessages.resetSeedTitle}>
       Reset seed
     </button>
   );
 };
 
 export default SeedResetButton;
-

@@ -215,11 +215,11 @@ const UserForm: React.FC<Props> = ({ initialData, onSuccess, onCancel }) => {
             error={errors.rolId?.message}
           />
           <FormSelect
-            label={usersMessages.form?.status ?? 'Estatus'}
+            label={usersMessages.form?.status}
             {...register('status')}
           >
-            <option value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
+            <option value="activo">{usersMessages.form?.statusActivo ?? 'Activo'}</option>
+            <option value="inactivo">{usersMessages.form?.statusInactivo ?? 'Inactivo'}</option>
           </FormSelect>
           <FormInput
             label={usersMessages.form?.initials ?? 'Iniciales'}
@@ -235,7 +235,7 @@ const UserForm: React.FC<Props> = ({ initialData, onSuccess, onCancel }) => {
             {...register('phone_number')}
           />
           <FormSelect
-            label={usersMessages.form?.mfa_enabled ?? 'MFA'}
+            label={usersMessages.form?.mfa_enabled}
             {...register('mfa_enabled', {
               setValueAs: (v) =>
                 typeof v === 'boolean' ? v : String(v) === 'true',

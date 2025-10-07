@@ -29,6 +29,8 @@ export const usersMessages = {
     nombreUsuario: 'Nombre de usuario',
     rolId: 'Rol (id)',
     status: 'Estatus',
+    statusActivo: 'Activo',
+    statusInactivo: 'Inactivo',
     initials: 'Iniciales',
     auth_provider: 'Proveedor (auth)',
     phone_number: 'Teléfono',

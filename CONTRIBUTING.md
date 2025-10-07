@@ -50,10 +50,22 @@ This repo follows a feature‑oriented architecture designed for production apps
 - Fetch and filter data in hooks/pages; pass results to tables/components.
 - Pagination should be controlled by the page. Prefer passing a custom footer (slot) to tables.
 
-## Styling
+## Styling (SCSS modular)
 
-- Prefer CSS variables declared in `styles/_variables.scss` for sizes, colors and radii.
-- Avoid “magic numbers” — add/extend tokens when needed.
+- Cada componente/página debe importar su propio SCSS local.
+- Mantén globales (`src/styles/_base.scss`, `src/styles/index.scss`) solo con resets/layouts/utilidades.
+- Usa variables y mixins desde `src/styles/_variables.scss` y `src/styles/_mixins.scss`.
+- Evita “magic numbers” — añade/expande tokens cuando haga falta.
+- Consulta `docs/styles.md` para guía completa.
+
+## i18n (textos visibles)
+
+- No uses literales inline en JSX para textos visibles (labels, placeholders, títulos, tooltips, botones, mensajes).
+- Crea un archivo `*.messages.ts` por componente/página en el mismo scope y expórtalo desde el componente.
+- Si el feature ya tiene un archivo de mensajes, reusa y agrega claves ahí en lugar de duplicar.
+- No modifiques traducciones existentes; añade claves nuevas cuando sea necesario.
+- Sigue la convención de claves `scope.section.key` (ej.: `users.form.email`, `sectionHeader.back`).
+- Consulta `docs/i18n.md` para detalles y ejemplos.
 
 ## Testing
 
@@ -72,4 +84,3 @@ This repo follows a feature‑oriented architecture designed for production apps
 - [ ] API uses domain types; hooks compose API
 - [ ] Styling uses tokens
 - [ ] Build and basic flows verified
-

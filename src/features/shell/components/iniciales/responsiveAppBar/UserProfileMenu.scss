@@ -7,14 +7,14 @@
   right: 0;
   width: 240px;
   background-color: var(--surface-white);
-  border-radius: 6px;
+  border-radius: var(--border-radius-medium);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid var(--border-color-muted);
-  padding: 4px 0;
+  padding: var(--spacing-xs) 0;
   z-index: 101; // z-index alto para que se muestre sobre el menú principal
 
   &__header {
-    padding: 8px 16px;
+    padding: var(--spacing-sm) var(--spacing-lg);
     display: flex;
     flex-direction: column;
   }
@@ -32,7 +32,7 @@
   &__divider {
     border: none;
     border-top: 1px solid var(--border-color-muted);
-    margin: 8px 0;
+    margin: var(--spacing-sm) 0;
   }
 
   &__list {
@@ -99,11 +99,11 @@
     right: 100%;
     margin-right: 5px;
     list-style: none;
-    padding: 8px 0;
+    padding: var(--spacing-sm) 0;
     margin: 0;
     width: 240px;
     background-color: var(--surface-white);
-    border-radius: 8px;
+    border-radius: var(--border-radius-medium);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border: 1px solid var(--border-color-muted);
     z-index: 102; // Un z-index mayor para el sub-sub-menú
