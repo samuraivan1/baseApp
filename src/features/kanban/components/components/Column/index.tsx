@@ -1,7 +1,7 @@
 import React from 'react';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { Task } from '../Task';
-import { usePermissionsQuery } from '@/features/security';
+import { usePermissionsCrud } from '@/features/security';
 import { ColumnaType, TareaType } from '@/shared/types/ui';
 import { columnMessages } from './Column.messages';
 
@@ -11,7 +11,8 @@ interface ColumnProps {
 }
 
 const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
-  const { data: permissions = [] } = usePermissionsQuery();
+  const { list } = usePermissionsCrud();
+  const { data: permissions = [] } = list;
   const { setNodeRef } = useSortable({
     id: column.idColumna,
     data: { type: 'Column', column },

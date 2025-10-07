@@ -1,0 +1,30 @@
+// Bridge de variables Sass antiguas a tokens ODS (CSS variables)
+// Permite que hojas legacy que usan $vars sigan funcionando
+
+// Colores
+$main-color: var(--color-primary);
+$txt-white: #ffffff;
+$txt-black: #000000;
+
+// Alturas de header
+$header-height: 56px;
+$header-tablet-height: 64px;
+
+// Breakpoints legacy
+$mobile-width: 576px;
+$tablet-width: 768px;
+
+// Extras usados en algunas hojas
+$txt-offer-color: var(--color-primary);
+$box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+
+// Alias comunes existentes
+$color-primary: var(--color-primary);
+$color-text-primary: var(--color-text-primary);
+$color-border: var(--color-border);
+
+// Helpers opcionales
+@mixin focus-ring {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(242, 104, 34, 0.2);
+}

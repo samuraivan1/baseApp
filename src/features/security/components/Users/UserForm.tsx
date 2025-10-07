@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCreateUser, useUpdateUser } from '@/features/security';
+import { useUsersCrud } from '@/features/security';
 import { toast } from 'react-toastify';
 import logger from '@/shared/api/logger';
 import { createUser, updateUser } from '@/features/security';
@@ -106,7 +106,7 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
     reset(fullShape);
   }, [initialData, reset]);
 
-  const createMutation = useCreateUser();
+  const { create: createMutation, update: updateMutation } = useUsersCrud();
   const createUserWrapped = async (payload: UserFormValues) => {
     const created = await createUser(toCreateUserDto(payload));
     if (payload.rolId != null) {
@@ -119,7 +119,6 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
     return created;
   };
 
-  const updateMutation = useUpdateUser();
   const updateUserWrapped = async ({ id, payload }: UpdateUsuarioVariables) => {
     const updated = await updateUser(id, toUpdateUserDto(payload));
 

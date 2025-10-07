@@ -5,7 +5,7 @@ export { default as RolesPage } from './components/Roles';
 export { default as PermissionsPage } from './components/Permissions';
 export { RoutePermissions } from './constants/routePermissions';
 // Public API surface
-export * from './api/queries';
+// Legacy queries removed
 export * from './api/queryKeys';
 export * from './api/userService';
 export {
@@ -29,3 +29,6 @@ export * from './api/user.dto';
 export * from './hooks/useEnsureAllPermsForUserRole';
 export * from './api/hooks/useEntityCrud';
 export * from './api/hooks/useUsersCrud';
+export * from './api/hooks/useRolesCrud';
+export * from './api/hooks/usePermissionsCrud';
+export * from './api/hooks/useUserRolesCrud';

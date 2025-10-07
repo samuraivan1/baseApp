@@ -1,14 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import {
-  useUsersCrud,
-  useUserRolesQuery,
-  useDeleteUser,
-  usersKeys,
-  toCreateUserDto,
-  toUpdateUserDto,
-  addUserRole,
-} from '@/features/security';
+import { useUsersCrud, useUserRolesCrud, usersKeys, toCreateUserDto, toUpdateUserDto, addUserRole } from '@/features/security';
 // UI feedback centralizado en servicios/hooks
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
@@ -53,8 +45,8 @@ const UsuariosPage: React.FC = () => {
     isError,
     error,
   } = list;
-  const { data: userRoles = [], isLoading: isLoadingRoles } =
-    useUserRolesQuery();
+  const { list: userRolesList } = useUserRolesCrud();
+  const { data: userRoles = [], isLoading: isLoadingRoles } = userRolesList;
   const usuarios: UserView[] = React.useMemo(() => {
     const roleByUser = new Map(
       (Array.isArray(userRoles) ? userRoles : []).map((ur) => [
@@ -177,8 +169,8 @@ const UsuariosPage: React.FC = () => {
     setCurrentPage(1);
   }, [searchTerm, activeFilters]);
 
-  // Mutations
-  const delMutation = useDeleteUser(); // legacy delete (will switch to hook remove)
+  // Mutations via generic CRUD
+  const delMutation = remove;
 
   // Handlers
   const openCreate = () => {

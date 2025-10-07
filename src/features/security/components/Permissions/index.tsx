@@ -8,7 +8,7 @@ import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 // import Button from '@/shared/components/ui/Button';
 import { useQueryClient } from '@tanstack/react-query';
-import { usePermissionsQuery, useCreatePermission, useUpdatePermission, useDeletePermission } from '@/features/security';
+import { usePermissionsCrud } from '@/features/security';
 // Servicios y toasts gestionados por hooks centralizados en api/queries
 import { permissionsMessages } from './Permissions.messages';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
@@ -22,8 +22,9 @@ import ListLoading from '@/shared/components/common/ListLoading';
 const PermissionsPage: React.FC = () => {
   const _qc = useQueryClient();
 
-  // Data
-  const { data: permissions = [], isLoading } = usePermissionsQuery();
+  // Data via generic CRUD
+  const { list, create, update, remove } = usePermissionsCrud();
+  const { data: permissions = [], isLoading } = list;
 
   // UI state
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,11 +38,10 @@ const PermissionsPage: React.FC = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  // Mutations
-  const delMutation = useDeletePermission();
-
-  const createMut = useCreatePermission();
-  const updateMut = useUpdatePermission();
+  // Mutations via generic CRUD
+  const createMut = create;
+  const updateMut = update;
+  const delMutation = remove;
 
   // Columns
   const columns: EntityTableColumn<Permission>[] = useMemo(() => [
