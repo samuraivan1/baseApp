@@ -1,4 +1,5 @@
 import React from 'react';
+import './SearchBar.scss';
 
 export type SearchBarProps = {
   value: string;
@@ -28,4 +29,3 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch, placeh
 };
 
 export default SearchBar;
-

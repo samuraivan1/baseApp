@@ -11,6 +11,8 @@
   &__control {
     @include mix.input-compact();
     width: 100%;
+    min-height: var(--control-height-sm);
+    padding: 0 var(--spacing-sm);
     &.is-invalid {
       border-color: var(--color-danger);
       box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.12);

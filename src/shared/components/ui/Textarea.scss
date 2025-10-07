@@ -12,6 +12,7 @@
     @include mix.input-compact();
     width: 100%;
     min-height: calc(var(--control-height-md) * 2);
+    padding: var(--spacing-xs) var(--spacing-sm);
     resize: vertical;
     &.is-invalid {
       border-color: var(--color-danger);
