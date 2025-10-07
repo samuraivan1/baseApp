@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePermissionsQuery } from '@/features/security/api/queries';
+import { usePermissionsQuery } from '@/features/security';
 
 export type PermissionGateProps = {
   perm: string; // código o string de permiso

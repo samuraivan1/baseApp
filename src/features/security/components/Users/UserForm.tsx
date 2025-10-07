@@ -2,19 +2,19 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
-import { useCreateUser, useUpdateUser } from '@/features/security/api/queries';
+import { useCreateUser, useUpdateUser } from '@/features/security';
 import { toast } from 'react-toastify';
 import logger from '@/shared/api/logger';
-import { createUser, updateUser } from '@/features/security/api/userService';
+import { createUser, updateUser } from '@/features/security';
 import {
   toCreateUserDto,
   toUpdateUserDto,
-} from '@/features/security/api/user.dto';
+} from '@/features/security';
 import {
   addUserRole,
   getUserRoles,
   removeUserRole,
-} from '@/features/security/api/relationsService';
+} from '@/features/security';
 import { userSchema, UserFormValues } from './validationSchema';
 import { userFormMessages } from './UserForm.messages';
 import './UserForm.scss';

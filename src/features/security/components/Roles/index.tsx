@@ -10,10 +10,10 @@ import TableActionsCell from '@/shared/components/common/TableActionsCell';
 // import Pagination from '@/shared/components/common/Pagination';
 import ListLoading from '@/shared/components/common/ListLoading';
 
-import { useRolesQuery, useCreateRole, useUpdateRole, useDeleteRole } from '@/features/security/api/queries';
+import { useRolesQuery, useCreateRole, useUpdateRole, useDeleteRole } from '@/features/security';
 import { Role } from '@/shared/types/security';
 import rolesMessages from './Roles.messages';
-import { useEnsureAllPermsForUserRole } from '@/features/security/hooks/useEnsureAllPermsForUserRole';
+import { useEnsureAllPermsForUserRole } from '@/features/security';
 import RoleForm from './RoleForm';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';
 

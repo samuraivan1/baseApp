@@ -8,7 +8,7 @@ import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 // import Button from '@/shared/components/ui/Button';
 import { useQueryClient } from '@tanstack/react-query';
-import { usePermissionsQuery, useCreatePermission, useUpdatePermission, useDeletePermission } from '@/features/security/api/queries';
+import { usePermissionsQuery, useCreatePermission, useUpdatePermission, useDeletePermission } from '@/features/security';
 // Servicios y toasts gestionados por hooks centralizados en api/queries
 import { permissionsMessages } from './Permissions.messages';
 import { commonDefaultMessages } from '@/i18n/commonMessages';

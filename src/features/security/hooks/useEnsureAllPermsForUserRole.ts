@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getUsers } from '@/features/security/api/userService';
-import { getUserRoles } from '@/features/security/api/relationsService';
-import { getPermissions } from '@/features/security/api/permissionService';
-import { assignPermissionsToRole, getRolePermissions } from '@/features/security/api/roleService';
+import { getUsers, getUserRoles, getPermissions, assignPermissionsToRole, getRolePermissions as getRolePermissionsForRole } from '@/features/security';
 
 // This hook ensures the role assigned to the target user has all permissions.
 // It is idempotent and only runs once after data is loaded.
@@ -22,7 +19,7 @@ export function useEnsureAllPermsForUserRole(targetUsernames: string[] = ['iamen
 
     (async () => {
       try {
-        const existing = await getRolePermissions(roleId);
+        const existing = await getRolePermissionsForRole(roleId);
         const existingSet = new Set(existing.map(e => e.permission_id));
         const toAssign = perms.map(p => p.permission_id).filter(id => !existingSet.has(id));
         if (toAssign.length > 0) {

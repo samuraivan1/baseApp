@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useUsersQuery, useUserRolesQuery, useDeleteUser } from '@/features/security/api/queries';
+import { useUsersQuery, useUserRolesQuery, useDeleteUser } from '@/features/security';
 // UI feedback centralizado en servicios/hooks
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
@@ -19,7 +19,7 @@ import type { FilterableColumn } from '@/shared/components/common/CommandBar/typ
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 import ListLoading from '@/shared/components/common/ListLoading';
-import { usersKeys } from '@/features/security/api/queryKeys';
+import { usersKeys } from '@/features/security';
 
 type UserView = {
   idUsuario: number;

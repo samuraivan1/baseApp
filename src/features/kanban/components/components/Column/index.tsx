@@ -1,7 +1,7 @@
 import React from 'react';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { Task } from '../Task';
-import { usePermissionsQuery } from '@/features/security/api/queries';
+import { usePermissionsQuery } from '@/features/security';
 import { ColumnaType, TareaType } from '@/shared/types/ui';
 import { columnMessages } from './Column.messages';
 
