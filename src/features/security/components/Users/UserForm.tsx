@@ -40,11 +40,11 @@ interface UpdateUsuarioVariables {
 
 interface Props {
   initialData?: UsuarioCompleto | null;
-  onSuccess?: () => void;
+  onSubmit?: (values: UserFormValues) => Promise<void> | void;
   onCancel: () => void;
 }
 
-const UserForm: React.FC<Props> = ({ initialData, onSuccess, onCancel }) => {
+const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
   const _qc = useQueryClient();
 
   const {
@@ -136,27 +136,12 @@ const UserForm: React.FC<Props> = ({ initialData, onSuccess, onCancel }) => {
     return updated;
   };
 
-  const submit = (data: UserFormValues) => {
-    if (initialData?.idUsuario) {
-      updateUserWrapped({ id: initialData.idUsuario, payload: data })
-        .then(() => {
-          toast.success(userFormMessages.updateSuccess);
-          onSuccess?.();
-        })
-        .catch((err) => {
-          logger.error(err, { context: 'updateUsuario' });
-          toast.error(userFormMessages.genericError);
-        });
-    } else {
-      createUserWrapped(data)
-        .then(() => {
-          toast.success(userFormMessages.createSuccess);
-          onSuccess?.();
-        })
-        .catch((err) => {
-          logger.error(err, { context: 'createUsuario' });
-          toast.error(userFormMessages.genericError);
-        });
+  const submit = async (data: UserFormValues) => {
+    try {
+      await onSubmit?.(data);
+    } catch (err) {
+      logger.error(err, { context: 'submitUsuario' });
+      toast.error(userFormMessages.genericError);
     }
   };
 

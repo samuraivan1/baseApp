@@ -1,12 +1,18 @@
 import React, { useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useUsersQuery, useUserRolesQuery, useDeleteUser } from '@/features/security';
+import {
+  useUsersCrud,
+  useUserRolesQuery,
+  useDeleteUser,
+  usersKeys,
+  toCreateUserDto,
+  toUpdateUserDto,
+  addUserRole,
+} from '@/features/security';
 // UI feedback centralizado en servicios/hooks
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
-import {
-  EntityTableColumn,
-} from '@/shared/components/common/Entitytable';
+import { EntityTableColumn } from '@/shared/components/common/Entitytable';
 import PaginatedEntityTable from '@/shared/components/common/PaginatedEntityTable';
 // import Pagination from '@/shared/components/common/Pagination';
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
@@ -19,7 +25,6 @@ import type { FilterableColumn } from '@/shared/components/common/CommandBar/typ
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 import ListLoading from '@/shared/components/common/ListLoading';
-import { usersKeys } from '@/features/security';
 
 type UserView = {
   idUsuario: number;
@@ -40,13 +45,26 @@ const UsuariosPage: React.FC = () => {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  const { data: usersRaw = [], isLoading: isLoadingUsers, isError, error } = useUsersQuery();
-  const { data: userRoles = [], isLoading: isLoadingRoles } = useUserRolesQuery();
+  // Migrated to useUsersCrud (list/create/update/remove) – incremental and safe
+  const { list, create, update, remove } = useUsersCrud();
+  const {
+    data: usersRaw = [],
+    isLoading: isLoadingUsers,
+    isError,
+    error,
+  } = list;
+  const { data: userRoles = [], isLoading: isLoadingRoles } =
+    useUserRolesQuery();
   const usuarios: UserView[] = React.useMemo(() => {
     const roleByUser = new Map(
-      (Array.isArray(userRoles) ? userRoles : []).map((ur) => [ur.user_id, ur.role_id])
+      (Array.isArray(userRoles) ? userRoles : []).map((ur) => [
+        ur.user_id,
+        ur.role_id,
+      ])
     );
-    const base = Array.isArray(usersRaw) ? (usersRaw as Array<User | Record<string, any>>) : [];
+    const base = Array.isArray(usersRaw)
+      ? (usersRaw as Array<User | Record<string, any>>)
+      : [];
     return base.map((u) => ({
       idUsuario: Number((u as any).user_id ?? (u as any).id),
       nombre: (u as any).first_name,
@@ -55,7 +73,10 @@ const UsuariosPage: React.FC = () => {
       apellidoMaterno: (u as any).last_name_m ?? undefined,
       correoElectronico: (u as any).email,
       nombreUsuario: (u as any).username,
-      status: (u as any).is_active === 1 || (u as any).is_active === true ? 'activo' : 'inactivo',
+      status:
+        (u as any).is_active === 1 || (u as any).is_active === true
+          ? 'activo'
+          : 'inactivo',
       rolId: roleByUser.get((u as any).user_id ?? (u as any).id) ?? undefined,
     }));
   }, [usersRaw, userRoles]);
@@ -76,9 +97,21 @@ const UsuariosPage: React.FC = () => {
       { key: 'idUsuario', label: usersMessages.id, sortable: true },
       { key: 'correoElectronico', label: usersMessages.email, sortable: true },
       { key: 'nombre', label: usersMessages.nombre, sortable: true },
-      { key: 'segundoNombre', label: usersMessages.segundoNombre, sortable: false },
-      { key: 'apellidoPaterno', label: usersMessages.form.apellidoPaterno, sortable: true },
-      { key: 'apellidoMaterno', label: usersMessages.form.apellidoMaterno, sortable: true },
+      {
+        key: 'segundoNombre',
+        label: usersMessages.segundoNombre,
+        sortable: false,
+      },
+      {
+        key: 'apellidoPaterno',
+        label: usersMessages.form.apellidoPaterno,
+        sortable: true,
+      },
+      {
+        key: 'apellidoMaterno',
+        label: usersMessages.form.apellidoMaterno,
+        sortable: true,
+      },
       { key: 'status', label: usersMessages.status, sortable: true },
     ],
     []
@@ -126,7 +159,7 @@ const UsuariosPage: React.FC = () => {
       );
     });
     const map = new Map<number, UserView>();
-    for (const r of (Array.isArray(data) ? data : [])) map.set(r.idUsuario, r);
+    for (const r of Array.isArray(data) ? data : []) map.set(r.idUsuario, r);
     return Array.from(map.values());
   }, [usuarios, searchTerm, activeFilters, allowedFilterKeys]);
 
@@ -145,10 +178,13 @@ const UsuariosPage: React.FC = () => {
   }, [searchTerm, activeFilters]);
 
   // Mutations
-  const delMutation = useDeleteUser();
+  const delMutation = useDeleteUser(); // legacy delete (will switch to hook remove)
 
   // Handlers
-  const openCreate = () => { setEditing(null); setIsFormOpen(true); };
+  const openCreate = () => {
+    setEditing(null);
+    setIsFormOpen(true);
+  };
   const openEdit = (u: UserView) => {
     setEditing(u);
     setIsFormOpen(true);
@@ -197,25 +233,25 @@ const UsuariosPage: React.FC = () => {
       {!isFormOpen && (
         // PermissionGate removed: always render create button in dev
         <CommandBar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        onSearch={() => setCurrentPage(1)}
-        showFilters={showFilters}
-        onToggleFilters={handleToggleFilters}
-        filterableColumns={filterableColumns}
-        onFilterChange={setActiveFilters}
-        onAdd={openCreate}
-        onRefresh={() => window.location.reload()}
-        onExportExcel={handleExportCSV}
-        searchPlaceholder={
-          usersMessages.searchPlaceholder ??
-          'Buscar por nombre, usuario o correo'
-        }
-        searchLabel={usersMessages.searchLabel ?? 'Buscar'}
-        addLabel={usersMessages.createButton}
-        refreshLabel={commonDefaultMessages.refresh}
-        filtersLabel={commonDefaultMessages.filters}
-        excelLabel={commonDefaultMessages.exportCsv}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          onSearch={() => setCurrentPage(1)}
+          showFilters={showFilters}
+          onToggleFilters={handleToggleFilters}
+          filterableColumns={filterableColumns}
+          onFilterChange={setActiveFilters}
+          onAdd={openCreate}
+          onRefresh={() => window.location.reload()}
+          onExportExcel={handleExportCSV}
+          searchPlaceholder={
+            usersMessages.searchPlaceholder ??
+            'Buscar por nombre, usuario o correo'
+          }
+          searchLabel={usersMessages.searchLabel ?? 'Buscar'}
+          addLabel={usersMessages.createButton}
+          refreshLabel={commonDefaultMessages.refresh}
+          filtersLabel={commonDefaultMessages.filters}
+          excelLabel={commonDefaultMessages.exportCsv}
         />
       )}
 
@@ -230,33 +266,44 @@ const UsuariosPage: React.FC = () => {
         {/* Barra de depuración de paginación removida */}
         {isError && (
           <div className="segu-users__error" role="alert">
-            {(error as Error)?.message ?? usersMessages.error ?? 'Ocurrió un error al cargar los usuarios.'}
+            {(error as Error)?.message ??
+              usersMessages.error ??
+              'Ocurrió un error al cargar los usuarios.'}
           </div>
         )}
         {!isFormOpen && (
           <div className="fs-row-span-2 fs-table-container">
-          <PaginatedEntityTable
-            columns={columns}
-            data={currentTableData}
-            keyField="idUsuario"
-            autoFit
-            centered
-            renderActions={(u: UserView) => (
-              <>
-                {/* PermissionGate removed around Edit */}
-                  <TableActionsCell onEdit={() => openEdit(u)} editLabel={usersMessages.edit} />
-                {/* PermissionGate removed around Delete */}
-                  <TableActionsCell onDelete={() => { setDeletingId(u.idUsuario); setConfirmOpen(true); }} deleteLabel={usersMessages.delete} />
-              </>
-            )}
-            pagination={{
-              page: currentPage,
-              totalPages,
-              onChange: setCurrentPage,
-              rowsPerPage,
-              onRowsPerPageChange: handleRowsPerPageChange,
-            }}
-          />
+            <PaginatedEntityTable
+              columns={columns}
+              data={currentTableData}
+              keyField="idUsuario"
+              autoFit
+              centered
+              renderActions={(u: UserView) => (
+                <>
+                  {/* PermissionGate removed around Edit */}
+                  <TableActionsCell
+                    onEdit={() => openEdit(u)}
+                    editLabel={usersMessages.edit}
+                  />
+                  {/* PermissionGate removed around Delete */}
+                  <TableActionsCell
+                    onDelete={() => {
+                      setDeletingId(u.idUsuario);
+                      setConfirmOpen(true);
+                    }}
+                    deleteLabel={usersMessages.delete}
+                  />
+                </>
+              )}
+              pagination={{
+                page: currentPage,
+                totalPages,
+                onChange: setCurrentPage,
+                rowsPerPage,
+                onRowsPerPageChange: handleRowsPerPageChange,
+              }}
+            />
           </div>
         )}
       </ListLoading>
@@ -264,15 +311,33 @@ const UsuariosPage: React.FC = () => {
       {isFormOpen && (
         <div className="segu-users__embedded-form">
           {/* PermissionGate removed around form submit */}
-            <UserForm
-              initialData={editing || undefined}
-              onCancel={() => setIsFormOpen(false)}
-              onSuccess={() => {
-                setIsFormOpen(false);
-                queryClient.invalidateQueries({ queryKey: usersKeys.all });
-              }}
-            />
-          
+          <UserForm
+            initialData={editing || undefined}
+            onCancel={() => setIsFormOpen(false)}
+            onSubmit={async (values) => {
+              if (!editing) {
+                const dto = toCreateUserDto(values as any);
+                const created = await create.mutateAsync(dto as any);
+                if ((values as any).rolId != null) {
+                  try {
+                    await addUserRole(
+                      (created as any).user_id,
+                      Number((values as any).rolId)
+                    );
+                  } catch {}
+                }
+              } else {
+                const dto = toUpdateUserDto(values as any);
+                await update.mutateAsync({
+                  id: editing.idUsuario,
+                  input: dto as any,
+                });
+              }
+              setIsFormOpen(false);
+              setEditing(null);
+              queryClient.invalidateQueries({ queryKey: usersKeys.all });
+            }}
+          />
         </div>
       )}
 
@@ -287,9 +352,16 @@ const UsuariosPage: React.FC = () => {
         cancelLabel={commonDefaultMessages.cancel}
         danger
         onCancel={() => setConfirmOpen(false)}
-        onConfirm={() => {
-          if (deletingId != null)
-            delMutation.mutate(deletingId, { onSettled: () => setDeletingId(null) });
+        onConfirm={async () => {
+          if (deletingId != null) {
+            try {
+              await remove.mutateAsync(deletingId);
+            } finally {
+              setDeletingId(null);
+              setConfirmOpen(false);
+              queryClient.invalidateQueries({ queryKey: usersKeys.all });
+            }
+          }
         }}
       />
     </div>

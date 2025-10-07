@@ -13,4 +13,3 @@ export function useUsersCrud() {
   };
   return useEntityCrud<User, UserInput>('users', service);
 }
-
