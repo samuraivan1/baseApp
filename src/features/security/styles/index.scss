@@ -73,12 +73,4 @@
 }
 
 /* Páginas Seguridad: base consistente */
-.segu-roles,
-.segu-users,
-.segu-permisos {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  box-sizing: border-box;
-  padding: var(--spacing-md);
-}
+/* Estilos de páginas movidos a sus componentes locales (Roles/Users/Permissions) */

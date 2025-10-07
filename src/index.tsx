@@ -8,7 +8,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { loadConfig } from '@/shared/api/configService';
 import ErrorBoundary from '@/shared/components/ErrorBoundary';
-import { queryClient } from '@/app/queryClient';
+import { queryClient } from '@/lib/queryClient';
 import { store } from '@/app/store';
 
 const rootElement = document.getElementById('root') as HTMLElement;

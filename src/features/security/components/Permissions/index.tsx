@@ -204,3 +204,4 @@ const PermissionsPage: React.FC = () => {
 };
 
 export default PermissionsPage;
+import './Permissions.scss';

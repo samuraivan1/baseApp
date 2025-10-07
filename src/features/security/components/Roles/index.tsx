@@ -17,7 +17,7 @@ import { useEnsureAllPermsForUserRole } from '@/features/security';
 import RoleForm from './RoleForm';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';
 
-// estilos de página centralizados en features/security/styles/index.scss
+import './Roles.scss';
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 

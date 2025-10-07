@@ -297,3 +297,4 @@ const UsuariosPage: React.FC = () => {
 };
 
 export default UsuariosPage;
+import './Users.scss';
