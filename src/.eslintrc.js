@@ -32,7 +32,7 @@ module.exports = {
       'error',
       {
         allow: [
-          // Solo APIs públicas por feature o shared
+          // Solo APIs públicas por feature o shared (barrels)
           '@/features/*',
           '@/shared',
           // Deep imports necesarios de terceros (documentados)
@@ -43,6 +43,12 @@ module.exports = {
           'zustand/middleware',
           'msw/node',
           'react-toastify/dist/ReactToastify.css',
+        ],
+        forbid: [
+          {
+            pattern: '@/features/*/(components|hooks|api)/**',
+            message: 'Importa desde el barrel del feature (e.g., "@/features/<feature>").',
+          },
         ],
       },
     ],

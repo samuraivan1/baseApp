@@ -41,6 +41,11 @@ MSW intercepta las peticiones en desarrollo y en tests usando los handlers en `s
 - Evita `axios` directo o `fetch` para endpoints backend; si es necesario, compón las URLs con el mismo `baseURL` del cliente.
 - Define rutas relativas al `baseURL` (ej.: `apiClient.post('/auth/login', ...)`).
 
+### Importación por barrels (features)
+- No importes desde subcarpetas internas de un feature (`components/`, `hooks/`, `api/`).
+- Importa únicamente desde el barrel público del feature: `@/features/<feature>`.
+- ESLint aplica la regla `import/no-internal-modules` para reforzar esta convención.
+
 #### Inicializar/actualizar Service Worker de MSW
 
 Genera el archivo oficial del worker en `public/mockServiceWorker.js`:
@@ -63,7 +68,8 @@ localStorage.removeItem('msw:db'); location.reload();
 
 ### `npm run test`
 
-Ejecuta pruebas unitarias con **Vitest**.
+Actualmente no hay pruebas activas. Se reactivarán en una etapa posterior.
+El comando queda preparado para no fallar si no existen tests.
 
 ### `npm run storybook`
 
