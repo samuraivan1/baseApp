@@ -5,6 +5,14 @@ import { requireCsrfOnMutation } from '../utils/csrf';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
 import type { UserRole, RolePermission } from '@/features/security/types';
 
+function getUserRolesTable(): UserRole[] {
+  return db.user_roles as UserRole[];
+}
+
+function getRolePermissionsTable(): RolePermission[] {
+  return db.role_permissions as RolePermission[];
+}
+
 const getUserRoles: HttpHandler['resolver'] = ({ request }) => {
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
@@ -13,7 +21,7 @@ const getUserRoles: HttpHandler['resolver'] = ({ request }) => {
     PERMISSIONS.SECURITY_ROLES_VIEW
   );
   if (denied) return denied;
-  return HttpResponse.json(db.user_roles, { status: 200 });
+  return HttpResponse.json(getUserRolesTable(), { status: 200 });
 };
 
 const createUserRole: HttpHandler['resolver'] = async ({ request }) => {
@@ -27,8 +35,18 @@ const createUserRole: HttpHandler['resolver'] = async ({ request }) => {
   );
   if (denied) return denied;
   const body = (await request.json()) as Partial<UserRole>;
-  const row: UserRole = { ...body } as UserRole;
-  db.user_roles.push(row);
+  const user_id = Number(body.user_id);
+  const role_id = Number(body.role_id);
+  if (!Number.isFinite(user_id) || !Number.isFinite(role_id)) {
+    return HttpResponse.json({ message: 'user_id and role_id are required' }, { status: 400 });
+  }
+  const candidateId = Number(body.id);
+  const row: UserRole = {
+    id: Number.isFinite(candidateId) ? candidateId : Date.now(),
+    user_id,
+    role_id,
+  };
+  getUserRolesTable().push(row);
   persistDb();
   return HttpResponse.json(row, { status: 201 });
 };
@@ -45,11 +63,12 @@ const deleteUserRole: HttpHandler['resolver'] = ({ params, request }) => {
   if (denied) return denied;
   const user_id = Number(params.user_id);
   const role_id = Number(params.role_id);
-  const idx = db.user_roles.findIndex(
+  const table = getUserRolesTable();
+  const idx = table.findIndex(
     (r) => Number(r.user_id) === user_id && Number(r.role_id) === role_id
   );
   if (idx === -1) return new HttpResponse(null, { status: 404 });
-  db.user_roles.splice(idx, 1);
+  table.splice(idx, 1);
   persistDb();
   return new HttpResponse(null, { status: 204 });
 };
@@ -62,7 +81,7 @@ const getRolePermissions: HttpHandler['resolver'] = ({ request }) => {
     PERMISSIONS.SECURITY_PERMISSIONS_VIEW
   );
   if (denied) return denied;
-  return HttpResponse.json(db.role_permissions, { status: 200 });
+  return HttpResponse.json(getRolePermissionsTable(), { status: 200 });
 };
 
 const createRolePermission: HttpHandler['resolver'] = async ({ request }) => {
@@ -76,8 +95,18 @@ const createRolePermission: HttpHandler['resolver'] = async ({ request }) => {
   );
   if (denied) return denied;
   const body = (await request.json()) as Partial<RolePermission>;
-  const row: RolePermission = { ...body } as RolePermission;
-  db.role_permissions.push(row);
+  const role_id = Number(body.role_id);
+  const permission_id = Number(body.permission_id);
+  if (!Number.isFinite(role_id) || !Number.isFinite(permission_id)) {
+    return HttpResponse.json({ message: 'role_id and permission_id are required' }, { status: 400 });
+  }
+  const candidateId = Number(body.id);
+  const row: RolePermission = {
+    id: Number.isFinite(candidateId) ? candidateId : Date.now(),
+    role_id,
+    permission_id,
+  };
+  getRolePermissionsTable().push(row);
   persistDb();
   return HttpResponse.json(row, { status: 201 });
 };
@@ -94,12 +123,13 @@ const deleteRolePermission: HttpHandler['resolver'] = ({ params, request }) => {
   if (denied) return denied;
   const role_id = Number(params.role_id);
   const permission_id = Number(params.permission_id);
-  const idx = db.role_permissions.findIndex(
+  const table = getRolePermissionsTable();
+  const idx = table.findIndex(
     (r) =>
       Number(r.role_id) === role_id && Number(r.permission_id) === permission_id
   );
   if (idx === -1) return new HttpResponse(null, { status: 404 });
-  db.role_permissions.splice(idx, 1);
+  table.splice(idx, 1);
   persistDb();
   return new HttpResponse(null, { status: 204 });
 };

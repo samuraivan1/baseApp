@@ -1,0 +1,17 @@
+export const APP_ROUTES = {
+  HOME: '/home',
+  LOGIN: '/login',
+  UNAUTHORIZED: '/unauthorized',
+  KANBAN: '/kanban',
+  FORMS_DEMO: '/forms-demo',
+  SECURITY: '/seguridad',
+  SECURITY_USERS: '/seguridad/usuarios',
+  SECURITY_ROLES: '/seguridad/roles',
+  SECURITY_PERMISSIONS: '/seguridad/permisos',
+  DEV_MUTATION: '/dev/mutation',
+  DEV_PRODUCTS: '/dev/products',
+  DEV_PROFILE: '/dev/profile',
+  REGISTER: '/register',
+  FORGOT_PASSWORD: '/forgot-password',
+  ROOT: '/',
+};

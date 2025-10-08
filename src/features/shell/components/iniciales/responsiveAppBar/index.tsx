@@ -14,7 +14,6 @@ import { useProfileMenu } from './hooks/useProfileMenu';
 const ResponsiveAppBar: React.FC = () => {
   const { user } = useAuthStore();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
 
   const { menuItems, isLoadingMenu } = useMainMenu();
   // ✅ Obtenemos también los items del menú de perfil
@@ -45,13 +44,8 @@ const ResponsiveAppBar: React.FC = () => {
         </nav>
         <div className="app-bar__right-section">
           <div className="app-bar__user-profile">
-            <button
-              className="app-bar__avatar"
-              onClick={() => setUserMenuOpen(!isUserMenuOpen)}
-            >
-              {user?.initials || 'U'}
-            </button>
-            {isUserMenuOpen && <UserProfileMenu />}
+            {/* UserProfileMenu ahora gestiona su propia visibilidad */}
+            <UserProfileMenu user={user} items={profileMenuItems} />
           </div>
           <button
             className="app-bar__hamburger"

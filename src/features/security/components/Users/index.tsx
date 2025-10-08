@@ -1,6 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useUsersCrud, useUserRolesCrud, usersKeys, toCreateUserDto, toUpdateUserDto, addUserRole } from '@/features/security';
+import {
+  useUsersCrud,
+  useUserRolesCrud,
+  usersKeys,
+  toCreateUserDto,
+  toUpdateUserDto,
+  addUserRole,
+  CreateUserDto,
+  UpdateUserDto,
+} from '@/features/security';
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
 import PermissionGate from '@/shared/components/common/PermissionGate';
@@ -10,29 +19,21 @@ import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import UserForm from './UserForm';
 import { usersMessages } from './Users.messages';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
-import type { User } from '@/shared/types/security';
+import type { User } from '@/features/security/types/models';
+import type { UserRole } from '@/features/security/types/relations';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
 import ListLoading from '@/shared/components/common/ListLoading';
 import { useAuthStore } from '@/features/shell/state/authStore';
 
-type UserView = {
-  idUsuario: number;
-  nombre: string;
-  segundoNombre?: string;
-  apellidoPaterno?: string;
-  apellidoMaterno?: string;
-  correoElectronico: string;
-  nombreUsuario: string;
-  status: 'activo' | 'inactivo';
-  rolId?: number;
-};
+// Combinación del usuario con su rol para la vista
+type UserWithRole = User & { rolId?: number };
 
 const UsuariosPage: React.FC = () => {
   const queryClient = useQueryClient();
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editing, setEditing] = useState<UserView | null>(null);
+  const [editing, setEditing] = useState<UserWithRole | null>(null);
   const [formReadOnly, setFormReadOnly] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -47,29 +48,19 @@ const UsuariosPage: React.FC = () => {
   const { list: userRolesList } = useUserRolesCrud();
   const { data: userRoles = [], isLoading: isLoadingRoles } = userRolesList;
 
-  const usuarios: UserView[] = React.useMemo(() => {
-    const roleByUser = new Map(
-      (Array.isArray(userRoles) ? userRoles : []).map((ur) => [
-        ur.user_id,
-        ur.role_id,
-      ])
-    );
-    const base = Array.isArray(usersRaw)
-      ? (usersRaw as Array<User | Record<string, any>>)
-      : [];
-    return base.map((u) => ({
-      idUsuario: Number((u as any).user_id ?? (u as any).id),
-      nombre: (u as any).first_name,
-      segundoNombre: (u as any).second_name ?? undefined,
-      apellidoPaterno: (u as any).last_name_p,
-      apellidoMaterno: (u as any).last_name_m ?? undefined,
-      correoElectronico: (u as any).email,
-      nombreUsuario: (u as any).username,
-      status:
-        (u as any).is_active === 1 || (u as any).is_active === true
-          ? 'activo'
-          : 'inactivo',
-      rolId: roleByUser.get((u as any).user_id ?? (u as any).id) ?? undefined,
+  const usuarios: UserWithRole[] = React.useMemo(() => {
+    const roleByUserId = new Map<number, number>();
+    if (Array.isArray(userRoles)) {
+      userRoles.forEach((ur: UserRole) => {
+        roleByUserId.set(ur.user_id, ur.role_id);
+      });
+    }
+
+    if (!Array.isArray(usersRaw)) return [];
+
+    return usersRaw.map((user: User) => ({
+      ...user,
+      rolId: roleByUserId.get(user.user_id),
     }));
   }, [usersRaw, userRoles]);
 
@@ -81,64 +72,58 @@ const UsuariosPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const columns: EntityTableColumn<UserView>[] = useMemo(
+  const columns: EntityTableColumn<UserWithRole>[] = useMemo(
     () => [
-      { key: 'idUsuario', label: usersMessages.id, sortable: true },
-      { key: 'correoElectronico', label: usersMessages.email, sortable: true },
-      { key: 'nombre', label: usersMessages.nombre, sortable: true },
-      { key: 'segundoNombre', label: usersMessages.segundoNombre, sortable: false },
-      { key: 'apellidoPaterno', label: usersMessages.form.apellidoPaterno, sortable: true },
-      { key: 'apellidoMaterno', label: usersMessages.form.apellidoMaterno, sortable: true },
-      { key: 'status', label: usersMessages.status, sortable: true },
+      { key: 'user_id', label: usersMessages.id, sortable: true },
+      { key: 'email', label: usersMessages.email, sortable: true },
+      { key: 'first_name', label: usersMessages.nombre, sortable: true },
+      { key: 'second_name', label: usersMessages.segundoNombre, sortable: false },
+      { key: 'last_name_p', label: usersMessages.form.apellidoPaterno, sortable: true },
+      { key: 'last_name_m', label: usersMessages.form.apellidoMaterno, sortable: true },
+      {
+        key: 'is_active',
+        label: usersMessages.status,
+        sortable: true,
+        render: (u) => (u.is_active ? 'Activo' : 'Inactivo'),
+      },
     ],
     []
   );
 
   const filterableColumns: FilterableColumn[] = useMemo(
-    () => [
-      { key: 'idUsuario', label: usersMessages.id },
-      { key: 'correoElectronico', label: usersMessages.email },
-      { key: 'nombre', label: usersMessages.nombre },
-      { key: 'segundoNombre', label: usersMessages.segundoNombre },
-      { key: 'apellidoPaterno', label: usersMessages.form.apellidoPaterno },
-      { key: 'apellidoMaterno', label: usersMessages.form.apellidoMaterno },
-      { key: 'status', label: usersMessages.status },
-    ],
-    []
-  );
-
-  const allowedFilterKeys = useMemo(
-    () => filterableColumns.map((c) => c.key) as Array<keyof UserView>,
-    [filterableColumns]
+    () =>
+      columns
+        .filter((c) => c.key !== 'is_active') // El render personalizado no es filtrable directamente
+        .map((c) => ({ key: c.key as string, label: c.label })),
+    [columns]
   );
 
   const filteredData = useMemo(() => {
-    let data: UserView[] = Array.isArray(usuarios) ? usuarios : [];
+    let data: UserWithRole[] = [...usuarios];
     const q = searchTerm.trim().toLowerCase();
+
     if (q) {
       data = data.filter(
         (u) =>
-          `${u.nombre} ${u.apellidoPaterno ?? ''} ${u.apellidoMaterno ?? ''}`
+          `${u.first_name} ${u.last_name_p ?? ''} ${u.last_name_m ?? ''}`
             .toLowerCase()
             .includes(q) ||
-          u.nombreUsuario.toLowerCase().includes(q) ||
-          u.correoElectronico.toLowerCase().includes(q)
+          u.username.toLowerCase().includes(q) ||
+          u.email.toLowerCase().includes(q)
       );
     }
-    Object.entries(activeFilters).forEach(([k, v]) => {
-      if (!v) return;
-      const vv = String(v).toLowerCase();
-      if (!allowedFilterKeys.includes(k as keyof UserView)) return;
-      data = data.filter((row) =>
-        String(row[k as keyof UserView] ?? '')
-          .toLowerCase()
-          .includes(vv)
-      );
+
+    Object.entries(activeFilters).forEach(([key, value]) => {
+      if (!value) return;
+      const lowerCaseValue = value.toLowerCase();
+      data = data.filter((row) => {
+        const rowValue = row[key as keyof UserWithRole];
+        return String(rowValue ?? '').toLowerCase().includes(lowerCaseValue);
+      });
     });
-    const map = new Map<number, UserView>();
-    for (const r of Array.isArray(data) ? data : []) map.set(r.idUsuario, r);
-    return Array.from(map.values());
-  }, [usuarios, searchTerm, activeFilters, allowedFilterKeys]);
+
+    return data;
+  }, [usuarios, searchTerm, activeFilters]);
 
   const totalPages = Math.max(1, Math.ceil(filteredData.length / rowsPerPage));
   const currentTableData = useMemo(
@@ -154,27 +139,17 @@ const UsuariosPage: React.FC = () => {
     setCurrentPage(1);
   }, [searchTerm, activeFilters]);
 
-  React.useEffect(() => {
-    const handler = () => {
-      if (formReadOnly && useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_USERS_UPDATE)) {
-        setFormReadOnly(false);
-      }
-    };
-    document.addEventListener('userform:request-edit', handler as any);
-    return () => document.removeEventListener('userform:request-edit', handler as any);
-  }, [formReadOnly]);
-
   const openCreate = () => {
     setEditing(null);
     setIsFormOpen(true);
     setFormReadOnly(false);
   };
-  const openEdit = (u: UserView) => {
+  const openEdit = (u: UserWithRole) => {
     setEditing(u);
     setIsFormOpen(true);
     setFormReadOnly(false);
   };
-  const openView = (u: UserView) => {
+  const openView = (u: UserWithRole) => {
     setEditing(u);
     setIsFormOpen(true);
     setFormReadOnly(true);
@@ -191,14 +166,14 @@ const UsuariosPage: React.FC = () => {
   };
   const handleExportCSV = () => {
     const rows = filteredData.map((u) => [
-      u.idUsuario,
-      u.nombre,
-      u.apellidoPaterno ?? '',
-      u.apellidoMaterno ?? '',
-      u.nombreUsuario,
-      u.correoElectronico,
+      u.user_id,
+      u.first_name,
+      u.last_name_p ?? '',
+      u.last_name_m ?? '',
+      u.username,
+      u.email,
       u.rolId ?? '',
-      u.status,
+      u.is_active ? 'activo' : 'inactivo',
     ]);
     const csv =
       'idUsuario,nombre,apellidoPaterno,apellidoMaterno,nombreUsuario,correoElectronico,rolId,status\n' +
@@ -216,51 +191,33 @@ const UsuariosPage: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
+  const hasCreatePermission = useAuthStore((s) => s.hasPermission(PERMISSIONS.SECURITY_USERS_CREATE));
+  const hasUpdatePermission = useAuthStore((s) => s.hasPermission(PERMISSIONS.SECURITY_USERS_UPDATE));
+  const hasDeletePermission = useAuthStore((s) => s.hasPermission(PERMISSIONS.SECURITY_USERS_DELETE));
+
   return (
     <div className="segu-users">
       <PageHeader title={usersMessages.title} titleSize="1.75rem" />
       {!isFormOpen && (
         <PermissionGate perm={PERMISSIONS.SECURITY_USERS_VIEW}>
-          <PermissionGate
-            perm={PERMISSIONS.SECURITY_USERS_CREATE}
-            fallback={(
-              <CommandBar
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                onSearch={() => setCurrentPage(1)}
-                showFilters={showFilters}
-                onToggleFilters={handleToggleFilters}
-                filterableColumns={filterableColumns}
-                onFilterChange={setActiveFilters}
-                onRefresh={() => window.location.reload()}
-                onExportExcel={handleExportCSV}
-                searchPlaceholder={usersMessages.searchPlaceholder ?? 'Buscar por nombre, usuario o correo'}
-                searchLabel={usersMessages.searchLabel ?? 'Buscar'}
-                refreshLabel={commonDefaultMessages.refresh}
-                filtersLabel={commonDefaultMessages.filters}
-                excelLabel={commonDefaultMessages.exportCsv}
-              />
-            )}
-          >
-            <CommandBar
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              onSearch={() => setCurrentPage(1)}
-              showFilters={showFilters}
-              onToggleFilters={handleToggleFilters}
-              filterableColumns={filterableColumns}
-              onFilterChange={setActiveFilters}
-              onAdd={openCreate}
-              onRefresh={() => window.location.reload()}
-              onExportExcel={handleExportCSV}
-              searchPlaceholder={usersMessages.searchPlaceholder ?? 'Buscar por nombre, usuario o correo'}
-              searchLabel={usersMessages.searchLabel ?? 'Buscar'}
-              addLabel={usersMessages.createButton}
-              refreshLabel={commonDefaultMessages.refresh}
-              filtersLabel={commonDefaultMessages.filters}
-              excelLabel={commonDefaultMessages.exportCsv}
-            />
-          </PermissionGate>
+          <CommandBar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onSearch={() => setCurrentPage(1)}
+            showFilters={showFilters}
+            onToggleFilters={handleToggleFilters}
+            filterableColumns={filterableColumns}
+            onFilterChange={setActiveFilters}
+            onAdd={hasCreatePermission ? openCreate : undefined}
+            onRefresh={() => queryClient.invalidateQueries({ queryKey: usersKeys.all })}
+            onExportExcel={handleExportCSV}
+            searchPlaceholder={usersMessages.searchPlaceholder ?? 'Buscar por nombre, usuario o correo'}
+            searchLabel={usersMessages.searchLabel ?? 'Buscar'}
+            addLabel={usersMessages.createButton}
+            refreshLabel={commonDefaultMessages.refresh}
+            filtersLabel={commonDefaultMessages.filters}
+            excelLabel={commonDefaultMessages.exportCsv}
+          />
         </PermissionGate>
       )}
 
@@ -279,54 +236,43 @@ const UsuariosPage: React.FC = () => {
         )}
         {!isFormOpen && (
           <div className="fs-row-span-2 fs-table-container">
-            {(() => {
-              const canEdit = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_USERS_UPDATE);
-              const canDelete = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_USERS_DELETE);
-              const showActions = canEdit || canDelete;
-              return (
-                <PaginatedEntityTable
-                  columns={columns}
-                  data={currentTableData}
-                  keyField="idUsuario"
-                  autoFit
-                  centered
-                  onRowDoubleClick={(row) => {
-                    const canUpdate = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_USERS_UPDATE);
-                    if (canUpdate) openEdit(row); else openView(row);
-                  }}
-                  {...(showActions
-                    ? {
-                        renderActions: (u: UserView) => (
-                          <>
-                            {canEdit && (
-                              <TableActionsCell
-                                onEdit={() => openEdit(u)}
-                                editLabel={usersMessages.edit}
-                              />
-                            )}
-                            {canDelete && (
-                              <TableActionsCell
-                                onDelete={() => {
-                                  setDeletingId(u.idUsuario);
-                                  setConfirmOpen(true);
-                                }}
-                                deleteLabel={usersMessages.delete}
-                              />
-                            )}
-                          </>
-                        ),
-                      }
-                    : {})}
-                  pagination={{
-                    page: currentPage,
-                    totalPages,
-                    onChange: setCurrentPage,
-                    rowsPerPage,
-                    onRowsPerPageChange: handleRowsPerPageChange,
-                  }}
-                />
-              );
-            })()}
+            <PaginatedEntityTable
+              columns={columns}
+              data={currentTableData}
+              keyField="user_id"
+              autoFit
+              centered
+              onRowDoubleClick={(row) => {
+                if (hasUpdatePermission) openEdit(row);
+                else openView(row);
+              }}
+              renderActions={(u: UserWithRole) => (
+                <>
+                  {hasUpdatePermission && (
+                    <TableActionsCell
+                      onEdit={() => openEdit(u)}
+                      editLabel={usersMessages.edit}
+                    />
+                  )}
+                  {hasDeletePermission && (
+                    <TableActionsCell
+                      onDelete={() => {
+                        setDeletingId(u.user_id);
+                        setConfirmOpen(true);
+                      }}
+                      deleteLabel={usersMessages.delete}
+                    />
+                  )}
+                </>
+              )}
+              pagination={{
+                page: currentPage,
+                totalPages,
+                onChange: setCurrentPage,
+                rowsPerPage,
+                onRowsPerPageChange: handleRowsPerPageChange,
+              }}
+            />
           </div>
         )}
       </ListLoading>
@@ -336,35 +282,31 @@ const UsuariosPage: React.FC = () => {
           <UserForm
             initialData={editing || undefined}
             readOnly={formReadOnly}
-            hasEditPermission={useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_USERS_UPDATE)}
+            hasEditPermission={hasUpdatePermission}
             onCancel={() => setIsFormOpen(false)}
             onSubmit={async (values) => {
               if (formReadOnly) {
-                if (useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_USERS_UPDATE)) {
-                  setFormReadOnly(false);
-                }
+                if (hasUpdatePermission) setFormReadOnly(false);
                 return;
               }
-              const canCreate = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_USERS_CREATE);
-              const canUpdate = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_USERS_UPDATE);
+
               if (!editing) {
-                if (!canCreate) return;
-                const dto = toCreateUserDto(values as any);
-                const created = await create.mutateAsync(dto as any);
-                if ((values as any).rolId != null) {
+                if (!hasCreatePermission) return;
+                const dto = toCreateUserDto(values as CreateUserDto);
+                const created = await create.mutateAsync(dto);
+                if (values.rolId != null) {
                   try {
-                    await addUserRole(
-                      (created as any).user_id,
-                      Number((values as any).rolId)
-                    );
-                  } catch {}
+                    await addUserRole(created.user_id, Number(values.rolId));
+                  } catch (e) {
+                    console.error('Failed to assign role', e);
+                  }
                 }
               } else {
-                if (!canUpdate) return;
-                const dto = toUpdateUserDto(values as any);
+                if (!hasUpdatePermission) return;
+                const dto = toUpdateUserDto(values as UpdateUserDto);
                 await update.mutateAsync({
-                  id: editing.idUsuario,
-                  input: dto as any,
+                  id: editing.user_id,
+                  input: dto,
                 });
               }
               setIsFormOpen(false);

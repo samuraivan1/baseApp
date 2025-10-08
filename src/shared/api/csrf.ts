@@ -7,13 +7,18 @@ function getCookie(name: string): string | null {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
-export function getCsrfToken(): string {
-  const cookie = getCookie('csrf_token');
-  if (cookie) return cookie;
+import { SESSION_STORAGE_KEYS } from '@/constants/sessionConstants';
+
+export function getCsrfToken(): string | null {
   try {
-    const backup = window.localStorage.getItem('csrf_token');
-    return backup || '';
+    return window.localStorage.getItem(SESSION_STORAGE_KEYS.CSRF_TOKEN);
   } catch {
-    return '';
+    return null;
   }
+}
+
+export function setCsrfToken(token: string): void {
+  try {
+    window.localStorage.setItem(SESSION_STORAGE_KEYS.CSRF_TOKEN, token);
+  } catch {}
 }

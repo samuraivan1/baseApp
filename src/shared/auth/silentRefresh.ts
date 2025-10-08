@@ -1,6 +1,38 @@
 import apiClient from '@/shared/api/apiClient';
 import { getAuthStore } from '@/features/shell/state/authStore';
 import { getSession } from '@/shared/api/authService';
+import type { User, Permission } from '@/shared/types/security';
+
+/**
+ * Deriva los permisos de un usuario a partir de la base de datos mock.
+ * Esta función solo se usa en desarrollo y simula la lógica del backend.
+ * @param userId - El ID del usuario.
+ * @returns Un array de permisos o undefined si falla.
+ */
+async function getMockDerivedPermissions(
+  userId: number
+): Promise<Pick<Permission, 'permission_string'>[] | undefined> {
+  if (Number.isNaN(userId)) return undefined;
+
+  const { db } = await import('@/mocks/data/db');
+  const userRoleLinks = (db.user_roles as any[]).filter(
+    (r) => Number(r.user_id) === userId
+  );
+  const roleIds = userRoleLinks.map((r) => Number(r.role_id));
+  const rolePermissions = (db.role_permissions as any[]).filter((r) =>
+    roleIds.includes(Number(r.role_id))
+  );
+  const permissionIds = new Set(
+    rolePermissions.map((r) => Number(r.permission_id))
+  );
+  const permissions = (db.permissions as any[]).filter((p) =>
+    permissionIds.has(Number(p.permission_id))
+  );
+
+  return permissions.map((p) => ({
+    permission_string: String(p.permission_string),
+  }));
+}
 
 /**
  * Intenta refrescar sesión usando la cookie HttpOnly.
@@ -9,49 +41,35 @@ import { getSession } from '@/shared/api/authService';
  */
 export async function silentRefresh(): Promise<boolean> {
   try {
-    // Si se solicitó logout explícito, no intentes refrescar
-    try {
-      if (localStorage.getItem('auth:revoked') === '1') {
-        getAuthStore().setLoggedIn(false);
-        return false;
-      }
-    } catch {}
-    // Usar el apiClient para mantener baseURL y withCredentials consistentes
-    const res = await apiClient.post('/auth/refresh', null);
-    const access = (res.data as any)?.access_token as string | undefined;
-    if (!access) throw new Error('no access_token');
-    // Marca sesión activa inmediatamente para evitar redirecciones tempranas
-    getAuthStore().setToken(access, null);
-    getAuthStore().setLoggedIn(true);
-    try {
-      const session = await getSession();
-      // Derivar permisos como en login (desde mock DB)
-      try {
-        const { db } = await import('@/mocks/data/db');
-        const userId = Number((session as any).user?.user_id);
-        let derivedPermissions: Array<{ permission_string: string }> | undefined = undefined;
-        if (!Number.isNaN(userId)) {
-          const links = (db.user_roles as any[]).filter(r => Number(r.user_id) === userId);
-          const roleIds = links.map(r => Number(r.role_id));
-          const rp = (db.role_permissions as any[]).filter(r => roleIds.includes(Number(r.role_id)));
-          const permIds = new Set(rp.map(r => Number(r.permission_id)));
-          const perms = (db.permissions as any[]).filter(p => permIds.has(Number(p.permission_id)));
-          derivedPermissions = perms.map(p => ({ permission_string: String(p.permission_string) }));
-        }
-        getAuthStore().setUser({ ...(session as any).user, permissions: derivedPermissions });
-      } catch {
-        getAuthStore().setUser((session as any).user);
-      }
-    } catch {
-      // Si no hay endpoint de sesión, seguimos con token solo
+    if (localStorage.getItem('auth:revoked') === '1') {
+      getAuthStore().setLoggedIn(false);
+      return false;
     }
+
+    const res = await apiClient.post('/auth/refresh', null);
+    const accessToken = (res.data as { access_token: string })?.access_token;
+
+    if (!accessToken) {
+      throw new Error('No access_token in refresh response');
+    }
+
+    getAuthStore().setToken(accessToken, null);
+    getAuthStore().setLoggedIn(true);
+
+    const session = await getSession().catch(() => null);
+    if (session?.user) {
+      const user = session.user as User;
+      const derivedPermissions = await getMockDerivedPermissions(
+        user.user_id
+      ).catch(() => undefined);
+      getAuthStore().setUser({ ...user, permissions: derivedPermissions });
+    }
+
     return true;
   } catch {
-    // No asumir sesión por tener user persistido: respetar logout explícito
     getAuthStore().logout();
     return false;
-  }
-  finally {
+  } finally {
     // Señalizamos que auth está listo (éxito o fallo) para desbloquear el UI
     getAuthStore().setAuthReady(true);
   }

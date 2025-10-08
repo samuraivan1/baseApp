@@ -45,10 +45,7 @@ module.exports = {
           'react-toastify/dist/ReactToastify.css',
         ],
         forbid: [
-          {
-            pattern: '@/features/*/(components|hooks|api)/**',
-            message: 'Importa desde el barrel del feature (e.g., "@/features/<feature>").',
-          },
+          '@/features/*/(components|hooks|api)/**',
         ],
       },
     ],
@@ -77,6 +74,10 @@ module.exports = {
                 group: ['node-fetch', 'whatwg-fetch', 'cross-fetch'],
                 message:
                   'No uses fetch directo en componentes. Usa hooks de api/queries por feature.',
+              },
+              {
+                group: ['@/features/*/(components|hooks|api)/**'],
+                message: 'Importa desde el barrel del feature (e.g., "@/features/<feature>").',
               },
             ],
           },

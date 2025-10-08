@@ -5,6 +5,10 @@ import { requireCsrfOnMutation } from '../utils/csrf';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
 import type { Role } from '@/features/security/types';
 
+function getRolesTable(): Role[] {
+  return db.roles as Role[];
+}
+
 const BASE = '/api/roles';
 
 export const rolesHandlers = [
@@ -16,7 +20,7 @@ export const rolesHandlers = [
       PERMISSIONS.SECURITY_ROLES_VIEW
     );
     if (denied) return denied;
-    return HttpResponse.json(db.roles, { status: 200 });
+    return HttpResponse.json(getRolesTable(), { status: 200 });
   }),
 
   http.get(`${BASE}/:id`, ({ params, request }) => {
@@ -28,7 +32,7 @@ export const rolesHandlers = [
     );
     if (denied) return denied;
     const id = Number(params.id);
-    const row = db.roles.find((item) => Number(item.role_id) === id);
+    const row = getRolesTable().find((item) => Number(item.role_id) === id);
     if (!row) return new HttpResponse(null, { status: 404 });
     return HttpResponse.json(row, { status: 200 });
   }),
@@ -52,7 +56,7 @@ export const rolesHandlers = [
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-    db.roles.push(row as Role);
+    getRolesTable().push(row);
     persistDb();
     return HttpResponse.json(row, { status: 201 });
   }),
@@ -69,11 +73,12 @@ export const rolesHandlers = [
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<Role>;
-    const idx = db.roles.findIndex((item) => Number(item.role_id) === id);
+    const roles = getRolesTable();
+    const idx = roles.findIndex((item) => Number(item.role_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.roles[idx] = { ...db.roles[idx], ...body, role_id: id };
+    roles[idx] = { ...roles[idx], ...body, role_id: id } as Role;
     persistDb();
-    return HttpResponse.json(db.roles[idx], { status: 200 });
+    return HttpResponse.json(roles[idx], { status: 200 });
   }),
 
   http.patch(`${BASE}/:id`, async ({ params, request }) => {
@@ -88,15 +93,16 @@ export const rolesHandlers = [
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<Role>;
-    const idx = db.roles.findIndex((item) => Number(item.role_id) === id);
+    const roles = getRolesTable();
+    const idx = roles.findIndex((item) => Number(item.role_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.roles[idx] = {
-      ...db.roles[idx],
+    roles[idx] = {
+      ...roles[idx],
       ...body,
       role_id: id,
-    };
+    } as Role;
     persistDb();
-    return HttpResponse.json(db.roles[idx], { status: 200 });
+    return HttpResponse.json(roles[idx], { status: 200 });
   }),
 
   http.delete(`${BASE}/:id`, ({ params, request }) => {
@@ -110,9 +116,10 @@ export const rolesHandlers = [
     );
     if (denied) return denied;
     const id = Number(params.id);
-    const idx = db.roles.findIndex((item) => Number(item.role_id) === id);
+    const roles = getRolesTable();
+    const idx = roles.findIndex((item) => Number(item.role_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.roles.splice(idx, 1);
+    roles.splice(idx, 1);
     persistDb();
     return new HttpResponse(null, { status: 204 });
   }),

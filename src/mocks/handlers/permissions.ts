@@ -5,6 +5,10 @@ import { requireCsrfOnMutation } from '../utils/csrf';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
 import type { Permission } from '@/features/security/types';
 
+function getPermissionsTable(): Permission[] {
+  return db.permissions as Permission[];
+}
+
 const BASE = '/api/permissions';
 
 export const permissionsHandlers = [
@@ -16,7 +20,7 @@ export const permissionsHandlers = [
       PERMISSIONS.SECURITY_PERMISSIONS_VIEW
     );
     if (denied) return denied;
-    return HttpResponse.json(db.permissions, { status: 200 });
+    return HttpResponse.json(getPermissionsTable(), { status: 200 });
   }),
 
   http.get(`${BASE}/:id`, ({ params, request }) => {
@@ -28,7 +32,7 @@ export const permissionsHandlers = [
     );
     if (denied) return denied;
     const id = Number(params.id);
-    const row = db.permissions.find(
+    const row = getPermissionsTable().find(
       (item) => Number(item.permission_id) === id
     );
     if (!row) return new HttpResponse(null, { status: 404 });
@@ -51,9 +55,12 @@ export const permissionsHandlers = [
       permission_id,
       permission_string:
         body.permission_string ?? `permission.${permission_id}`,
-      description: body.description ?? '',
+      resource: body.resource ?? null,
+      scope: body.scope ?? null,
+      action: body.action ?? null,
+      description: body.description ?? null,
     };
-    db.permissions.push(row as Permission);
+    getPermissionsTable().push(row);
     persistDb();
     return HttpResponse.json(row, { status: 201 });
   }),
@@ -70,17 +77,18 @@ export const permissionsHandlers = [
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<Permission>;
-    const idx = db.permissions.findIndex(
+    const permissions = getPermissionsTable();
+    const idx = permissions.findIndex(
       (item) => Number(item.permission_id) === id
     );
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.permissions[idx] = {
-      ...db.permissions[idx],
+    permissions[idx] = {
+      ...permissions[idx],
       ...body, // `password_hash` should not be patchable
       permission_id: id,
-    };
+    } as Permission;
     persistDb();
-    return HttpResponse.json(db.permissions[idx], { status: 200 });
+    return HttpResponse.json(permissions[idx], { status: 200 });
   }),
 
   http.patch(`${BASE}/:id`, async ({ params, request }) => {
@@ -95,17 +103,18 @@ export const permissionsHandlers = [
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<Permission>;
-    const idx = db.permissions.findIndex(
+    const permissions = getPermissionsTable();
+    const idx = permissions.findIndex(
       (item) => Number(item.permission_id) === id
     );
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.permissions[idx] = {
-      ...db.permissions[idx],
+    permissions[idx] = {
+      ...permissions[idx],
       ...body, // `password_hash` should not be patchable
       permission_id: id,
-    };
+    } as Permission;
     persistDb();
-    return HttpResponse.json(db.permissions[idx], { status: 200 });
+    return HttpResponse.json(permissions[idx], { status: 200 });
   }),
 
   http.delete(`${BASE}/:id`, ({ params, request }) => {
@@ -119,11 +128,12 @@ export const permissionsHandlers = [
     );
     if (denied) return denied;
     const id = Number(params.id);
-    const idx = db.permissions.findIndex(
+    const permissions = getPermissionsTable();
+    const idx = permissions.findIndex(
       (item) => Number(item.permission_id) === id
     );
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.permissions.splice(idx, 1);
+    permissions.splice(idx, 1);
     persistDb();
     return new HttpResponse(null, { status: 204 });
   }),

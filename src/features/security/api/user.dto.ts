@@ -9,9 +9,6 @@ const toString = (value: unknown, fallback = ''): string =>
 const toStringOrNull = (value: unknown): string | null =>
   typeof value === 'string' && value.length > 0 ? value : null;
 
-const toStringOrUndefined = (value: unknown): string | undefined =>
-  typeof value === 'string' && value.length > 0 ? value : undefined;
-
 const toNumberFlag = (value: unknown, defaultValue: 0 | 1 = 0): 0 | 1 => {
   if (value === 1 || value === true || value === 'activo') return 1;
   if (value === 0 || value === false || value === 'inactivo') return 0;

@@ -1,42 +1,15 @@
-// NOTA: La función 'setSessionDate' no fue proporcionada.
-// Se crea una función de ejemplo para que el código funcione.
-const setSessionDate = (expirationInMinutes: number): string => {
-  const date = new Date();
-  date.setMinutes(date.getMinutes() + expirationInMinutes);
-  return date.toISOString();
+/**
+ * Constantes para las claves de sessionStorage y localStorage.
+ */
+export const SESSION_STORAGE_KEYS = {
+  // Clave para el estado de autenticación de Zustand
+  AUTH_STATE: 'auth',
+  // Clave para el token CSRF
+  CSRF_TOKEN: 'csrf_token',
+  // Clave para marcar la sesión como revocada (logout)
+  AUTH_REVOKED: 'auth:revoked',
+  // Clave para el ID de usuario actual en los mocks
+  MOCK_CURRENT_USER_ID: 'mock:current_user_id',
+  // Clave para la base de datos en memoria de MSW
+  MSW_DB: 'msw:db',
 };
-
-const EXPIRATION_TIME = 30;
-
-export const USER_DATA = {
-  info: {
-    userId: 67,
-    userKey: '',
-    email: '',
-    userName: '',
-    businessLine: {
-      lobKey: '',
-      lobDescription: '',
-    },
-    roles: [],
-    permissions: [],
-  },
-  bearerToken: '',
-};
-
-export const REDIRECT = '/segu/init';
-
-export const SESSION = {
-  token: {
-    accessToken: '',
-    expires: '',
-    tokenType: '',
-  },
-  url: '',
-  expires: setSessionDate(EXPIRATION_TIME),
-};
-
-export const SESSION_TIMEOUT = 'session/timeout';
-export const COOKIES_SMSESSION = 'SMSESSION';
-export const SITEMINDER_SM_USER = 'SM_USER';
-export const SITEMINDER_LOGOUT = '/public/logout';
