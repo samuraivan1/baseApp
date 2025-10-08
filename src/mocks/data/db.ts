@@ -40,7 +40,7 @@ function saveToStorage<T>(key: string, value: T) {
 export const db: typeof seed = (() => {
   // Forzar recarga del seed si hay cambios estructurales: versionado simple del almacenamiento
   const VERSION_KEY = STORAGE_KEY + ':v';
-  const CURRENT_VERSION = '2';
+  const CURRENT_VERSION = '3';
   try {
     const v = loadFromStorage<string>(VERSION_KEY);
     if (v !== CURRENT_VERSION) {
@@ -101,61 +101,45 @@ export const db: typeof seed = (() => {
       if (viewer.description == null) viewer.description = 'Permisos de solo visualización';
     }
 
-    const allPerms: Array<{ permission_id: number }> = Array.isArray(db.permissions) ? (db.permissions as any) : [];
+    // Ya no se necesita `ensurePerm` porque los permisos ahora están estandarizados en db.json
+
+    // Asignar todos los permisos existentes al rol de Admin (ID 1)
     const rp: Array<{ role_id: number; permission_id: number }> = Array.isArray(db.role_permissions) ? (db.role_permissions as any) : [];
-    for (const p of allPerms) {
+    for (const p of (db.permissions as any)) {
       const exists = rp.some((r) => Number(r.role_id) === 1 && Number(r.permission_id) === Number(p.permission_id));
       if (!exists) rp.push({ role_id: 1, permission_id: Number(p.permission_id) });
     }
 
-    // Construir listas de permission_strings por tipo
-    const permRows: Array<{ permission_id: number; permission_string?: string }>= (db.permissions as any) ?? [];
-    const byString = new Map<string, number>();
-    for (const row of permRows) {
-      if (row.permission_string) byString.set(row.permission_string, Number(row.permission_id));
+    // Construir mapa de permisos por ID para asignaciones
+    const permMap = new Map<string, number>();
+    for (const p of (db.permissions as any)) {
+      if (p.permission_string) {
+        permMap.set(p.permission_string, Number(p.permission_id));
+      }
     }
-    // Visualización: cualquier permiso "de página" o que contenga ":view"
-    const isView = (s: string) => s.startsWith('page:') || s.includes(':view');
-    const isEdit = (s: string) => s.endsWith(':edit') || s.endsWith(':update') || s.includes(':edit');
-    // Nota: create/delete quedan fuera del rol 2
 
-    // Asignaciones para rol 2 (Editor): visualización de TODO (todas las páginas/entidades) + editar/actualizar
-    // Aseguramos visualización completa adicionando todos los permisos de página y todos los ":view" de entidades.
-    const editorIds: number[] = [];
-    for (const [s, id] of byString.entries()) {
-      if (isView(s) || isEdit(s)) editorIds.push(id);
-    }
-    for (const pid of editorIds) {
+    // Asignaciones para rol 2 (Editor): todos los 'view' y 'update'
+    const editorPermIds = Array.from(permMap.keys())
+      .filter(p => p.endsWith('.view') || p.endsWith('.update'))
+      .map(p => permMap.get(p)!);
+
+    for (const pid of editorPermIds) {
       const exists = rp.some((r) => Number(r.role_id) === 2 && Number(r.permission_id) === Number(pid));
       if (!exists) rp.push({ role_id: 2, permission_id: Number(pid) });
     }
 
-    // Asignaciones para rol 3 (Viewer): solo visualización (todas las páginas y cualquier permiso ":view")
-    const viewerIds: number[] = [];
-    for (const [s, id] of byString.entries()) {
-      if (isView(s)) viewerIds.push(id);
-    }
-    for (const pid of viewerIds) {
+    // Asignaciones para rol 3 (Viewer): solo los 'view'
+    const viewerPermIds = Array.from(permMap.keys())
+      .filter(p => p.endsWith('.view'))
+      .map(p => permMap.get(p)!);
+
+    for (const pid of viewerPermIds) {
       const exists = rp.some((r) => Number(r.role_id) === 3 && Number(r.permission_id) === Number(pid));
       if (!exists) rp.push({ role_id: 3, permission_id: Number(pid) });
     }
-    const usersArr = (Array.isArray(db.users) ? (db.users as any) : []);
-    const iam = usersArr.find((u: any) => String(u.username).toLowerCase() === 'iamendezm');
-    const arturo = usersArr.find((u: any) => String(u.username).toLowerCase() === 'arturolopez');
-    const gabriela = usersArr.find((u: any) => String(u.username).toLowerCase() === 'gabrielavargas');
-    const ur: Array<{ user_id: number; role_id: number }> = Array.isArray(db.user_roles) ? (db.user_roles as any) : [];
-    if (iam) {
-      const linkExists = ur.some((r) => Number(r.user_id) === Number(iam.user_id) && Number(r.role_id) === 1);
-      if (!linkExists) ur.push({ user_id: Number(iam.user_id), role_id: 1 });
-    }
-    if (arturo) {
-      const linkExists = ur.some((r) => Number(r.user_id) === Number(arturo.user_id) && Number(r.role_id) === 2);
-      if (!linkExists) ur.push({ user_id: Number(arturo.user_id), role_id: 2 });
-    }
-    if (gabriela) {
-      const linkExists = ur.some((r) => Number(r.user_id) === Number(gabriela.user_id) && Number(r.role_id) === 3);
-      if (!linkExists) ur.push({ user_id: Number(gabriela.user_id), role_id: 3 });
-    }
+    
+    // No forzar asignación de roles a usuarios específicos por defecto
+    // para evitar que la app "vuelva" a un usuario concreto al rehidratar mocks.
     persistDb();
   } catch {
     // no-op en caso de estructura inesperada

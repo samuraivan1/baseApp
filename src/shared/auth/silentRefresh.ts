@@ -26,19 +26,29 @@ export async function silentRefresh(): Promise<boolean> {
     getAuthStore().setLoggedIn(true);
     try {
       const session = await getSession();
-      getAuthStore().setUser(session.user);
+      // Derivar permisos como en login (desde mock DB)
+      try {
+        const { db } = await import('@/mocks/data/db');
+        const userId = Number((session as any).user?.user_id);
+        let derivedPermissions: Array<{ permission_string: string }> | undefined = undefined;
+        if (!Number.isNaN(userId)) {
+          const links = (db.user_roles as any[]).filter(r => Number(r.user_id) === userId);
+          const roleIds = links.map(r => Number(r.role_id));
+          const rp = (db.role_permissions as any[]).filter(r => roleIds.includes(Number(r.role_id)));
+          const permIds = new Set(rp.map(r => Number(r.permission_id)));
+          const perms = (db.permissions as any[]).filter(p => permIds.has(Number(p.permission_id)));
+          derivedPermissions = perms.map(p => ({ permission_string: String(p.permission_string) }));
+        }
+        getAuthStore().setUser({ ...(session as any).user, permissions: derivedPermissions });
+      } catch {
+        getAuthStore().setUser((session as any).user);
+      }
     } catch {
       // Si no hay endpoint de sesión, seguimos con token solo
     }
     return true;
   } catch {
-    // Fallback: si hay un usuario persistido, asumimos logged-in y dejaremos que el
-    // primer 401 dispare el refresh interceptor.
-    const hasUser = Boolean(getAuthStore().getUser());
-    if (hasUser) {
-      getAuthStore().setLoggedIn(true);
-      return true;
-    }
+    // No asumir sesión por tener user persistido: respetar logout explícito
     getAuthStore().logout();
     return false;
   }

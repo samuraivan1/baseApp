@@ -1,16 +1,17 @@
 import { http, HttpResponse } from 'msw';
-import { db, nextId, persistDb } from '../data/db';
+import { db, persistDb } from '../data/db';
 import { requireAuth, ensurePermission } from '../utils/auth';
 import { requireCsrfOnMutation } from '../utils/csrf';
+import { PERMISSIONS } from '@/features/security/constants/permissions';
 
 export const relationsHandlers = [
   // user_roles
-  // Legacy
+  // Legacy routes are kept for now but point to new handlers if logic is identical
   http.get('/user_roles', (ctx) => relationsHandlers[1].resolver(ctx)),
   http.get('/api/user_roles', ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, 'page:seguridad_roles:view');
+    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_ROLES_VIEW);
     if (denied) return denied;
     return HttpResponse.json(db.user_roles, { status: 200 });
   }),
@@ -20,12 +21,12 @@ export const relationsHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, 'role:system:edit');
+    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_ROLES_UPDATE);
     if (denied) return denied;
     const body = await request.json();
     // Asignar id si aplica; si no, empujar directo (db.json podría no tener pk propio)
     const row = { ...body };
-    db.user_roles.push(row);
+    db.user_roles.push(row as any);
     persistDb();
     return HttpResponse.json(row, { status: 201 });
   }),
@@ -35,7 +36,7 @@ export const relationsHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, 'role:system:edit');
+    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_ROLES_UPDATE);
     if (denied) return denied;
     const user_id = Number(params.user_id);
     const role_id = Number(params.role_id);
@@ -51,7 +52,7 @@ export const relationsHandlers = [
   http.get('/api/role_permissions', ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, 'page:seguridad_permisos:view');
+    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_PERMISSIONS_VIEW);
     if (denied) return denied;
     return HttpResponse.json(db.role_permissions, { status: 200 });
   }),
@@ -61,11 +62,11 @@ export const relationsHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, 'permission:system:edit');
+    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_PERMISSIONS_UPDATE);
     if (denied) return denied;
     const body = await request.json();
     const row = { ...body };
-    db.role_permissions.push(row);
+    db.role_permissions.push(row as any);
     persistDb();
     return HttpResponse.json(row, { status: 201 });
   }),
@@ -75,7 +76,7 @@ export const relationsHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, 'permission:system:edit');
+    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_PERMISSIONS_UPDATE);
     if (denied) return denied;
     const role_id = Number(params.role_id);
     const permission_id = Number(params.permission_id);

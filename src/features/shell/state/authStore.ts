@@ -47,14 +47,19 @@ export const useAuthStore = create<AuthStoreType>()(
       },
 
       logout() {
-        try { localStorage.setItem('auth:revoked', '1'); localStorage.removeItem('csrf_token'); } catch {}
-        set({
-          isLoggedIn: false,
-          authReady: true,
-          user: null,
-          accessToken: null,
-          refreshToken: null,
-        });
+        try {
+          localStorage.setItem('auth:revoked', '1');
+          localStorage.removeItem('csrf_token');
+          // Borrar persistencia del store 'auth'
+          localStorage.removeItem('auth');
+          // Borrar marcador de usuario actual en mocks
+          localStorage.removeItem('mock:current_user_id');
+          // Opcional: limpiar DB mock para evitar residuos (solo en dev)
+          if (typeof import.meta !== 'undefined' && (import.meta as any).env?.MODE === 'development') {
+            localStorage.removeItem('msw:db');
+          }
+        } catch {}
+        set({ isLoggedIn: false, authReady: true, user: null, accessToken: null, refreshToken: null });
       },
 
       setToken(accessToken: string, _refreshToken?: string | null) {
@@ -108,7 +113,8 @@ export const useAuthStore = create<AuthStoreType>()(
         // Al finalizar la rehidratación indicamos que el store está listo;
         // si hay usuario persistido, marcamos sesión mientras llega el token.
         const next: Partial<ReturnType<typeof useAuthStore.getState>> = { authReady: true } as any;
-        if (state?.user) Object.assign(next, { isLoggedIn: true });
+        const revoked = (() => { try { return localStorage.getItem('auth:revoked') === '1'; } catch { return false; } })();
+        if (state?.user && !revoked) Object.assign(next, { isLoggedIn: true });
         useAuthStore.setState(next);
       },
     }

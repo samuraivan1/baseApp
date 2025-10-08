@@ -38,8 +38,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      emailOrUsername: 'iamendezm',
-      password: '$2b$12$...',
+      emailOrUsername: '',
+      password: '',
     },
   });
 

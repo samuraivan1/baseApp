@@ -1,17 +1,17 @@
-import React from 'react';
 import { useAuthStore } from '@/features/shell/state/authStore';
 import PageHeader from '@/shared/components/common/PageHeader';
+import { PERMISSIONS } from '@/features/security/constants/permissions';
 
 export default function ProfileDev() {
   const { user, hasPermission } = useAuthStore((s) => ({ user: s.user, hasPermission: s.hasPermission }));
   const perms = user?.permissions ?? [];
   const checks = [
-    'page:home:view',
-    'page:kanban:view',
-    'page:seguridad:view',
-    'page:seguridad_usuarios:view',
-    'page:seguridad_roles:view',
-    'page:seguridad_permisos:view',
+    PERMISSIONS.HOME_DASHBOARD_VIEW,
+    PERMISSIONS.KANBAN_BOARD_VIEW,
+    PERMISSIONS.SECURITY_OVERVIEW_VIEW,
+    PERMISSIONS.SECURITY_USERS_VIEW,
+    PERMISSIONS.SECURITY_ROLES_VIEW,
+    PERMISSIONS.SECURITY_PERMISSIONS_VIEW,
   ];
   return (
     <div style={{ padding: 24 }}>

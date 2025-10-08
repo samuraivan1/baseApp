@@ -13,9 +13,14 @@ type DetailDrawerProps<T> = {
   data: T | null;
   fields: ReadonlyArray<DetailField<T>>;
   onClose: () => void;
+  secondaryAction?: {
+    label: string;
+    visible?: boolean;
+    onClick: () => void;
+  };
 };
 
-export default function DetailDrawer<T>({ title, open, data, fields, onClose }: DetailDrawerProps<T>) {
+export default function DetailDrawer<T>({ title, open, data, fields, onClose, secondaryAction }: DetailDrawerProps<T>) {
   if (!open || !data) return null;
   return (
     <div className="detail-drawer__backdrop" onClick={onClose}>
@@ -35,10 +40,14 @@ export default function DetailDrawer<T>({ title, open, data, fields, onClose }: 
           ))}
         </div>
         <div className="detail-drawer__footer">
+          {secondaryAction?.visible && (
+            <button className="detail-drawer__secondary" onClick={secondaryAction.onClick}>
+              {secondaryAction.label}
+            </button>
+          )}
           <button onClick={onClose}>Cerrar</button>
         </div>
       </div>
     </div>
   );
 }
-

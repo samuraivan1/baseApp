@@ -21,6 +21,7 @@ import { userFormMessages } from './UserForm.messages';
 import './UserForm.scss';
 import '@/shared/components/common/forms/orangealex-form.scss';
 import SectionHeader from '@/shared/components/common/SectionHeader';
+import Button from '@/shared/components/ui/Button';
 import { usersMessages } from './Users.messages';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import FormActions from '@/shared/components/common/FormActions';
@@ -43,9 +44,11 @@ interface Props {
   initialData?: UsuarioCompleto | null;
   onSubmit?: (values: UserFormValues) => Promise<void> | void;
   onCancel: () => void;
+  readOnly?: boolean;
+  hasEditPermission?: boolean;
 }
 
-const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
+const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel, readOnly = false, hasEditPermission = true }) => {
   const _qc = useQueryClient();
 
   const {
@@ -148,11 +151,25 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
   return (
     <div className="orangealex-form oa-form--md oa-form--left">
       <SectionHeader
-        title={initialData ? usersMessages.editUser : usersMessages.createUser}
+        title={initialData ? (readOnly ? (usersMessages.viewTitle ?? 'Detalle de usuario') : usersMessages.editUser) : usersMessages.createUser}
         icon={faUser}
         onBack={onCancel}
+        right={readOnly && hasEditPermission ? (
+          <Button type="button" onClick={(e) => {
+            e.preventDefault();
+            // Emitimos un submit "vacío" que el padre intercepta para conmutar a edición
+            // Alternativa: exponer un onRequestEdit prop específico; por simplicidad reutilizamos onSubmit guardado arriba
+            // Aquí disparamos un CustomEvent para no acoplar lógica interna
+            try { document.dispatchEvent(new CustomEvent('userform:request-edit')); } catch {}
+          }}>
+            {usersMessages.edit ?? 'Editar'}
+          </Button>
+        ) : undefined}
       />
-      <form className="user-form" onSubmit={handleSubmit(submit)}>
+      <form className="user-form" onSubmit={handleSubmit(async (data) => {
+        if (readOnly || !hasEditPermission) return; // abort submit
+        await submit(data);
+      })}>
         <LoadingOverlay
           open={
             isSubmitting || createMutation.isPending || updateMutation.isPending
@@ -165,18 +182,22 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
             label={usersMessages.form?.nombre ?? 'Nombre'}
             {...register('nombre')}
             error={errors.nombre?.message}
+            disabled={readOnly}
           />
           <FormInput
             label={usersMessages.form?.segundoNombre ?? 'Segundo nombre'}
             {...register('segundoNombre')}
+            disabled={readOnly}
           />
           <FormInput
             label={usersMessages.form?.apellidoPaterno ?? 'Apellido paterno'}
             {...register('apellidoPaterno')}
+            disabled={readOnly}
           />
           <FormInput
             label={usersMessages.form?.apellidoMaterno ?? 'Apellido materno'}
             {...register('apellidoMaterno')}
+            disabled={readOnly}
           />
           {/* Fila 2: correo span-3 + usuario */}
           <FormInput
@@ -186,11 +207,13 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
             }
             {...register('correoElectronico')}
             error={errors.correoElectronico?.message}
+            disabled={readOnly}
           />
           <FormInput
             label={usersMessages.form?.nombreUsuario ?? 'Usuario'}
             {...register('nombreUsuario')}
             error={errors.nombreUsuario?.message}
+            disabled={readOnly}
           />
           {/* Fila 3: rol, estatus, iniciales, proveedor */}
           <FormInput
@@ -198,10 +221,12 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
             label={usersMessages.form?.rolId ?? 'Rol (id)'}
             {...register('rolId', { valueAsNumber: true })}
             error={errors.rolId?.message}
+            disabled={readOnly}
           />
           <FormSelect
             label={usersMessages.form?.status}
             {...register('status')}
+            disabled={readOnly}
           >
             <option value="activo">{usersMessages.form?.statusActivo ?? 'Activo'}</option>
             <option value="inactivo">{usersMessages.form?.statusInactivo ?? 'Inactivo'}</option>
@@ -209,15 +234,18 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
           <FormInput
             label={usersMessages.form?.initials ?? 'Iniciales'}
             {...register('initials')}
+            disabled={readOnly}
           />
           <FormInput
             label={usersMessages.form?.auth_provider ?? 'Proveedor'}
             {...register('auth_provider')}
+            disabled={readOnly}
           />
           {/* Fila 4: teléfono, MFA, avatar span-2 */}
           <FormInput
             label={usersMessages.form?.phone_number ?? 'Teléfono'}
             {...register('phone_number')}
+            disabled={readOnly}
           />
           <FormSelect
             label={usersMessages.form?.mfa_enabled}
@@ -225,6 +253,7 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
               setValueAs: (v) =>
                 typeof v === 'boolean' ? v : String(v) === 'true',
             })}
+            disabled={readOnly}
           >
             <option value="false">{commonDefaultMessages.no}</option>
             <option value="true">{commonDefaultMessages.yes}</option>
@@ -233,22 +262,26 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
             wrapperClassName="form-field--span-2"
             label={usersMessages.form?.avatar_url ?? 'Avatar URL'}
             {...register('avatar_url')}
+            disabled={readOnly}
           />
           {/* Fila 5: bio span-2, azure, upn */}
           <FormInput
             wrapperClassName="form-field--span-2"
             label={usersMessages.form?.bio ?? 'Bio'}
             {...register('bio')}
+            disabled={readOnly}
           />
           <FormInput
             label={
               usersMessages.form?.azure_ad_object_id ?? 'Azure AD Object Id'
             }
             {...register('azure_ad_object_id')}
+            disabled={readOnly}
           />
           <FormInput
             label={usersMessages.form?.upn ?? 'UPN'}
             {...register('upn')}
+            disabled={readOnly}
           />
           {/* Metadatos: 2x2 en filas separadas */}
           <FormInput
@@ -281,6 +314,7 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel }) => {
               createMutation.isPending ||
               updateMutation.isPending
             }
+            hideAccept={readOnly || !hasEditPermission}
           />
         </div>
       </form>

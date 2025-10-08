@@ -13,7 +13,7 @@ import {
 import { Unauthorized } from '@/features/shell';
 import { FormLayoutDemo } from '@/features/demo';
 import ProtectedRoute from './ProtectedRoute';
-import { RoutePermissions as RP } from '@/features/security';
+import { PERMISSIONS } from '@/features/security/constants/permissions';
 import { images } from '@/assets/images';
 
 // 🔸 Se mantiene el fondo de Login para pasarlo como prop
@@ -64,7 +64,7 @@ const AppRoutes = () => {
       <Route
         path="/home"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute permiso={PERMISSIONS.HOME_DASHBOARD_VIEW}>
             <Home />
           </ProtectedRoute>
         }
@@ -73,7 +73,7 @@ const AppRoutes = () => {
       <Route
         path="/kanban"
         element={
-          <ProtectedRoute permiso={RP.KANBAN_VIEW}>
+          <ProtectedRoute permiso={PERMISSIONS.KANBAN_BOARD_VIEW}>
             <Kanban />
           </ProtectedRoute>
         }
@@ -92,7 +92,7 @@ const AppRoutes = () => {
       <Route
         path="/seguridad"
         element={
-          <ProtectedRoute permiso={RP.SEGU_VIEW}>
+          <ProtectedRoute permiso={PERMISSIONS.SECURITY_OVERVIEW_VIEW}>
             <Seguridad />
           </ProtectedRoute>
         }
@@ -101,7 +101,7 @@ const AppRoutes = () => {
         <Route
           path="usuarios"
           element={
-            <ProtectedRoute permiso={RP.SEGU_USERS_VIEW}>
+            <ProtectedRoute permiso={PERMISSIONS.SECURITY_USERS_VIEW}>
               <UsuariosPage />
             </ProtectedRoute>
           }
@@ -109,7 +109,7 @@ const AppRoutes = () => {
         <Route
           path="roles"
           element={
-            <ProtectedRoute permiso={RP.SEGU_ROLES_VIEW}>
+            <ProtectedRoute permiso={PERMISSIONS.SECURITY_ROLES_VIEW}>
               <RolesPage />
             </ProtectedRoute>
           }
@@ -117,7 +117,7 @@ const AppRoutes = () => {
         <Route
           path="permisos"
           element={
-            <ProtectedRoute permiso={RP.SEGU_PERMISSIONS_VIEW}>
+            <ProtectedRoute permiso={PERMISSIONS.SECURITY_PERMISSIONS_VIEW}>
               <PermissionsPage />
             </ProtectedRoute>
           }

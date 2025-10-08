@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import SectionHeader from '@/shared/components/common/SectionHeader';
+import Button from '@/shared/components/ui/Button';
 import FormActions from '@/shared/components/common/FormActions';
 import { permissionFormMessages as m } from './PermissionForm.messages';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -26,6 +27,8 @@ type PermissionFormProps = {
   onClose: () => void;
   initialValues?: Partial<PermissionFormValues> | null;
   onSubmit: (values: PermissionFormValues) => void;
+  readOnly?: boolean;
+  hasEditPermission?: boolean;
 };
 
 export default function PermissionForm({
@@ -33,6 +36,8 @@ export default function PermissionForm({
   onClose,
   initialValues,
   onSubmit,
+  readOnly = false,
+  hasEditPermission = true,
 }: PermissionFormProps) {
   const {
     register,
@@ -79,6 +84,7 @@ export default function PermissionForm({
   if (!open) return null;
 
   const onValid = async (data: PermissionFormValues) => {
+    if (readOnly || !hasEditPermission) return;
     try {
       await onSubmit(data);
     } catch (err) {
@@ -89,9 +95,14 @@ export default function PermissionForm({
   return (
     <div className="orangealex-form oa-form--md oa-form--left">
       <SectionHeader
-        title={initialValues ? m.editTitle : m.newTitle}
+        title={initialValues ? (readOnly ? (m.viewTitle ?? m.editTitle) : m.editTitle) : m.newTitle}
         icon={faKey}
         onBack={onClose}
+        right={readOnly && hasEditPermission ? (
+          <Button type="button" onClick={(e) => { e.preventDefault(); try { document.dispatchEvent(new CustomEvent('permissionform:request-edit')); } catch {} }}>
+            {commonDefaultMessages.edit}
+          </Button>
+        ) : undefined}
       />
       <form onSubmit={handleSubmit(onValid)} className="orangealex-form__body">
         <LoadingOverlay
@@ -110,6 +121,7 @@ export default function PermissionForm({
               },
               maxLength: { value: 40, message: m.errors.max40 },
             })}
+            disabled={readOnly}
             helperText={resource ? 'Solo minúsculas, números y _' : undefined}
             error={errors.resource?.message}
           />
@@ -123,6 +135,7 @@ export default function PermissionForm({
               },
               maxLength: { value: 40, message: m.errors.max40 },
             })}
+            disabled={readOnly}
             helperText={action ? 'Solo minúsculas, números y _' : undefined}
             error={errors.action?.message}
           />
@@ -136,6 +149,7 @@ export default function PermissionForm({
               },
               maxLength: { value: 40, message: m.errors.max40 },
             })}
+            disabled={readOnly}
             helperText={scope ? 'Solo minúsculas, números y _' : undefined}
             error={errors.scope?.message}
           />
@@ -167,6 +181,7 @@ export default function PermissionForm({
               required: 'Descripción obligatoria',
               maxLength: { value: 255, message: m.errors.max255 },
             })}
+            disabled={readOnly}
             error={errors.description?.message}
           />
         </div>
@@ -176,6 +191,7 @@ export default function PermissionForm({
             onCancel={onClose}
             onAccept={() => {}}
             isAccepting={isSubmitting}
+            hideAccept={readOnly || !hasEditPermission}
             cancelClassName="oa-button--orange"
           />
         </div>

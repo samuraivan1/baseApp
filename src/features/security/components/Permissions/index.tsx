@@ -6,15 +6,15 @@ import { EntityTableColumn } from '@/shared/components/common/Entitytable';
 import PaginatedEntityTable from '@/shared/components/common/PaginatedEntityTable';
 // import Pagination from '@/shared/components/common/Pagination';
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
-import { ActionPermissions as AP } from '@/features/security/constants/permissions';
+import { PERMISSIONS } from '@/features/security/constants/permissions';
 // import Button from '@/shared/components/ui/Button';
-import { useQueryClient } from '@tanstack/react-query';
+// import { useQueryClient } from '@tanstack/react-query';
 import { usePermissionsCrud } from '@/features/security';
 // Servicios y toasts gestionados por hooks centralizados en api/queries
 import { permissionsMessages } from './Permissions.messages';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
 // estilos de página centralizados en features/security/styles/index.scss
-import type { Permission } from '@/shared/types/security';
+import type { Permission } from '@/features/security/types';
 import PermissionForm, { PermissionFormValues } from './PermissionForm';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
@@ -22,11 +22,11 @@ import ListLoading from '@/shared/components/common/ListLoading';
 import { useAuthStore } from '@/features/shell/state/authStore';
 
 const PermissionsPage: React.FC = () => {
-  const _qc = useQueryClient();
+  // const _qc = useQueryClient();
 
   // Data via generic CRUD
   const { list, create, update, remove } = usePermissionsCrud();
-  const { data: permissions = [], isLoading } = list;
+  const { data: permissions = [], isLoading } = list as { data: Permission[], isLoading: boolean };
 
   // UI state
   const [searchTerm, setSearchTerm] = useState('');
@@ -37,6 +37,7 @@ const PermissionsPage: React.FC = () => {
 
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editing, setEditing] = useState<Permission | null>(null);
+  const [formReadOnly, setFormReadOnly] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -64,10 +65,10 @@ const PermissionsPage: React.FC = () => {
 
   // Filter + search + dedupe
   const filteredData = useMemo(() => {
-    let data = permissions;
+    let data: Permission[] = [...permissions];
     const q = searchTerm.trim().toLowerCase();
     if (q) {
-      data = data.filter(p => (
+      data = data.filter((p: Permission) => (
         p.permission_string.toLowerCase().includes(q) ||
         (p.action ?? '').toLowerCase().includes(q) ||
         (p.resource ?? '').toLowerCase().includes(q) ||
@@ -78,7 +79,7 @@ const PermissionsPage: React.FC = () => {
       if (!v) return;
       const vv = v.toLowerCase();
       if (!allowedFilterKeys.includes(k as keyof Permission)) return;
-      data = data.filter((row) => String(row[k as keyof Permission] ?? '').toLowerCase().includes(vv));
+      data = data.filter((row: Permission) => String(row[k as keyof Permission] ?? '').toLowerCase().includes(vv));
     });
     const map = new Map<number, Permission>();
     for (const r of data) map.set(r.permission_id, r);
@@ -90,11 +91,23 @@ const PermissionsPage: React.FC = () => {
 
   React.useEffect(() => { setCurrentPage(1); }, [searchTerm, activeFilters]);
 
+  // Escucha de solicitud de edición desde el header del formulario
+  React.useEffect(() => {
+    const handler = () => {
+      if (formReadOnly && useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_UPDATE)) {
+        setFormReadOnly(false);
+      }
+    };
+    document.addEventListener('permissionform:request-edit', handler as any);
+    return () => document.removeEventListener('permissionform:request-edit', handler as any);
+  }, [formReadOnly]);
+
   // Handlers
   const handleRowsPerPageChange = (n: number) => { setRowsPerPage(n); setCurrentPage(1); };
   const handleToggleFilters = () => setShowFilters(v => { const next = !v; if (!next) setActiveFilters({}); return next; });
   const handleOpenAdd = () => { setEditing(null); setIsFormOpen(true); };
   const handleOpenEdit = (p: Permission) => { setEditing(p); setIsFormOpen(true); };
+  const handleOpenView = (p: Permission) => { setEditing(p); setIsFormOpen(true); setFormReadOnly(true); };
   const handleExportCSV = () => {
     const rows = filteredData.map(p => [p.permission_id, p.permission_string, p.resource ?? '', p.action ?? '', p.scope ?? '', p.description ?? '']);
     const csv = 'permission_id,permission_string,resource,action,scope,description\n' + rows.map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\n');
@@ -106,7 +119,8 @@ const PermissionsPage: React.FC = () => {
     <div className="segu-permisos">
       <PageHeader title={permissionsMessages.title} titleSize="1.75rem" />
       {!isFormOpen && (
-      <PermissionGate perm={AP.PERMISSION_CREATE}
+      <PermissionGate perm={PERMISSIONS.SECURITY_PERMISSIONS_VIEW}>
+      <PermissionGate perm={PERMISSIONS.SECURITY_PERMISSIONS_CREATE}
         fallback={(
           <CommandBar
             searchTerm={searchTerm}
@@ -134,16 +148,17 @@ const PermissionsPage: React.FC = () => {
         onToggleFilters={handleToggleFilters}
         filterableColumns={filterableColumns}
         onFilterChange={setActiveFilters}
-        onAdd={handleOpenAdd}
+        onAdd={useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_CREATE) ? handleOpenAdd : undefined}
         onRefresh={() => window.location.reload()}
         onExportExcel={handleExportCSV}
         searchPlaceholder={permissionsMessages.searchPlaceholder}
         searchLabel={permissionsMessages.searchLabel}
-        addLabel={permissionsMessages.createButton}
+        addLabel={useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_CREATE) ? permissionsMessages.createButton : undefined}
         refreshLabel={commonDefaultMessages.refresh}
         filtersLabel={commonDefaultMessages.filters}
         excelLabel={commonDefaultMessages.exportCsv}
       />
+      </PermissionGate>
       </PermissionGate>
       )}
 
@@ -158,8 +173,8 @@ const PermissionsPage: React.FC = () => {
         {!isFormOpen && (
         <div className="fs-row-span-2 fs-table-container">
           {(() => {
-            const canEdit = useAuthStore.getState().hasPermission(AP.PERMISSION_EDIT);
-            const canDelete = useAuthStore.getState().hasPermission(AP.PERMISSION_DELETE);
+            const canEdit = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_UPDATE);
+            const canDelete = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_DELETE);
             const showActions = canEdit || canDelete;
             return (
           <PaginatedEntityTable
@@ -168,7 +183,10 @@ const PermissionsPage: React.FC = () => {
             keyField="permission_id"
             autoFit
             centered
-            onRowDoubleClick={(row) => handleOpenEdit(row)}
+            onRowDoubleClick={(row) => {
+              const canUpdate = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_UPDATE);
+              if (canUpdate) handleOpenEdit(row); else handleOpenView(row);
+            }}
             {...(showActions
               ? {
                   renderActions: (p: Permission) => (
@@ -196,6 +214,8 @@ const PermissionsPage: React.FC = () => {
         )}
       </ListLoading>
 
+      {/* Se elimina Drawer: ahora usamos el mismo formulario en modo lectura */}
+
       {isFormOpen && (
         <div className="segu-permisos__embedded-form">
             <PermissionForm
@@ -208,7 +228,18 @@ const PermissionsPage: React.FC = () => {
                 scope: editing.scope ?? '',
                 description: editing.description ?? '',
               } : undefined}
+              readOnly={formReadOnly}
+              hasEditPermission={useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_UPDATE)}
               onSubmit={(values: PermissionFormValues) => {
+                if (formReadOnly) {
+                  if (useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_UPDATE)) {
+                    setFormReadOnly(false);
+                    return;
+                  }
+                  return;
+                }
+                const canCreate = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_CREATE);
+                const canUpdate = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_UPDATE);
                 const dto: Omit<Permission, 'permission_id'> = {
                   permission_string: String(values.permission_string || ''),
                   resource: values.resource ?? null,
@@ -217,8 +248,10 @@ const PermissionsPage: React.FC = () => {
                   description: values.description ?? null,
                 };
                 if (editing) {
+                  if (!canUpdate) return;
                   updateMut.mutate({ id: editing.permission_id, input: dto });
                 } else {
+                  if (!canCreate) return;
                   createMut.mutate(dto);
                 }
                 setIsFormOpen(false);

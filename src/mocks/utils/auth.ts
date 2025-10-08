@@ -20,7 +20,7 @@ export function requireAuth(req: Request): AuthedUser | HttpResponse {
   // En mock, resolvemos usuario por token fijo o por primer usuario si hay sesión mock.
   // Alternativa: mapear token->user en localStorage, pero aquí usamos primer usuario válido.
   // Intentar extraer user_id codificado en token (mock-access-token[:id])
-  let user = db.users[0] as any | undefined;
+  let user: any | undefined;
   const parts = token.split(':');
   if (parts.length > 1) {
     const id = Number(parts[1]);

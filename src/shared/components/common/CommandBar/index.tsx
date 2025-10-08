@@ -20,7 +20,7 @@ interface CommandBarProps {
   onFilterChange: (filters: Record<string, string>) => void;
 
   // acciones
-  onAdd: () => void;
+  onAdd?: () => void;
   onRefresh: () => void;
   onExportExcel: () => void;
 
@@ -117,9 +117,11 @@ const CommandBar: React.FC<CommandBarProps> = ({
 
         {/* 2 (25%): añadir + actualizar */}
         <div className="command-bar__actions">
-          <Button className="command-bar__button add" variant="primary" size="small" onClick={onAdd} icon={faPlus}>
-            {addLabel}
-          </Button>
+          {onAdd && addLabel && (
+            <Button className="command-bar__button add" variant="primary" size="small" onClick={onAdd} icon={faPlus}>
+              {addLabel}
+            </Button>
+          )}
           <Button className="command-bar__button refresh" variant="secondary" size="small" onClick={onRefresh} icon={faSync}>
             {refreshLabel}
           </Button>

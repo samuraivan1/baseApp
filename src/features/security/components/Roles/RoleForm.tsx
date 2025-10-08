@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 // import Button from '@/shared/components/ui/Button';
 import FormActions from '@/shared/components/common/FormActions';
 import SectionHeader from '@/shared/components/common/SectionHeader';
+import Button from '@/shared/components/ui/Button';
 import { roleFormMessages as m } from './RoleForm.messages';
 import { CreateRoleDTO } from '@/shared/types/security';
 import { toast } from 'react-toastify';
@@ -25,6 +26,8 @@ interface RoleFormProps {
   onClose: () => void;
   initialValues?: Partial<RoleFormValues>;
   onSubmit: (values: CreateRoleDTO) => void;
+  readOnly?: boolean;
+  hasEditPermission?: boolean;
 }
 
 export default function RoleForm({
@@ -32,6 +35,8 @@ export default function RoleForm({
   onClose,
   initialValues,
   onSubmit,
+  readOnly = false,
+  hasEditPermission = true,
 }: RoleFormProps) {
   const {
     register,
@@ -65,14 +70,20 @@ export default function RoleForm({
   return (
     <div className="orangealex-form oa-form--md oa-form--left">
       <SectionHeader
-        title={initialValues ? m.editTitle : m.newTitle}
+        title={initialValues ? (readOnly ? (m.viewTitle ?? m.editTitle) : m.editTitle) : m.newTitle}
         icon={faUserShield}
         onBack={onClose}
+        right={readOnly && hasEditPermission ? (
+          <Button type="button" onClick={(e) => { e.preventDefault(); try { document.dispatchEvent(new CustomEvent('roleform:request-edit')); } catch {} }}>
+            {m.editTitleBtn ?? 'Editar'}
+          </Button>
+        ) : undefined}
       />
 
       {/* Contenido */}
       <form
         onSubmit={handleSubmit(async (v) => {
+          if (readOnly || !hasEditPermission) return;
           try { await onSubmit(v as CreateRoleDTO); }
           catch (err) { toast.error(mapAppErrorMessage(err)); }
         })}
@@ -87,6 +98,7 @@ export default function RoleForm({
               minLength: { value: 3, message: m.errors.nameMin },
               maxLength: { value: 100, message: m.errors.nameMax },
             })}
+            disabled={readOnly}
             error={errors.name?.message}
           />
           <FormTextarea
@@ -95,6 +107,7 @@ export default function RoleForm({
               maxLength: { value: 255, message: m.errors.descMax },
             })}
             wrapperClassName="form-field--full"
+            disabled={readOnly}
             error={errors.description?.message}
           />
         </div>
@@ -105,6 +118,7 @@ export default function RoleForm({
             onCancel={onClose}
             onAccept={() => {}}
             isAccepting={isSubmitting}
+            hideAccept={readOnly || !hasEditPermission}
           />
         </div>
       </form>

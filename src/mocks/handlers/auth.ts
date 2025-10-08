@@ -14,7 +14,7 @@ export const authHandlers = [
     if (!user) {
       return HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 });
     }
-    const access_token = 'mock-access-token';
+    const access_token = `mock-access-token:${user.user_id}`;
     const refresh_token = 'mock-refresh-token';
     const session = {
       user,
@@ -23,6 +23,7 @@ export const authHandlers = [
       expires_in: 3600,
       csrf_token: 'mock-csrf-token',
     };
+    try { if (typeof window !== 'undefined' && 'localStorage' in window) localStorage.setItem('mock:current_user_id', String(user.user_id)); } catch {}
     return HttpResponse.json(session, {
       status: 200,
       headers: {
@@ -33,7 +34,12 @@ export const authHandlers = [
   }),
 
   http.post('/api/auth/refresh', async () => {
-    const access_token = 'mock-access-token-refreshed';
+    let uid: string | null = null;
+    try { if (typeof window !== 'undefined' && 'localStorage' in window) uid = localStorage.getItem('mock:current_user_id'); } catch {}
+    if (!uid) {
+      return new HttpResponse(null, { status: 401 });
+    }
+    const access_token = `mock-access-token:${uid}`;
     const refresh_token = 'mock-refresh-token';
     return HttpResponse.json(
       { access_token, refresh_token, expires_in: 3600, csrf_token: 'mock-csrf-token' },
@@ -48,6 +54,7 @@ export const authHandlers = [
   }),
 
   http.post('/api/auth/logout', async () => {
+    try { if (typeof window !== 'undefined' && 'localStorage' in window) localStorage.removeItem('mock:current_user_id'); } catch {}
     return new HttpResponse(null, {
       status: 204,
       headers: {

@@ -3,7 +3,6 @@ export { default as Seguridad } from './components';
 export { default as UsuariosPage } from './components/Users';
 export { default as RolesPage } from './components/Roles';
 export { default as PermissionsPage } from './components/Permissions';
-export { RoutePermissions } from './constants/routePermissions';
 // Public API surface
 // Legacy queries removed
 export * from './api/queryKeys';

@@ -9,6 +9,7 @@ import './Layout.scss';
 import { useAuthStore } from '@/features/shell/state/authStore';
 import { useIdleLogout } from '@/shared/auth/useIdleLogout';
 import SecurityHeadersCheck from '@/shared/components/dev/SecurityHeadersCheck';
+import DevAuthInspector from '@/shared/dev/DevAuthInspector';
 
 const Layout: React.FC = () => {
   const location = useLocation();
@@ -35,6 +36,7 @@ const Layout: React.FC = () => {
       </main>
       {!isLoginPage && <Footer />}
       {import.meta.env.DEV && <SecurityHeadersCheck />}
+      {import.meta.env.DEV && <DevAuthInspector />}
     </div>
   );
 };
