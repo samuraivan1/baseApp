@@ -1,4 +1,3 @@
-import React from 'react';
 import { demoMessages } from './FormLayoutDemo.messages';
 import FormSection from '@/shared/components/form/FormSection';
 import Input from '@/shared/components/ui/Input';

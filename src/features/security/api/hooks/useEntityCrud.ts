@@ -18,41 +18,58 @@ export function useEntityCrud<T, C = Partial<T>>(entityKey: string, service: Ent
     all: [entityKey] as const,
     detail: (id: Id) => [entityKey, id] as const,
   };
-
-  const list = useQuery({
+  const handleError = (err: unknown) => {
+    toast.error(mapAppErrorMessage(err));
+  };
+  const list = useQuery<T[], Error>({
     queryKey: keys.all,
-    queryFn: service.list,
-    onError: (err) => toast.error(mapAppErrorMessage(err)),
+    queryFn: async () => {
+      try {
+        return await service.list();
+      } catch (err) {
+        handleError(err);
+        throw err;
+      }
+    },
   });
 
-  const create = useMutation({
-    mutationFn: (input: C) => service.create(input),
+  const withErrorToast = <Args extends unknown[], Result>(
+    fn: (...args: Args) => Promise<Result>
+  ): ((...args: Args) => Promise<Result>) => {
+    return async (...args: Args) => {
+      try {
+        return await fn(...args);
+      } catch (err) {
+        handleError(err);
+        throw err;
+      }
+    };
+  };
+
+  const create = useMutation<T, Error, C>({
+    mutationFn: withErrorToast((input: C) => service.create(input)),
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.all }),
-    onError: (err) => toast.error(mapAppErrorMessage(err)),
   });
 
-  const update = useMutation({
-    mutationFn: ({ id, input }: { id: Id; input: C }) => service.update(id, input),
+  const update = useMutation<T, Error, { id: Id; input: C }>({
+    mutationFn: withErrorToast(({ id, input }: { id: Id; input: C }) => service.update(id, input)),
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.all }),
-    onError: (err) => toast.error(mapAppErrorMessage(err)),
   });
 
-  const remove = useMutation({
-    mutationFn: (id: Id) => service.remove(id),
+  const remove = useMutation<void, Error, Id>({
+    mutationFn: withErrorToast((id: Id) => service.remove(id)),
     onSuccess: () => qc.invalidateQueries({ queryKey: keys.all }),
-    onError: (err) => toast.error(mapAppErrorMessage(err)),
   });
 
   // Mutaciones seguras opcionales: mismas firmas, con onError estándar integrado
-  const createSafe = useSafeMutation<T, C>(
-    (input) => service.create(input),
-    { onSuccess: () => qc.invalidateQueries({ queryKey: keys.all }) }
-  );
-  const updateSafe = useSafeMutation<T, { id: Id; input: C }>(
+  const createSafe = useSafeMutation<T, C, unknown>((input) => service.create(input), {
+    onSuccess: () => qc.invalidateQueries({ queryKey: keys.all }),
+  });
+  const updateSafe = useSafeMutation<T, { id: Id; input: C }, unknown>(
     ({ id, input }) => service.update(id, input),
     { onSuccess: () => qc.invalidateQueries({ queryKey: keys.all }) }
   );
-  const removeSafe = useSafeMutation<void, Id>(
+  const removeSafe = useSafeMutation<void, Id, unknown>(
     (id) => service.remove(id),
     { onSuccess: () => qc.invalidateQueries({ queryKey: keys.all }) }
   );

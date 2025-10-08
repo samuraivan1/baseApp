@@ -2,13 +2,6 @@
 import api from './apiClient';
 import { UserSession } from '@/shared/types/security';
 
-export type LoginResponse = {
-  access_token: string;
-  refresh_token?: string;
-  csrf_token?: string;
-  user?: any;
-};
-
 export type RefreshResponse = {
   access_token: string;
   refresh_token?: string;

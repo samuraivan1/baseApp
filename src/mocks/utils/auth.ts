@@ -10,12 +10,12 @@ export function getBearer(req: Request): string | null {
 
 export type AuthedUser = { user: any; token: string };
 
-export function requireAuth(req: Request): AuthedUser | HttpResponse {
+export function requireAuth(req: Request): AuthedUser | HttpResponse<null> {
   const token = getBearer(req);
-  if (!token) return new HttpResponse(null, { status: 401 });
+  if (!token) return new HttpResponse<null>(null, { status: 401 });
   // Simular expiración: si el token contiene 'expired', responder 401
   if (token.toLowerCase().includes('expired')) {
-    return new HttpResponse(null, { status: 401 });
+    return new HttpResponse<null>(null, { status: 401 });
   }
   // En mock, resolvemos usuario por token fijo o por primer usuario si hay sesión mock.
   // Alternativa: mapear token->user en localStorage, pero aquí usamos primer usuario válido.
@@ -27,7 +27,7 @@ export function requireAuth(req: Request): AuthedUser | HttpResponse {
     const byId = db.users.find((u: any) => Number(u.user_id) === id);
     if (byId) user = byId;
   }
-  if (!user) return new HttpResponse(null, { status: 401 });
+  if (!user) return new HttpResponse<null>(null, { status: 401 });
   return { user, token };
 }
 
@@ -51,14 +51,17 @@ export function hasPermission(userId: number, permString: string): boolean {
   return assignedPermStrings.has(permString);
 }
 
-export function ensurePermission(userId: number, permId: string): HttpResponse | null {
+export function ensurePermission(userId: number, permId: string): HttpResponse<{ message: string; permission: string }> | null {
   if (!hasPermission(userId, permId)) {
     return HttpResponse.json({ message: 'Forbidden', permission: permId }, { status: 403 });
   }
   return null;
 }
 
-export function ensureAnyPermission(userId: number, permIds: string[]): HttpResponse | null {
+export function ensureAnyPermission(
+  userId: number,
+  permIds: string[]
+): HttpResponse<{ message: string; anyOf: string[] }> | null {
   for (const p of permIds) {
     if (hasPermission(userId, p)) return null;
   }

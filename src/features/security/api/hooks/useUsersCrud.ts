@@ -1,4 +1,4 @@
-import { useEntityCrud } from './useEntityCrud';
+import { useEntityCrud, type EntityService } from './useEntityCrud';
 import type { User, CreateUserDTO, UpdateUserDTO } from '@/shared/types/security';
 import { getUsers, createUser, updateUser, deleteUser } from '../userService';
 import { useSafeMutation } from '@/shared/hooks/useSafeMutation';
@@ -8,11 +8,11 @@ import { useQueryClient } from '@tanstack/react-query';
 type UserInput = CreateUserDTO | UpdateUserDTO | Partial<User>;
 
 export function useUsersCrud() {
-  const service = {
+  const service: EntityService<User, UserInput> = {
     list: getUsers,
     create: (input: UserInput) => createUser(input as CreateUserDTO),
-    update: (id: number, input: UserInput) => updateUser(id, input as UpdateUserDTO),
-    remove: (id: number) => deleteUser(id),
+    update: (id, input: UserInput) => updateUser(Number(id), input as UpdateUserDTO),
+    remove: (id) => deleteUser(Number(id)),
   };
   const crud = useEntityCrud<User, UserInput>('users', service);
   const qc = useQueryClient();

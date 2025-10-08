@@ -1,7 +1,20 @@
 // Centralized seed lives here to avoid root-level db.json
 import seed from '../db.json';
+import type { Permission, Role, RolePermission, User, UserRole } from '@/features/security/types';
 
-type TableName = keyof typeof seed;
+type SeedShape = typeof seed;
+type DbShape = Omit<
+  SeedShape,
+  'permissions' | 'roles' | 'users' | 'role_permissions' | 'user_roles'
+> & {
+  permissions: Permission[];
+  roles: Role[];
+  users: User[];
+  role_permissions: RolePermission[];
+  user_roles: UserRole[];
+};
+
+export type TableName = keyof DbShape;
 
 // Estado en memoria basado en db.json (no persistente entre reloads)
 const STORAGE_KEY = 'msw:db';
@@ -37,7 +50,7 @@ function saveToStorage<T>(key: string, value: T) {
   }
 }
 
-export const db: typeof seed = (() => {
+export const db = (() => {
   // Forzar recarga del seed si hay cambios estructurales: versionado simple del almacenamiento
   const VERSION_KEY = STORAGE_KEY + ':v';
   const CURRENT_VERSION = '3';
@@ -64,7 +77,7 @@ export const db: typeof seed = (() => {
       { user_id: 5, first_name: 'Eva', second_name: '', last_name_p: 'Ortiz', last_name_m: 'Vega', email: 'eva@example.com', username: 'eva', is_active: 1, mfa_enabled: 0 },
     ] as any;
   }
-  return initial;
+  return initial as DbShape;
 })();
 
 // Post-seed: Garantizar asignaciones solicitadas

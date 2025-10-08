@@ -11,7 +11,10 @@ export const rolesHandlers = [
   http.get(BASE, ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_ROLES_VIEW);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_ROLES_VIEW
+    );
     if (denied) return denied;
     return HttpResponse.json(db.roles, { status: 200 });
   }),
@@ -19,10 +22,13 @@ export const rolesHandlers = [
   http.get(`${BASE}/:id`, ({ params, request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_ROLES_VIEW);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_ROLES_VIEW
+    );
     if (denied) return denied;
     const id = Number(params.id);
-    const row = db.roles.find((item: any) => Number(item.role_id) === id);
+    const row = db.roles.find((item) => Number(item.role_id) === id);
     if (!row) return new HttpResponse(null, { status: 404 });
     return HttpResponse.json(row, { status: 200 });
   }),
@@ -32,7 +38,10 @@ export const rolesHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_ROLES_CREATE);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_ROLES_CREATE
+    );
     if (denied) return denied;
     const body = (await request.json()) as Partial<Role>;
     const role_id = nextId('roles');
@@ -43,7 +52,7 @@ export const rolesHandlers = [
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-    db.roles.push(row as any);
+    db.roles.push(row as Role);
     persistDb();
     return HttpResponse.json(row, { status: 201 });
   }),
@@ -53,13 +62,16 @@ export const rolesHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_ROLES_UPDATE);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_ROLES_UPDATE
+    );
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<Role>;
-    const idx = db.roles.findIndex((item: any) => Number(item.role_id) === id);
+    const idx = db.roles.findIndex((item) => Number(item.role_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.roles[idx] = { ...db.roles[idx], ...body, role_id: id } as any;
+    db.roles[idx] = { ...db.roles[idx], ...body, role_id: id };
     persistDb();
     return HttpResponse.json(db.roles[idx], { status: 200 });
   }),
@@ -69,13 +81,20 @@ export const rolesHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_ROLES_UPDATE);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_ROLES_UPDATE
+    );
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<Role>;
-    const idx = db.roles.findIndex((item: any) => Number(item.role_id) === id);
+    const idx = db.roles.findIndex((item) => Number(item.role_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.roles[idx] = { ...db.roles[idx], ...body, role_id: id } as any;
+    db.roles[idx] = {
+      ...db.roles[idx],
+      ...body,
+      role_id: id,
+    };
     persistDb();
     return HttpResponse.json(db.roles[idx], { status: 200 });
   }),
@@ -85,10 +104,13 @@ export const rolesHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_ROLES_DELETE);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_ROLES_DELETE
+    );
     if (denied) return denied;
     const id = Number(params.id);
-    const idx = db.roles.findIndex((item: any) => Number(item.role_id) === id);
+    const idx = db.roles.findIndex((item) => Number(item.role_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
     db.roles.splice(idx, 1);
     persistDb();

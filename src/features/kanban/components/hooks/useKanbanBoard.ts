@@ -6,35 +6,35 @@ import errorService, { normalizeError } from '@/shared/api/errorService';
 import { fetchTablero, updateTablero } from '@/features/kanban';
 import { useBoardStore } from '@/features/shell/state/boardStore';
 import logger from '@/shared/api/logger';
-import { kanbanMessages, kanbanLogContexts } from '../Kanban.messages';
-import { TableroType } from '@/shared/types/ui'; // ✅
+import { kanbanLogContexts } from '../Kanban.messages';
+import { TableroType } from '@/shared/types/ui';
 
 export const useKanbanBoard = () => {
   const queryClient = useQueryClient();
   const setBoardState = useBoardStore((state) => state.setBoardState);
 
-  const {
-    data: serverBoardData,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['tablero'], // ✅
-    queryFn: fetchTablero, // ✅
-    onError: (err) => {
-      toast.error(mapAppErrorMessage(err));
-      errorService.logError(normalizeError(err, { where: 'kanban:list' }));
+  const { data: serverBoardData, isLoading, isError } = useQuery<TableroType, Error>({
+    queryKey: ['tablero'],
+    queryFn: async () => {
+      try {
+        return await fetchTablero();
+      } catch (err) {
+        toast.error(mapAppErrorMessage(err));
+        errorService.logError(normalizeError(err, { where: 'kanban:list' }));
+        throw err;
+      }
     },
   });
 
-  const boardMutation = useMutation({
-    mutationFn: updateTablero, // ✅
+  const boardMutation = useMutation<TableroType, Error, TableroType, { previousState?: TableroType }>({
+    mutationFn: updateTablero,
     onMutate: async (newState: TableroType) => {
       await queryClient.cancelQueries({ queryKey: ['tablero'] });
       const previousState = queryClient.getQueryData<TableroType>(['tablero']);
       queryClient.setQueryData(['tablero'], newState);
       return { previousState };
     },
-    onError: (err, newState, context) => {
+    onError: (err, _newState, context) => {
       if (context?.previousState) {
         queryClient.setQueryData(['tablero'], context.previousState);
         setBoardState(context.previousState);

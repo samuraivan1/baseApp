@@ -10,7 +10,7 @@ type HandledError = {
 export function useApiError() {
   // ✅ Usamos 'unknown' en lugar de 'any' para mayor seguridad de tipos
   const handleError = useCallback(
-    (err: unknown, context?: unknown): HandledError => {
+    (err: unknown, context?: Record<string, unknown>): HandledError => {
       const normalized = normalizeError(err, context);
 
       errorService.logError(normalized);

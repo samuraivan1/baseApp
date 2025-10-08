@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/features/shell/state/authStore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +9,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import './LoginPage.scss';
-import logger from '@/shared/api/logger';
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,7 +23,7 @@ interface LoginPageProps {
   backgroundImage: string;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
+const LoginPage = ({ backgroundImage }: LoginPageProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const login = useAuthStore((state) => state.login);

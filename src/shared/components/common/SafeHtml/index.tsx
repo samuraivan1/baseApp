@@ -1,18 +1,19 @@
-import React from 'react';
+import { useMemo, type HTMLAttributes } from 'react';
 import { sanitizeHtml } from '@/shared/security/sanitize';
 
-type Props = {
+type SafeHtmlProps = {
   html: string;
-  className?: string;
-  // Permite cambiar el contenedor si se requiere
-  as?: keyof JSX.IntrinsicElements;
-} & Omit<React.HTMLAttributes<HTMLElement>, 'dangerouslySetInnerHTML' | 'children'>;
+  as?: keyof HTMLElementTagNameMap;
+} & Omit<HTMLAttributes<HTMLElement>, 'dangerouslySetInnerHTML' | 'children'>;
 
-const SafeHtml: React.FC<Props> = ({ html, className, as: Tag = 'div', ...rest }) => {
-  const clean = React.useMemo(() => sanitizeHtml(html), [html]);
-  // @ts-expect-error JSX runtime no permite tipar dinámicamente el Tag
-  return <Tag className={className} {...rest} dangerouslySetInnerHTML={{ __html: clean }} />;
-};
+function SafeHtml({
+  html,
+  as,
+  ...rest
+}: SafeHtmlProps) {
+  const Tag = (as ?? 'div') as keyof HTMLElementTagNameMap;
+  const clean = useMemo(() => sanitizeHtml(html), [html]);
+  return <Tag {...rest} dangerouslySetInnerHTML={{ __html: clean }} />;
+}
 
 export default SafeHtml;
-

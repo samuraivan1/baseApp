@@ -1,10 +1,18 @@
 import { http, HttpResponse } from 'msw';
 import { db, inferIdField, nextId, persistDb } from '../data/db';
 import { requireAuth } from '../utils/auth';
+import type { TableName } from '../data/db';
 
-function getTable(name: string): any[] | null {
-  const anyDb: any = db as any;
-  return Array.isArray(anyDb[name]) ? anyDb[name] : null;
+type DbRow = Record<string, unknown>;
+type DbCollection = DbRow[];
+
+function getTable(name: string): DbCollection | null {
+  const tableName = name as TableName;
+  const table = db[tableName as TableName];
+  if (Array.isArray(table)) {
+    return table as DbCollection;
+  }
+  return null;
 }
 
 // NOTE: use '/api' prefix from the client; do not add non-prefixed aliases.
@@ -25,9 +33,11 @@ export const genericHandlers = [
     const col = String(params.collection);
     const table = getTable(col);
     if (!table) return new HttpResponse(null, { status: 404 });
-    const idField = inferIdField(col as any);
+    const idField = inferIdField(col as TableName);
     const id = Number(params.id);
-    const row = table.find((r: any) => Number(r[idField]) === id);
+    const row = table.find(
+      (r) => Number(r[idField] as number | string | undefined) === id
+    );
     if (!row) return new HttpResponse(null, { status: 404 });
     return HttpResponse.json(row, { status: 200 });
   }),
@@ -39,10 +49,10 @@ export const genericHandlers = [
     const col = String(params.collection);
     const table = getTable(col);
     if (!table) return new HttpResponse(null, { status: 404 });
-    const idField = inferIdField(col as any);
-    const body = await request.json();
-    const idVal = nextId(col as any);
-    const row = { ...body, [idField]: idVal };
+    const idField = inferIdField(col as TableName);
+    const body = (await request.json()) as object;
+    const idVal = nextId(col as TableName);
+    const row: DbRow = { ...body, [idField]: idVal };
     table.push(row);
     persistDb();
     return HttpResponse.json(row, { status: 201 });
@@ -55,12 +65,18 @@ export const genericHandlers = [
     const col = String(params.collection);
     const table = getTable(col);
     if (!table) return new HttpResponse(null, { status: 404 });
-    const idField = inferIdField(col as any);
+    const idField = inferIdField(col as TableName);
     const id = Number(params.id);
-    const body = await request.json();
-    const idx = table.findIndex((r: any) => Number(r[idField]) === id);
+    const body = (await request.json()) as object;
+    const idx = table.findIndex(
+      (r) => Number(r[idField] as number | string | undefined) === id
+    );
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    table[idx] = { ...table[idx], ...body, [idField]: id };
+    table[idx] = {
+      ...table[idx],
+      ...body,
+      [idField]: id,
+    };
     persistDb();
     return HttpResponse.json(table[idx], { status: 200 });
   }),
@@ -72,12 +88,18 @@ export const genericHandlers = [
     const col = String(params.collection);
     const table = getTable(col);
     if (!table) return new HttpResponse(null, { status: 404 });
-    const idField = inferIdField(col as any);
+    const idField = inferIdField(col as TableName);
     const id = Number(params.id);
-    const body = await request.json();
-    const idx = table.findIndex((r: any) => Number(r[idField]) === id);
+    const body = (await request.json()) as object;
+    const idx = table.findIndex(
+      (r) => Number(r[idField] as number | string | undefined) === id
+    );
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    table[idx] = { ...table[idx], ...body, [idField]: id };
+    table[idx] = {
+      ...table[idx],
+      ...body,
+      [idField]: id,
+    };
     persistDb();
     return HttpResponse.json(table[idx], { status: 200 });
   }),
@@ -89,9 +111,11 @@ export const genericHandlers = [
     const col = String(params.collection);
     const table = getTable(col);
     if (!table) return new HttpResponse(null, { status: 404 });
-    const idField = inferIdField(col as any);
+    const idField = inferIdField(col as TableName);
     const id = Number(params.id);
-    const idx = table.findIndex((r: any) => Number(r[idField]) === id);
+    const idx = table.findIndex(
+      (r) => Number(r[idField] as number | string | undefined) === id
+    );
     if (idx === -1) return new HttpResponse(null, { status: 404 });
     table.splice(idx, 1);
     persistDb();

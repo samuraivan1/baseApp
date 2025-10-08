@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useProductsCrud } from '../api/hooks/useProductsCrud';
 import { useQueryClient } from '@tanstack/react-query';
+import type { Product } from '../api/productService';
 import { showToastSuccess } from '@/shared/utils/showToast';
 
 export default function ProductsPage() {
   const { list, create, update, remove } = useProductsCrud();
-  const products = list.data ?? [];
+  const products = (list.data as Product[] | undefined) ?? [];
   const qc = useQueryClient();
   const [editing, setEditing] = useState<{ id?: number; name: string; price: number; description?: string | null } | null>(null);
-
+  
   const startCreate = () => setEditing({ name: '', price: 0, description: '' });
-  const startEdit = (p: any) => setEditing({ id: p.product_id, name: p.name, price: p.price, description: p.description ?? '' });
+  const startEdit = (p: Product) =>
+    setEditing({ id: p.product_id, name: p.name, price: p.price, description: p.description ?? '' });
   const cancel = () => setEditing(null);
 
   const onSave = () => {
@@ -58,7 +60,7 @@ export default function ProductsPage() {
       <table>
         <thead><tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Acciones</th></tr></thead>
         <tbody>
-          {products.map((p: any) => (
+          {products.map((p: Product) => (
             <tr key={p.product_id}>
               <td>{p.product_id}</td><td>{p.name}</td><td>{p.price}</td>
               <td>
@@ -72,4 +74,3 @@ export default function ProductsPage() {
     </div>
   );
 }
-

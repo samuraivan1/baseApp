@@ -10,7 +10,9 @@ function getCookie(request: Request, name: string): string | null {
   return null;
 }
 
-export function requireCsrfOnMutation(request: Request): HttpResponse | null {
+export function requireCsrfOnMutation(
+  request: Request
+): HttpResponse<{ message: string }> | null {
   const method = (request.method || 'GET').toUpperCase();
   if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(method)) return null;
   const header = request.headers.get('x-csrf-token') || request.headers.get('X-CSRF-Token');

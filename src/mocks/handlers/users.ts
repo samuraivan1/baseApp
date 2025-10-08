@@ -5,25 +5,34 @@ import { requireCsrfOnMutation } from '../utils/csrf';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
 import type { User } from '@/features/security/types';
 
+function getUsersTable(): User[] {
+  return db.users as User[];
+}
+
 const BASE = '/api/users';
 
 export const usersHandlers = [
-  
   http.get(BASE, ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_USERS_VIEW);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_USERS_VIEW
+    );
     if (denied) return denied;
-    return HttpResponse.json(db.users, { status: 200 });
+    return HttpResponse.json(getUsersTable(), { status: 200 });
   }),
 
   http.get(`${BASE}/:id`, ({ params, request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_USERS_VIEW);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_USERS_VIEW
+    );
     if (denied) return denied;
     const id = Number(params.id);
-    const row = db.users.find((u: any) => Number(u.user_id) === id);
+    const row = getUsersTable().find((u) => Number(u.user_id) === id);
     if (!row) return new HttpResponse(null, { status: 404 });
     return HttpResponse.json(row, { status: 200 });
   }),
@@ -33,7 +42,10 @@ export const usersHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_USERS_CREATE);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_USERS_CREATE
+    );
     if (denied) return denied;
     const body = (await request.json()) as Partial<User>;
     const user_id = nextId('users');
@@ -49,7 +61,7 @@ export const usersHandlers = [
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
-    db.users.push(row as any);
+    getUsersTable().push(row);
     persistDb();
     return HttpResponse.json(row, { status: 201 });
   }),
@@ -59,15 +71,23 @@ export const usersHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_USERS_UPDATE);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_USERS_UPDATE
+    );
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<User>;
-    const idx = db.users.findIndex((u: any) => Number(u.user_id) === id);
+    const idx = getUsersTable().findIndex((u) => Number(u.user_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.users[idx] = { ...db.users[idx], ...body, user_id: id } as any;
+    const users = getUsersTable();
+    users[idx] = {
+      ...users[idx],
+      ...body,
+      user_id: id,
+    };
     persistDb();
-    return HttpResponse.json(db.users[idx], { status: 200 });
+    return HttpResponse.json(users[idx], { status: 200 });
   }),
 
   http.patch(`${BASE}/:id`, async ({ params, request }) => {
@@ -75,15 +95,23 @@ export const usersHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_USERS_UPDATE);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_USERS_UPDATE
+    );
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<User>;
-    const idx = db.users.findIndex((u: any) => Number(u.user_id) === id);
+    const idx = getUsersTable().findIndex((u) => Number(u.user_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.users[idx] = { ...db.users[idx], ...body, user_id: id } as any;
+    const users = getUsersTable();
+    users[idx] = {
+      ...users[idx],
+      ...body,
+      user_id: id,
+    };
     persistDb();
-    return HttpResponse.json(db.users[idx], { status: 200 });
+    return HttpResponse.json(users[idx], { status: 200 });
   }),
 
   http.delete(`${BASE}/:id`, ({ params, request }) => {
@@ -91,12 +119,15 @@ export const usersHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(auth.user.user_id, PERMISSIONS.SECURITY_USERS_DELETE);
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_USERS_DELETE
+    );
     if (denied) return denied;
     const id = Number(params.id);
-    const idx = db.users.findIndex((u: any) => Number(u.user_id) === id);
+    const idx = getUsersTable().findIndex((u) => Number(u.user_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    db.users.splice(idx, 1);
+    getUsersTable().splice(idx, 1);
     persistDb();
     return new HttpResponse(null, { status: 204 });
   }),

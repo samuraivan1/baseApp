@@ -1,4 +1,3 @@
-import axios from 'axios';
 import apiClient from '@/shared/api/apiClient';
 import { getAuthStore } from '@/features/shell/state/authStore';
 import { getSession } from '@/shared/api/authService';

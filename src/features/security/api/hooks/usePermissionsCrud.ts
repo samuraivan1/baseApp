@@ -1,4 +1,4 @@
-import { useEntityCrud } from './useEntityCrud';
+import { useEntityCrud, type EntityService } from './useEntityCrud';
 import type { Permission } from '@/shared/types/security';
 import { getPermissions, createPermission, updatePermission, deletePermission } from '../permissionService';
 import { useSafeMutation } from '@/shared/hooks/useSafeMutation';
@@ -8,11 +8,11 @@ import { useQueryClient } from '@tanstack/react-query';
 type PermissionInput = Omit<Permission, 'permission_id'>;
 
 export function usePermissionsCrud() {
-  const service = {
+  const service: EntityService<Permission, PermissionInput> = {
     list: getPermissions,
-    create: (input: PermissionInput) => createPermission(input),
-    update: (id: number, input: PermissionInput) => updatePermission(id, input),
-    remove: (id: number) => deletePermission(id),
+    create: (input) => createPermission(input),
+    update: (id, input) => updatePermission(Number(id), input),
+    remove: (id) => deletePermission(Number(id)),
   };
   const crud = useEntityCrud<Permission, PermissionInput>('permissions', service);
   const qc = useQueryClient();
