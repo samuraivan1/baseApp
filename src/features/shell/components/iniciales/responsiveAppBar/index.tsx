@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// src/features/shell/components/iniciales/responsiveAppBar/index.tsx
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '@/features/shell/state/authStore';
 import CustomNavMenu from './CustomNavMenu';
@@ -16,14 +17,39 @@ const ResponsiveAppBar: React.FC = () => {
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
 
   const { menuItems, isLoadingMenu } = useMainMenu();
-  // ✅ Obtenemos también los items del menú de perfil
   const { profileMenuItems, isLoadingProfile } = useProfileMenu();
 
-  // ✅ Creamos un item especial que usaremos como divisor visual
   const dividerItem: NavMenuItem = { idMenu: 9999, titulo: 'divider' };
-
-  // ✅ Combinamos todos los items en un solo array para el menú móvil
   const mobileMenuItems = [...menuItems, dividerItem, ...profileMenuItems];
+
+  // ⬇️ NUEVO: ref para detectar clic fuera
+  const userMenuWrapperRef = useRef<HTMLDivElement>(null);
+
+  // ⬇️ NUEVO: listeners globales cuando el menú está abierto
+  useEffect(() => {
+    if (!isUserMenuOpen) return;
+
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      const node = userMenuWrapperRef.current;
+      if (node && !node.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setUserMenuOpen(false);
+    };
+
+    document.addEventListener('mousedown', handleClickOutside, true);
+    document.addEventListener('touchstart', handleClickOutside, true);
+    document.addEventListener('keydown', handleEsc);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside, true);
+      document.removeEventListener('touchstart', handleClickOutside, true);
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [isUserMenuOpen]);
 
   if (isLoadingMenu || isLoadingProfile) {
     return (
@@ -39,19 +65,25 @@ const ResponsiveAppBar: React.FC = () => {
         <Link to="/home" className="app-bar__logo">
           <img src={images.logoHeader} alt="Logo" />
         </Link>
+
         <nav className="app-bar__desktop-menu">
           <CustomNavMenu items={menuItems} />
         </nav>
+
         <div className="app-bar__right-section">
-          <div className="app-bar__user-profile">
+          {/* ⬇️ envuelve avatar + menú con el ref */}
+          <div className="app-bar__user-profile" ref={userMenuWrapperRef}>
             <button
               className="app-bar__avatar"
               onClick={() => setUserMenuOpen(!isUserMenuOpen)}
+              aria-haspopup="menu"
+              aria-expanded={isUserMenuOpen}
             >
               {user?.initials || 'U'}
             </button>
             {isUserMenuOpen && <UserProfileMenu />}
           </div>
+
           <button
             className="app-bar__hamburger"
             onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
@@ -60,9 +92,9 @@ const ResponsiveAppBar: React.FC = () => {
           </button>
         </div>
       </div>
+
       {isMobileMenuOpen && (
         <nav className="app-bar__mobile-menu">
-          {/* ✅ Pasamos el array combinado al menú móvil */}
           <CustomNavMenu items={mobileMenuItems} />
         </nav>
       )}
