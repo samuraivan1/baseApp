@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { useAuthStore } from '@/features/shell/state/authStore';
 import CustomNavMenu from './CustomNavMenu';
 import { images } from '@/assets/images';
-import SafeImg from '@/shared/components/common/SafeImg';
 import './ResponsiveAppBar.scss';
 import { useMainMenu } from './hooks/useMainMenu';
 import UserProfileMenu from './UserProfileMenu';
@@ -14,6 +13,7 @@ import { useProfileMenu } from './hooks/useProfileMenu';
 const ResponsiveAppBar: React.FC = () => {
   const { user } = useAuthStore();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isUserMenuOpen, setUserMenuOpen] = useState(false);
 
   const { menuItems, isLoadingMenu } = useMainMenu();
   // ✅ Obtenemos también los items del menú de perfil
@@ -37,15 +37,20 @@ const ResponsiveAppBar: React.FC = () => {
     <div className="app-bar">
       <div className="app-bar__toolbar">
         <Link to="/home" className="app-bar__logo">
-          <SafeImg src={images.logoHeader} alt="Logo" allowRelative />
+          <img src={images.logoHeader} alt="Logo" />
         </Link>
         <nav className="app-bar__desktop-menu">
           <CustomNavMenu items={menuItems} />
         </nav>
         <div className="app-bar__right-section">
           <div className="app-bar__user-profile">
-            {/* UserProfileMenu ahora gestiona su propia visibilidad */}
-            <UserProfileMenu user={user} items={profileMenuItems} />
+            <button
+              className="app-bar__avatar"
+              onClick={() => setUserMenuOpen(!isUserMenuOpen)}
+            >
+              {user?.initials || 'U'}
+            </button>
+            {isUserMenuOpen && <UserProfileMenu />}
           </div>
           <button
             className="app-bar__hamburger"

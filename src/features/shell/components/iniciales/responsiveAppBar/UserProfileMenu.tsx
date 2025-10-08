@@ -10,6 +10,16 @@ import { authMessages } from '@/constants/commonMessages';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import iconMap from './iconMap';
+
+// Type guards para evitar 'any' implícitos
+function isDivider(item: NavMenuItem): boolean {
+  return (item as any).kind === 'divider' || item.titulo === 'divider';
+}
+function hasChildren(
+  item: NavMenuItem
+): item is NavMenuItem & { items: NavMenuItem[] } {
+  return Array.isArray((item as any).items) && (item as any).items.length > 0;
+}
 import './UserProfileMenu.scss';
 
 // Iconos vienen de un mapa centralizado y se seleccionan por `iconKey`.
@@ -20,10 +30,10 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
   onLogout,
 }) => {
   // Divider tipado o legado por titulo
-  if ((item as any).kind === 'divider' || item.titulo === 'divider') {
+  if (isDivider(item)) {
     return <li className="user-menu__divider" role="separator" />;
   }
-  const hasSubmenu = item.items && item.items.length > 0;
+  const sub = hasChildren(item);
 
   if (item.titulo === 'Cerrar Sesión') {
     return (
@@ -49,7 +59,7 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
           />
         )}
         <span>{item.titulo}</span>
-        {hasSubmenu && (
+        {sub && (
           <FontAwesomeIcon
             icon={faChevronRight}
             className="user-menu__indicator"
@@ -57,9 +67,9 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
         )}
       </NavLink>
       {/* Si hay un submenú, se renderiza una nueva lista */}
-      {hasSubmenu && (
+      {sub && (
         <ul className="user-menu__submenu">
-          {item.items?.map((subItem) => (
+          {item.items?.map((subItem: NavMenuItem) => (
             <MenuItem key={subItem.idMenu} item={subItem} onLogout={onLogout} />
           ))}
         </ul>
@@ -75,7 +85,11 @@ type UserProfileMenuProps = {
   onLogout?: () => Promise<void> | void;
 };
 
-const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ items, user: userProp, onLogout }) => {
+const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
+  items,
+  user: userProp,
+  onLogout,
+}) => {
   const { user: userStore, logout } = useAuthStore();
   const { profileMenuItems } = useProfileMenu();
   const navigate = useNavigate();
@@ -85,7 +99,9 @@ const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ items, user: userProp
       await onLogout();
       return;
     }
-    try { await apiLogout(); } catch {}
+    try {
+      await apiLogout();
+    } catch {}
     logout();
     toast.info(authMessages.logoutSuccess);
     navigate('/login');
@@ -94,8 +110,12 @@ const UserProfileMenu: React.FC<UserProfileMenuProps> = ({ items, user: userProp
   return (
     <div className="user-menu">
       <div className="user-menu__header">
-        <span className="user-menu__name">{(userProp ?? userStore)?.full_name}</span>
-        <span className="user-menu__email">{(userProp ?? userStore)?.email}</span>
+        <span className="user-menu__name">
+          {(userProp ?? userStore)?.full_name}
+        </span>
+        <span className="user-menu__email">
+          {(userProp ?? userStore)?.email}
+        </span>
       </div>
       <hr className="user-menu__divider" />
       <ul className="user-menu__list">
