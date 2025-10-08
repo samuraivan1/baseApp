@@ -38,6 +38,20 @@ function saveToStorage<T>(key: string, value: T) {
 }
 
 export const db: typeof seed = (() => {
+  // Forzar recarga del seed si hay cambios estructurales: versionado simple del almacenamiento
+  const VERSION_KEY = STORAGE_KEY + ':v';
+  const CURRENT_VERSION = '2';
+  try {
+    const v = loadFromStorage<string>(VERSION_KEY);
+    if (v !== CURRENT_VERSION) {
+      // invalidar cache anterior
+      if (typeof window !== 'undefined' && 'localStorage' in window) {
+        window.localStorage.removeItem(STORAGE_KEY);
+        window.localStorage.setItem(VERSION_KEY, JSON.stringify(CURRENT_VERSION));
+      }
+    }
+  } catch {}
+
   const fromStorage = loadFromStorage<typeof seed>(STORAGE_KEY);
   const initial = fromStorage ?? JSON.parse(JSON.stringify(seed));
   // Seed mínimo de usuarios en dev si no hay
@@ -51,6 +65,101 @@ export const db: typeof seed = (() => {
     ] as any;
   }
   return initial;
+})();
+
+// Post-seed: Garantizar asignaciones solicitadas
+// - Asignar todos los permisos a rol 1
+// - Asegurar que el usuario 'iamendezm' tenga rol 1
+(function ensureAdminBaseline() {
+  try {
+    // Asegurar existencia del rol 1 (Admin)
+    const roles: Array<{ role_id: number; name?: string; description?: string }> = Array.isArray(db.roles) ? (db.roles as any) : [];
+    let admin = roles.find((r) => Number(r.role_id) === 1);
+    if (!admin) {
+      admin = { role_id: 1, name: 'Admin', description: 'Rol administrador con todos los permisos' } as any;
+      roles.push(admin as any);
+    } else {
+      if (!admin.name) admin.name = 'Admin';
+      if (admin.description == null) admin.description = 'Rol administrador con todos los permisos';
+    }
+
+    // Asegurar existencia de rol 2 (Editor) y rol 3 (Viewer)
+    let editor = roles.find((r) => Number(r.role_id) === 2);
+    if (!editor) {
+      editor = { role_id: 2, name: 'Editor', description: 'Permisos de ver y actualizar' } as any;
+      roles.push(editor as any);
+    } else {
+      if (!editor.name) editor.name = 'Editor';
+      if (editor.description == null) editor.description = 'Permisos de ver y actualizar';
+    }
+    let viewer = roles.find((r) => Number(r.role_id) === 3);
+    if (!viewer) {
+      viewer = { role_id: 3, name: 'Viewer', description: 'Permisos de solo visualización' } as any;
+      roles.push(viewer as any);
+    } else {
+      if (!viewer.name) viewer.name = 'Viewer';
+      if (viewer.description == null) viewer.description = 'Permisos de solo visualización';
+    }
+
+    const allPerms: Array<{ permission_id: number }> = Array.isArray(db.permissions) ? (db.permissions as any) : [];
+    const rp: Array<{ role_id: number; permission_id: number }> = Array.isArray(db.role_permissions) ? (db.role_permissions as any) : [];
+    for (const p of allPerms) {
+      const exists = rp.some((r) => Number(r.role_id) === 1 && Number(r.permission_id) === Number(p.permission_id));
+      if (!exists) rp.push({ role_id: 1, permission_id: Number(p.permission_id) });
+    }
+
+    // Construir listas de permission_strings por tipo
+    const permRows: Array<{ permission_id: number; permission_string?: string }>= (db.permissions as any) ?? [];
+    const byString = new Map<string, number>();
+    for (const row of permRows) {
+      if (row.permission_string) byString.set(row.permission_string, Number(row.permission_id));
+    }
+    // Visualización: cualquier permiso "de página" o que contenga ":view"
+    const isView = (s: string) => s.startsWith('page:') || s.includes(':view');
+    const isEdit = (s: string) => s.endsWith(':edit') || s.endsWith(':update') || s.includes(':edit');
+    // Nota: create/delete quedan fuera del rol 2
+
+    // Asignaciones para rol 2 (Editor): visualización de TODO (todas las páginas/entidades) + editar/actualizar
+    // Aseguramos visualización completa adicionando todos los permisos de página y todos los ":view" de entidades.
+    const editorIds: number[] = [];
+    for (const [s, id] of byString.entries()) {
+      if (isView(s) || isEdit(s)) editorIds.push(id);
+    }
+    for (const pid of editorIds) {
+      const exists = rp.some((r) => Number(r.role_id) === 2 && Number(r.permission_id) === Number(pid));
+      if (!exists) rp.push({ role_id: 2, permission_id: Number(pid) });
+    }
+
+    // Asignaciones para rol 3 (Viewer): solo visualización (todas las páginas y cualquier permiso ":view")
+    const viewerIds: number[] = [];
+    for (const [s, id] of byString.entries()) {
+      if (isView(s)) viewerIds.push(id);
+    }
+    for (const pid of viewerIds) {
+      const exists = rp.some((r) => Number(r.role_id) === 3 && Number(r.permission_id) === Number(pid));
+      if (!exists) rp.push({ role_id: 3, permission_id: Number(pid) });
+    }
+    const usersArr = (Array.isArray(db.users) ? (db.users as any) : []);
+    const iam = usersArr.find((u: any) => String(u.username).toLowerCase() === 'iamendezm');
+    const arturo = usersArr.find((u: any) => String(u.username).toLowerCase() === 'arturolopez');
+    const gabriela = usersArr.find((u: any) => String(u.username).toLowerCase() === 'gabrielavargas');
+    const ur: Array<{ user_id: number; role_id: number }> = Array.isArray(db.user_roles) ? (db.user_roles as any) : [];
+    if (iam) {
+      const linkExists = ur.some((r) => Number(r.user_id) === Number(iam.user_id) && Number(r.role_id) === 1);
+      if (!linkExists) ur.push({ user_id: Number(iam.user_id), role_id: 1 });
+    }
+    if (arturo) {
+      const linkExists = ur.some((r) => Number(r.user_id) === Number(arturo.user_id) && Number(r.role_id) === 2);
+      if (!linkExists) ur.push({ user_id: Number(arturo.user_id), role_id: 2 });
+    }
+    if (gabriela) {
+      const linkExists = ur.some((r) => Number(r.user_id) === Number(gabriela.user_id) && Number(r.role_id) === 3);
+      if (!linkExists) ur.push({ user_id: Number(gabriela.user_id), role_id: 3 });
+    }
+    persistDb();
+  } catch {
+    // no-op en caso de estructura inesperada
+  }
 })();
 
 export function persistDb() {

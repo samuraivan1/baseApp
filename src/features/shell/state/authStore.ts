@@ -2,6 +2,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { login as apiLogin } from '@/shared/api/authService';
+import { db } from '@/mocks/data/db';
 import { AuthStoreType } from './store.types';
 
 export const useAuthStore = create<AuthStoreType>()(
@@ -20,10 +21,24 @@ export const useAuthStore = create<AuthStoreType>()(
           ?? (res as Record<string, unknown>)?.['accessToken'] as string | undefined
           ?? null;
         // No persistimos refreshToken en frontend: se usará cookie HttpOnly
+        // Derivar permisos efectivos desde roles del usuario (mock)
+        let derivedPermissions: Array<{ permission_string: string }> | undefined = undefined;
+        try {
+          const userId = Number(res.user?.user_id);
+          if (!Number.isNaN(userId)) {
+            const links = (db.user_roles as any[]).filter(r => Number(r.user_id) === userId);
+            const roleIds = links.map(r => Number(r.role_id));
+            const rp = (db.role_permissions as any[]).filter(r => roleIds.includes(Number(r.role_id)));
+            const permIds = new Set(rp.map(r => Number(r.permission_id)));
+            const perms = (db.permissions as any[]).filter(p => permIds.has(Number(p.permission_id)));
+            derivedPermissions = perms.map(p => ({ permission_string: String(p.permission_string) }));
+          }
+        } catch {}
+
         set({
           isLoggedIn: true,
           authReady: true,
-          user: res.user,
+          user: { ...res.user, permissions: derivedPermissions ?? res.user?.permissions },
           accessToken,
           refreshToken: null,
         });

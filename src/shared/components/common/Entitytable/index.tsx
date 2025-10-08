@@ -27,6 +27,8 @@ export interface EntityTableProps<T extends object> {
   keyField: keyof T;
   /** Render de acciones por fila (columna de la derecha) */
   renderActions?: (row: T) => React.ReactNode;
+  /** Doble clic en fila para abrir detalle (modo lectura) */
+  onRowDoubleClick?: (row: T) => void;
   /** Ancho fijo para la columna de acciones (ej. "120px") */
   actionColumnWidth?: string;
   /** Ajuste automático al contenido (tabla más angosta) */
@@ -54,6 +56,7 @@ function EntityTable<T extends object>({
   maxWidth = '960px',
   pagination,
   footer,
+  onRowDoubleClick,
 }: EntityTableProps<T>): React.ReactElement {
   // Estado de ordenamiento
   const [sortKey, setSortKey] = useState<keyof T | null>(null);
@@ -148,7 +151,7 @@ function EntityTable<T extends object>({
             {sortedData.map((row) => {
               const rowKey = String(row[keyField]);
               return (
-                <tr key={rowKey}>
+                <tr key={rowKey} onDoubleClick={onRowDoubleClick ? () => onRowDoubleClick(row) : undefined} className={onRowDoubleClick ? 'table-row--dblclick' : undefined}>
                   {columns.map((col) => {
                     const value = row[col.key as keyof T] as unknown;
                     return (

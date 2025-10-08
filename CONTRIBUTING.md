@@ -60,7 +60,7 @@ This repo follows a feature‑oriented architecture designed for production apps
 - Mantén globales (`src/styles/_base.scss`, `src/styles/index.scss`) solo con resets/layouts/utilidades.
 - Usa variables y mixins desde `src/styles/_variables.scss` y `src/styles/_mixins.scss`.
 - Evita “magic numbers” — añade/expande tokens cuando haga falta.
-- Consulta `docs/styles.md` para guía completa.
+- Guía consolidada: `docs/DEVELOPER_GUIDE.md`.
 
 ## i18n (textos visibles)
 
@@ -69,7 +69,7 @@ This repo follows a feature‑oriented architecture designed for production apps
 - Si el feature ya tiene un archivo de mensajes, reusa y agrega claves ahí en lugar de duplicar.
 - No modifiques traducciones existentes; añade claves nuevas cuando sea necesario.
 - Sigue la convención de claves `scope.section.key` (ej.: `users.form.email`, `sectionHeader.back`).
-- Consulta `docs/i18n.md` para detalles y ejemplos.
+- Guía consolidada: `docs/DEVELOPER_GUIDE.md`.
 
 ## Testing
 

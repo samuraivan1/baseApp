@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
+import PermissionGate from '@/shared/components/common/PermissionGate';
 import {
   EntityTableColumn,
 } from '@/shared/components/common/Entitytable';
@@ -20,6 +21,8 @@ import type { FilterableColumn } from '@/shared/components/common/CommandBar/typ
 import './Roles.scss';
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
+import { useAuthStore } from '@/features/shell/state/authStore';
+import DetailDrawer, { DetailField } from '@/shared/components/common/DetailDrawer';
 
 const RolesPage: React.FC = () => {
   // Data + Mutations via generic CRUD
@@ -36,6 +39,8 @@ const RolesPage: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [viewRow, setViewRow] = useState<Role | null>(null);
 
   // Paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -126,6 +131,7 @@ const RolesPage: React.FC = () => {
     setEditingRole(role);
     setIsFormOpen(true);
   };
+  const handleOpenView = (role: Role) => { setViewRow(role); setViewOpen(true); };
   const handleExportExcel = () => {
     const rows = filteredData.map((r) => [
       r.role_id,
@@ -155,29 +161,49 @@ const RolesPage: React.FC = () => {
       <PageHeader title={rolesMessages.title} titleSize="1.75rem" />
 
       {!isFormOpen && (
-        // PermissionGate removed: always render create button in dev
+        <PermissionGate perm={AP.ROLE_CREATE}
+          fallback={(
+            <CommandBar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              onSearch={handleSearch}
+              showFilters={showFilters}
+              onToggleFilters={handleToggleFilters}
+              filterableColumns={filterableColumns}
+              onFilterChange={setActiveFilters}
+              onRefresh={() => window.location.reload()}
+              onExportExcel={handleExportExcel}
+              searchPlaceholder={rolesMessages.searchPlaceholder}
+              searchLabel={rolesMessages.searchLabel}
+              refreshLabel={rolesMessages.refreshLabel}
+              filtersLabel={rolesMessages.filtersLabel}
+              excelLabel={rolesMessages.excelLabel}
+            />
+          )}
+        >
         <CommandBar
-        // búsqueda
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        onSearch={handleSearch}
-        // filtros
-        showFilters={showFilters}
-        onToggleFilters={handleToggleFilters}
-        filterableColumns={filterableColumns}
-        onFilterChange={setActiveFilters}
-        // acciones
-        onAdd={handleOpenAdd}
-        onRefresh={() => window.location.reload()}
-        onExportExcel={handleExportExcel}
-        // labels
-        searchPlaceholder={rolesMessages.searchPlaceholder}
-        searchLabel={rolesMessages.searchLabel}
-        addLabel={rolesMessages.addLabel}
-        refreshLabel={rolesMessages.refreshLabel}
-        filtersLabel={rolesMessages.filtersLabel}
-        excelLabel={rolesMessages.excelLabel}
+          // búsqueda
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          onSearch={handleSearch}
+          // filtros
+          showFilters={showFilters}
+          onToggleFilters={handleToggleFilters}
+          filterableColumns={filterableColumns}
+          onFilterChange={setActiveFilters}
+          // acciones
+          onAdd={handleOpenAdd}
+          onRefresh={() => window.location.reload()}
+          onExportExcel={handleExportExcel}
+          // labels
+          searchPlaceholder={rolesMessages.searchPlaceholder}
+          searchLabel={rolesMessages.searchLabel}
+          addLabel={rolesMessages.addLabel}
+          refreshLabel={rolesMessages.refreshLabel}
+          filtersLabel={rolesMessages.filtersLabel}
+          excelLabel={rolesMessages.excelLabel}
         />
+        </PermissionGate>
       )}
 
       <ListLoading
@@ -190,28 +216,54 @@ const RolesPage: React.FC = () => {
       >
       {!isFormOpen && (
           <div className="fs-row-span-2 fs-table-container">
+            {(() => {
+              const canEdit = useAuthStore.getState().hasPermission(AP.ROLE_EDIT);
+              const canDelete = useAuthStore.getState().hasPermission(AP.ROLE_DELETE);
+              const showActions = canEdit || canDelete;
+              return (
             <PaginatedEntityTable
               columns={columns}
               data={currentTableData}
               keyField="role_id"
               autoFit
               centered
-              renderActions={(role: Role) => (
-                <>
-                  {/* PermissionGate removed around Edit */}
-                    <TableActionsCell onEdit={() => handleOpenEdit(role)} editLabel={rolesMessages.update} />
-                  {/* PermissionGate removed around Delete */}
-                    <TableActionsCell onDelete={() => { setDeletingId(role.role_id); }} deleteLabel={rolesMessages.delete} />
-                </>
-              )}
+              onRowDoubleClick={(row) => handleOpenEdit(row)}
+              {...(showActions
+                ? {
+                    renderActions: (role: Role) => (
+                      <>
+                        {canEdit && (
+                          <TableActionsCell onEdit={() => handleOpenEdit(role)} editLabel={rolesMessages.update} />
+                        )}
+                        {canDelete && (
+                          <TableActionsCell onDelete={() => { setDeletingId(role.role_id); }} deleteLabel={rolesMessages.delete} />
+                        )}
+                      </>
+                    ),
+                  }
+                : {})}
               pagination={{
                 page: currentPage,
                 totalPages,
                 onChange: setCurrentPage,
                 rowsPerPage,
-                onRowsPerPageChange: handleRowsPerPageChange,
+              onRowsPerPageChange: handleRowsPerPageChange,
               }}
-            />
+            />);
+            })()}
+
+      {/* Detalle (modo lectura) */}
+      <DetailDrawer<Role>
+        title={rolesMessages.viewTitle ?? 'Detalle de rol'}
+        open={viewOpen}
+        data={viewRow}
+        onClose={() => setViewOpen(false)}
+        fields={[
+          { key: 'role_id', label: rolesMessages.table.role ?? 'Rol', render: (r) => String(r.role_id) },
+          { key: 'name', label: rolesMessages.table.role ?? 'Rol' },
+          { key: 'description', label: rolesMessages.table.description ?? 'Descripción' },
+        ] as ReadonlyArray<DetailField<Role>>}
+      />
           </div>
         )}
       </ListLoading>

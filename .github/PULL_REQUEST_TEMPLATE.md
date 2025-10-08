@@ -8,8 +8,8 @@
 - [ ] Query keys semánticas (p. ej. `usersKeys.all`, `usersKeys.detail(id)`)
 - [ ] Respetados barrels públicos de features (sin imports internos cruzados)
 - [ ] Hooks/stores documentados con JSDoc
+ - [ ] Reglas seguidas según `docs/DEVELOPER_GUIDE.md`
 
 ## Descripción
 
 ## Notas de migración
-

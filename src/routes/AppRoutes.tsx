@@ -43,6 +43,16 @@ const AppRoutes = () => {
           }
         />
       )}
+      {import.meta.env.DEV && (
+        <Route
+          path="/dev/profile"
+          element={
+            <Suspense fallback={<div style={{ padding: 24 }}>Cargando perfil…</div>}>
+              {React.createElement(React.lazy(() => import('@/dev/Profile')))}
+            </Suspense>
+          }
+        />
+      )}
       {/* Públicas */}
       <Route
         path="/login"

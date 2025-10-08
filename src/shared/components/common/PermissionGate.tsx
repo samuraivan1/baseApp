@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePermissionsCrud } from '@/features/security';
+import { useAuthStore } from '@/features/shell/state/authStore';
 
 export type PermissionGateProps = {
   perm: string; // código o string de permiso
@@ -12,10 +12,8 @@ export type PermissionGateProps = {
  * Mantiene la UI actual: no altera estilos ni props de hijos.
  */
 export default function PermissionGate({ perm, fallback = null, children }: PermissionGateProps) {
-  const { list } = usePermissionsCrud();
-  const { data: permissions = [], isLoading } = list;
-  type Perm = { key?: string; name?: string; permission_key?: string };
-  const allowed = Array.isArray(permissions) && (permissions as Perm[]).some((p) => p.key === perm || p.name === perm || p.permission_key === perm);
-  if (isLoading) return null;
+  const { hasPermission, authReady } = useAuthStore((s) => ({ hasPermission: s.hasPermission, authReady: s.authReady }));
+  if (!authReady) return null;
+  const allowed = hasPermission(perm);
   return <>{allowed ? children : fallback}</>;
 }

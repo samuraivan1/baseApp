@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
+import PermissionGate from '@/shared/components/common/PermissionGate';
 import { EntityTableColumn } from '@/shared/components/common/Entitytable';
 import PaginatedEntityTable from '@/shared/components/common/PaginatedEntityTable';
 // import Pagination from '@/shared/components/common/Pagination';
@@ -18,6 +19,7 @@ import PermissionForm, { PermissionFormValues } from './PermissionForm';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import ListLoading from '@/shared/components/common/ListLoading';
+import { useAuthStore } from '@/features/shell/state/authStore';
 
 const PermissionsPage: React.FC = () => {
   const _qc = useQueryClient();
@@ -104,6 +106,26 @@ const PermissionsPage: React.FC = () => {
     <div className="segu-permisos">
       <PageHeader title={permissionsMessages.title} titleSize="1.75rem" />
       {!isFormOpen && (
+      <PermissionGate perm={AP.PERMISSION_CREATE}
+        fallback={(
+          <CommandBar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            onSearch={() => setCurrentPage(1)}
+            showFilters={showFilters}
+            onToggleFilters={handleToggleFilters}
+            filterableColumns={filterableColumns}
+            onFilterChange={setActiveFilters}
+            onRefresh={() => window.location.reload()}
+            onExportExcel={handleExportCSV}
+            searchPlaceholder={permissionsMessages.searchPlaceholder}
+            searchLabel={permissionsMessages.searchLabel}
+            refreshLabel={commonDefaultMessages.refresh}
+            filtersLabel={commonDefaultMessages.filters}
+            excelLabel={commonDefaultMessages.exportCsv}
+          />
+        )}
+      >
       <CommandBar
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -122,6 +144,7 @@ const PermissionsPage: React.FC = () => {
         filtersLabel={commonDefaultMessages.filters}
         excelLabel={commonDefaultMessages.exportCsv}
       />
+      </PermissionGate>
       )}
 
       <ListLoading
@@ -134,18 +157,32 @@ const PermissionsPage: React.FC = () => {
       >
         {!isFormOpen && (
         <div className="fs-row-span-2 fs-table-container">
+          {(() => {
+            const canEdit = useAuthStore.getState().hasPermission(AP.PERMISSION_EDIT);
+            const canDelete = useAuthStore.getState().hasPermission(AP.PERMISSION_DELETE);
+            const showActions = canEdit || canDelete;
+            return (
           <PaginatedEntityTable
             columns={columns}
             data={currentTableData}
             keyField="permission_id"
             autoFit
             centered
-            renderActions={(p: Permission) => (
-              <>
-                <TableActionsCell onEdit={() => handleOpenEdit(p)} editLabel={commonDefaultMessages.edit} />
-                <TableActionsCell onDelete={() => { setDeletingId(p.permission_id); setConfirmOpen(true); }} deleteLabel={commonDefaultMessages.delete} />
-              </>
-            )}
+            onRowDoubleClick={(row) => handleOpenEdit(row)}
+            {...(showActions
+              ? {
+                  renderActions: (p: Permission) => (
+                    <>
+                      {canEdit && (
+                        <TableActionsCell onEdit={() => handleOpenEdit(p)} editLabel={commonDefaultMessages.edit} />
+                      )}
+                      {canDelete && (
+                        <TableActionsCell onDelete={() => { setDeletingId(p.permission_id); setConfirmOpen(true); }} deleteLabel={commonDefaultMessages.delete} />
+                      )}
+                    </>
+                  ),
+                }
+              : {})}
             pagination={{
               page: currentPage,
               totalPages,
@@ -153,7 +190,8 @@ const PermissionsPage: React.FC = () => {
               rowsPerPage,
               onRowsPerPageChange: handleRowsPerPageChange,
             }}
-          />
+          />);
+          })()}
         </div>
         )}
       </ListLoading>

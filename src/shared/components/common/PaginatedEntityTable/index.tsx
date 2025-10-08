@@ -16,6 +16,7 @@ export type PaginatedEntityTableProps<T extends Record<string, unknown>> = {
   keyField: keyof T & string;
   footerClassName?: string;
   renderActions?: (row: T) => React.ReactNode;
+  onRowDoubleClick?: (row: T) => void;
   pagination: PaginationConfig;
   autoFit?: boolean;
   centered?: boolean;
@@ -26,6 +27,7 @@ const PaginatedEntityTable = <T extends Record<string, unknown>>({
   data,
   keyField,
   renderActions,
+  onRowDoubleClick,
   pagination,
   autoFit,
   centered,
@@ -39,6 +41,7 @@ const PaginatedEntityTable = <T extends Record<string, unknown>>({
       autoFit={autoFit}
       centered={centered}
       renderActions={renderActions}
+      onRowDoubleClick={onRowDoubleClick}
       footer={
         <div className={footerClassName}>
           <Pagination
@@ -55,4 +58,3 @@ const PaginatedEntityTable = <T extends Record<string, unknown>>({
 };
 
 export default PaginatedEntityTable;
-

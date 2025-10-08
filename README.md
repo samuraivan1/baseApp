@@ -1,14 +1,12 @@
-# baseApp — Estándar de Manejo de Errores (OrangeAlex)
+# baseApp
 
-Este proyecto implementa el estándar OrangeAlex para manejo de errores en React + TypeScript.
+Monolito SPA con features modulares y estándares unificados. Consulta la guía principal en `docs/DEVELOPER_GUIDE.md`.
 
-- Guía completa: `README_ERRORS.md`
-- Rutas de desarrollo (solo DEV):
-  - Playground de mutaciones/errores: `/dev/mutation`
+- Playground de desarrollo (DEV):
+  - Mutaciones/errores: `/dev/mutation`
   - CRUD de ejemplo (Products): `/dev/products`
 
 Resumen técnico
-- Servicios: normalización con `handleApiError` (lanza `AppError`).
-- Hooks: `onError` consistente con `mapAppErrorMessage` y `useSafeMutation`.
-- UI: toasts unificados (`showToast*`) y `ErrorBoundary` con botón Reintentar.
-
+- Errores: `handleApiError` lanza `AppError`; `useSafeMutation` y toasts unificados.
+- Arquitectura: features con barrels públicos; `shared/` solo transversal.
+- Estilos: SCSS modular; globales mínimos.

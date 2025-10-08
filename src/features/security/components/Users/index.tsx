@@ -4,6 +4,7 @@ import { useUsersCrud, useUserRolesCrud, usersKeys, toCreateUserDto, toUpdateUse
 // UI feedback centralizado en servicios/hooks
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
+import PermissionGate from '@/shared/components/common/PermissionGate';
 import { EntityTableColumn } from '@/shared/components/common/Entitytable';
 import PaginatedEntityTable from '@/shared/components/common/PaginatedEntityTable';
 // import Pagination from '@/shared/components/common/Pagination';
@@ -17,6 +18,8 @@ import type { FilterableColumn } from '@/shared/components/common/CommandBar/typ
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import { ActionPermissions as AP } from '@/features/security/constants/permissions';
 import ListLoading from '@/shared/components/common/ListLoading';
+import { useAuthStore } from '@/features/shell/state/authStore';
+import DetailDrawer, { DetailField } from '@/shared/components/common/DetailDrawer';
 
 type UserView = {
   idUsuario: number;
@@ -82,6 +85,8 @@ const UsuariosPage: React.FC = () => {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [viewRow, setViewRow] = useState<UserView | null>(null);
 
   // Columns
   const columns: EntityTableColumn<UserView>[] = useMemo(
@@ -181,6 +186,7 @@ const UsuariosPage: React.FC = () => {
     setEditing(u);
     setIsFormOpen(true);
   };
+  const openView = (u: UserView) => { setViewRow(u); setViewOpen(true); };
   const handleToggleFilters = () =>
     setShowFilters((v) => {
       const next = !v;
@@ -223,7 +229,29 @@ const UsuariosPage: React.FC = () => {
       <PageHeader title={usersMessages.title} titleSize="1.75rem" />
       {/* Indicador de resultados removido después de la validación */}
       {!isFormOpen && (
-        // PermissionGate removed: always render create button in dev
+        <PermissionGate perm={AP.USER_CREATE}
+          fallback={(
+            <CommandBar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              onSearch={() => setCurrentPage(1)}
+              showFilters={showFilters}
+              onToggleFilters={handleToggleFilters}
+              filterableColumns={filterableColumns}
+              onFilterChange={setActiveFilters}
+              onRefresh={() => window.location.reload()}
+              onExportExcel={handleExportCSV}
+              searchPlaceholder={
+                usersMessages.searchPlaceholder ??
+                'Buscar por nombre, usuario o correo'
+              }
+              searchLabel={usersMessages.searchLabel ?? 'Buscar'}
+              refreshLabel={commonDefaultMessages.refresh}
+              filtersLabel={commonDefaultMessages.filters}
+              excelLabel={commonDefaultMessages.exportCsv}
+            />
+          )}
+        >
         <CommandBar
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
@@ -245,6 +273,7 @@ const UsuariosPage: React.FC = () => {
           filtersLabel={commonDefaultMessages.filters}
           excelLabel={commonDefaultMessages.exportCsv}
         />
+        </PermissionGate>
       )}
 
       <ListLoading
@@ -265,37 +294,68 @@ const UsuariosPage: React.FC = () => {
         )}
         {!isFormOpen && (
           <div className="fs-row-span-2 fs-table-container">
-            <PaginatedEntityTable
+          {(() => {
+            const canEdit = useAuthStore.getState().hasPermission(AP.USER_EDIT);
+            const canDelete = useAuthStore.getState().hasPermission(AP.USER_DELETE);
+            const showActions = canEdit || canDelete;
+            return (
+          <PaginatedEntityTable
               columns={columns}
               data={currentTableData}
               keyField="idUsuario"
               autoFit
               centered
-              renderActions={(u: UserView) => (
-                <>
-                  {/* PermissionGate removed around Edit */}
-                  <TableActionsCell
-                    onEdit={() => openEdit(u)}
-                    editLabel={usersMessages.edit}
-                  />
-                  {/* PermissionGate removed around Delete */}
-                  <TableActionsCell
-                    onDelete={() => {
-                      setDeletingId(u.idUsuario);
-                      setConfirmOpen(true);
-                    }}
-                    deleteLabel={usersMessages.delete}
-                  />
-                </>
-              )}
+              onRowDoubleClick={(row) => openEdit(row)}
+              {...(showActions
+                ? {
+                    renderActions: (u: UserView) => (
+                      <>
+                        {canEdit && (
+                          <TableActionsCell
+                            onEdit={() => openEdit(u)}
+                            editLabel={usersMessages.edit}
+                          />
+                        )}
+                        {canDelete && (
+                          <TableActionsCell
+                            onDelete={() => {
+                              setDeletingId(u.idUsuario);
+                              setConfirmOpen(true);
+                            }}
+                            deleteLabel={usersMessages.delete}
+                          />
+                        )}
+                      </>
+                    ),
+                  }
+                : {})}
               pagination={{
                 page: currentPage,
                 totalPages,
                 onChange: setCurrentPage,
                 rowsPerPage,
-                onRowsPerPageChange: handleRowsPerPageChange,
+              onRowsPerPageChange: handleRowsPerPageChange,
               }}
-            />
+            />);
+          })()}
+
+      {/* Detalle (modo lectura) */}
+      <DetailDrawer<UserView>
+        title={usersMessages.viewTitle ?? 'Detalle de usuario'}
+        open={viewOpen}
+        data={viewRow}
+        onClose={() => setViewOpen(false)}
+        fields={[
+          { key: 'idUsuario', label: usersMessages.id },
+          { key: 'nombre', label: usersMessages.nombre },
+          { key: 'segundoNombre', label: usersMessages.segundoNombre ?? 'Segundo nombre' },
+          { key: 'apellidoPaterno', label: usersMessages.form.apellidoPaterno },
+          { key: 'apellidoMaterno', label: usersMessages.form.apellidoMaterno },
+          { key: 'nombreUsuario', label: usersMessages.username ?? 'Usuario' },
+          { key: 'correoElectronico', label: usersMessages.email },
+          { key: 'status', label: usersMessages.status },
+        ] as ReadonlyArray<DetailField<UserView>>}
+      />
           </div>
         )}
       </ListLoading>

@@ -9,16 +9,16 @@ import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 // import FormSelect from '@/shared/components/common/forms/inputs/FormSelect';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
 import LoadingOverlay from '@/shared/components/ui/LoadingOverlay';
-import { toast } from 'react-toastify';
-import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
+import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
+import { toast } from 'react-toastify';
 
 export type PermissionFormValues = {
   permission_string: string;
-  resource?: string | null;
-  action?: string | null;
-  scope?: string | null;
-  description?: string | null;
+  resource: string;
+  action: string;
+  scope: string;
+  description: string;
 };
 
 type PermissionFormProps = {
@@ -39,31 +39,51 @@ export default function PermissionForm({
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    watch,
+    setValue,
   } = useForm<PermissionFormValues>({
     defaultValues: {
       permission_string: initialValues?.permission_string ?? '',
-      resource: initialValues?.resource ?? '',
-      action: initialValues?.action ?? '',
-      scope: initialValues?.scope ?? '',
-      description: initialValues?.description ?? '',
+      resource: (initialValues?.resource as string) ?? '',
+      action: (initialValues?.action as string) ?? '',
+      scope: (initialValues?.scope as string) ?? '',
+      description: (initialValues?.description as string) ?? '',
     },
   });
 
   useEffect(() => {
     reset({
       permission_string: initialValues?.permission_string ?? '',
-      resource: initialValues?.resource ?? '',
-      action: initialValues?.action ?? '',
-      scope: initialValues?.scope ?? '',
-      description: initialValues?.description ?? '',
+      resource: (initialValues?.resource as string) ?? '',
+      action: (initialValues?.action as string) ?? '',
+      scope: (initialValues?.scope as string) ?? '',
+      description: (initialValues?.description as string) ?? '',
     });
   }, [initialValues, reset]);
+
+  // Auto-construir clave a partir de resource:action:scope (minúsculas)
+  const resource = watch('resource');
+  const action = watch('action');
+  const scope = watch('scope');
+  useEffect(() => {
+    const r = String(resource || '').toLowerCase();
+    const a = String(action || '').toLowerCase();
+    const s = String(scope || '').toLowerCase();
+    const key = r && a && s ? `${r}:${a}:${s}` : '';
+    setValue('permission_string', key, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }, [resource, action, scope, setValue]);
 
   if (!open) return null;
 
   const onValid = async (data: PermissionFormValues) => {
-    try { await onSubmit(data); }
-    catch (err) { toast.error(mapAppErrorMessage(err)); }
+    try {
+      await onSubmit(data);
+    } catch (err) {
+      toast.error(mapAppErrorMessage(err));
+    }
   };
 
   return (
@@ -74,47 +94,77 @@ export default function PermissionForm({
         onBack={onClose}
       />
       <form onSubmit={handleSubmit(onValid)} className="orangealex-form__body">
-        <LoadingOverlay open={isSubmitting} message={commonDefaultMessages.saving} />
+        <LoadingOverlay
+          open={isSubmitting}
+          message={commonDefaultMessages.saving}
+        />
         <div className="orangealex-form__grid">
-          <FormInput
-            wrapperClassName="form-field--full"
-            label={m.fields.permissionString}
-            {...register('permission_string', {
-              required: m.errors.permissionStringRequired,
-              minLength: { value: 5, message: m.errors.max80 },
-              maxLength: { value: 80, message: m.errors.max80 },
-              pattern: {
-                value: /^[a-z]+:[a-z]+:[a-z]+(-[a-z]+)?$/i,
-                message: m.errors.permissionStringFormat,
-              },
-            })}
-            error={errors.permission_string?.message}
-          />
+          {/* Recurso, Acción, Ámbito (snake_case minúsculas, requerido) */}
           <FormInput
             label={m.fields.resource}
             {...register('resource', {
+              required: m.errors.permissionStringRequired,
+              pattern: {
+                value: /^[a-z0-9_]+$/,
+                message: 'Solo minúsculas, números y _',
+              },
               maxLength: { value: 40, message: m.errors.max40 },
             })}
+            helperText={resource ? 'Solo minúsculas, números y _' : undefined}
             error={errors.resource?.message}
           />
           <FormInput
             label={m.fields.action}
             {...register('action', {
+              required: m.errors.permissionStringRequired,
+              pattern: {
+                value: /^[a-z0-9_]+$/,
+                message: 'Solo minúsculas, números y _',
+              },
               maxLength: { value: 40, message: m.errors.max40 },
             })}
+            helperText={action ? 'Solo minúsculas, números y _' : undefined}
             error={errors.action?.message}
           />
           <FormInput
             label={m.fields.scope}
             {...register('scope', {
+              required: m.errors.permissionStringRequired,
+              pattern: {
+                value: /^[a-z0-9_]+$/,
+                message: 'Solo minúsculas, números y _',
+              },
               maxLength: { value: 40, message: m.errors.max40 },
             })}
+            helperText={scope ? 'Solo minúsculas, números y _' : undefined}
             error={errors.scope?.message}
+          />
+
+          {/* Clave generada automáticamente (solo lectura) */}
+          <FormInput
+            wrapperClassName="form-field--full form-field--readonly"
+            label={m.fields.permissionString}
+            {...register('permission_string', {
+              required: m.errors.permissionStringRequired,
+              pattern: {
+                value: /^[a-z0-9_]+:[a-z0-9_]+:[a-z0-9_]+$/,
+                message: m.errors.permissionStringFormat,
+              },
+              maxLength: { value: 80, message: m.errors.max80 },
+            })}
+            readOnly
+            helperText={
+              watch('permission_string')
+                ? 'Se genera automáticamente'
+                : undefined
+            }
+            error={errors.permission_string?.message}
           />
           <FormTextarea
             wrapperClassName="form-field--full"
             label={m.fields.description}
             {...register('description', {
+              required: 'Descripción obligatoria',
               maxLength: { value: 255, message: m.errors.max255 },
             })}
             error={errors.description?.message}
@@ -126,6 +176,7 @@ export default function PermissionForm({
             onCancel={onClose}
             onAccept={() => {}}
             isAccepting={isSubmitting}
+            cancelClassName="oa-button--orange"
           />
         </div>
       </form>
