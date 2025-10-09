@@ -1,6 +1,6 @@
 import React from 'react';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
-import Spinner from '@/shared/components/ui/Spinner';
+import Spinner from '@/shared/components/ui/Spinner/Spinner';
 
 export type ListLoadingProps = {
   loading: boolean;

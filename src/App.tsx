@@ -7,7 +7,7 @@ import SeedResetButton from '@/shared/components/dev/SeedResetButton';
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ToastContainer
         position="top-right"
         autoClose={3000}
