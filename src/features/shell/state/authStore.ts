@@ -34,16 +34,23 @@ export const useAuthStore = create<AuthStoreType>()(
         });
 
         localStorage.removeItem(SESSION_STORAGE_KEYS.AUTH_REVOKED);
-        return res.user;
+        return res;
       },
 
       logout() {
         try {
-          localStorage.setItem(SESSION_STORAGE_KEYS.AUTH_REVOKED, '1');
-          localStorage.removeItem(SESSION_STORAGE_KEYS.CSRF_TOKEN);
-          localStorage.removeItem(SESSION_STORAGE_KEYS.AUTH_STATE);
-          localStorage.removeItem(SESSION_STORAGE_KEYS.MOCK_CURRENT_USER_ID);
+          const keysToClear = [
+            SESSION_STORAGE_KEYS.AUTH_REVOKED,
+            SESSION_STORAGE_KEYS.CSRF_TOKEN,
+            SESSION_STORAGE_KEYS.AUTH_STATE,
+            SESSION_STORAGE_KEYS.MOCK_CURRENT_USER_ID,
+          ];
 
+          // La clave AUTH_REVOKED se setea, el resto se elimina
+          localStorage.setItem(SESSION_STORAGE_KEYS.AUTH_REVOKED, '1');
+          keysToClear.slice(1).forEach((key) => localStorage.removeItem(key));
+
+          // Limpieza específica para desarrollo
           if (import.meta.env.DEV) {
             localStorage.removeItem(SESSION_STORAGE_KEYS.MSW_DB);
           }

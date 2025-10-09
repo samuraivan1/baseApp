@@ -41,7 +41,11 @@ async function getMockDerivedPermissions(
  */
 export async function silentRefresh(): Promise<boolean> {
   try {
-    if (localStorage.getItem('auth:revoked') === '1') {
+    // Usar la constante definida para consistencia y seguridad
+    const { SESSION_STORAGE_KEYS } = await import(
+      '@/constants/sessionConstants'
+    );
+    if (localStorage.getItem(SESSION_STORAGE_KEYS.AUTH_REVOKED) === '1') {
       getAuthStore().setLoggedIn(false);
       return false;
     }
