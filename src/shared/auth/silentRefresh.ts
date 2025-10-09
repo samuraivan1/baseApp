@@ -58,7 +58,7 @@ export async function silentRefresh(): Promise<boolean> {
 
     const session = await getSession().catch(() => null);
     if (session?.user) {
-      const user = session.user as User;
+      const user = session.user as unknown as User;
       const derivedPermissions = await getMockDerivedPermissions(
         user.user_id
       ).catch(() => undefined);

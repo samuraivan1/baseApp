@@ -17,10 +17,10 @@ export const useAuthStore = create<AuthStoreType>()(
       async login(username: string, password: string): Promise<UserSession> {
         const res = await apiLogin({ username, password });
         const accessToken =
-          ((res as Record<string, unknown>)?.['access_token'] as
+          ((res as unknown as Record<string, unknown>)?.['access_token'] as
             | string
             | undefined) ??
-          ((res as Record<string, unknown>)?.['accessToken'] as
+          ((res as unknown as Record<string, unknown>)?.['accessToken'] as
             | string
             | undefined) ??
           null;
