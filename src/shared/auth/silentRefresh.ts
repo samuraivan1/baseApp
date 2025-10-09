@@ -1,7 +1,7 @@
 import apiClient from '@/shared/api/apiClient';
-import { getAuthStore } from '@/features/shell/state/authStore';
+import { getAuthStore } from '@/features/shell';
 import { getSession } from '@/shared/api/authService';
-import type { User, Permission } from '@/shared/types/security';
+import type { User, Permission } from '@/features/security';
 
 /**
  * Deriva los permisos de un usuario a partir de la base de datos mock.
