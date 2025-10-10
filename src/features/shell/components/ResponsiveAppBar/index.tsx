@@ -1,4 +1,3 @@
-// src/features/shell/components/iniciales/responsiveAppBar/index.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '@/features/shell/state/authStore';

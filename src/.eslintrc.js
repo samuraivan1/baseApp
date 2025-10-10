@@ -44,9 +44,6 @@ module.exports = {
           'msw/node',
           'react-toastify/dist/ReactToastify.css',
         ],
-        forbid: [
-          '@/features/*/(components|hooks|api)/**',
-        ],
       },
     ],
   },

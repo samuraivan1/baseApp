@@ -1,4 +1,3 @@
-// src/iniciales/responsiveAppBar/ResponsiveAppBar.messages.ts
 export const appBarMessages = {
   navigationLoadError: 'No se pudo cargar la navegación.',
   loading: 'Cargando navegación...',
