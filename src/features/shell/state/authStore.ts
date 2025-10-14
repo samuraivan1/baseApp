@@ -26,7 +26,7 @@ export const useAuthStore = create<AuthStoreType>()(
         set({ accessToken, phase: 'loading' });
         localStorage.removeItem(SESSION_STORAGE_KEYS.AUTH_REVOKED);
         // Devolvemos el user si vino en la respuesta, pero NO marcamos listo aquí
-        const sessionUser = (res as any)?.user as UserSession | null;
+        const sessionUser = (res?.user ?? null) as UserSession | null;
         return sessionUser ?? (null as unknown as UserSession);
       },
 

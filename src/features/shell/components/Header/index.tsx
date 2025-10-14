@@ -5,7 +5,7 @@ import { useAuthStore } from '@/features/shell/state/authStore';
 
 const Header: React.FC = () => {
   const authReady = useAuthStore((s) => s.authReady);
-  const phase = (useAuthStore.getState() as any).phase ?? (authReady ? 'ready' : 'idle');
+  const phase = useAuthStore.getState().phase ?? (authReady ? 'ready' : 'idle');
   return (
     // La etiqueta <header> tiene la clase 'header' que controla su tamaño
     <header className="header">

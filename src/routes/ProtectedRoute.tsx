@@ -14,7 +14,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const location = useLocation();
   const { isLoggedIn, phase, hasPermission } = useAuthStore((s) => ({
     isLoggedIn: s.isLoggedIn,
-    phase: (s as any).phase ?? (s.authReady ? 'ready' : 'idle'),
+    phase: s.phase ?? (s.authReady ? 'ready' : 'idle'),
     hasPermission: s.hasPermission,
   }));
 

@@ -1,6 +1,12 @@
 import type { Permission } from '@/features/security/types';
 
-export function derivePermissions(userId: number, db: any): Permission[] {
+type MockDb = {
+  user_roles: Array<{ user_id: number; role_id: number }>;
+  role_permissions: Array<{ role_id: number; permission_id: number }>;
+  permissions: Array<{ permission_id: number; permission_string: string }>;
+};
+
+export function derivePermissions(userId: number, db: MockDb | null | undefined): Permission[] {
   if (!db) return [];
   const roleIds = (db.user_roles as Array<{ user_id: number; role_id: number }>)
     .filter((r) => Number(r.user_id) === Number(userId))
@@ -28,4 +34,3 @@ export function derivePermissions(userId: number, db: any): Permission[] {
     );
   return permissions;
 }
-

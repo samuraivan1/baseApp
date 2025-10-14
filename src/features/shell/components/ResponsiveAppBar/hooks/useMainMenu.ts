@@ -34,7 +34,7 @@ function hasItemPermission(hasPermission: (p: string) => boolean, item: NavMenuI
 }
 
 export const useMainMenu = () => {
-  const { isLoggedIn, phase, hasPermission } = useAuthStore((s) => ({ isLoggedIn: s.isLoggedIn, phase: (s as any).phase ?? (s.authReady ? 'ready' : 'idle'), hasPermission: s.hasPermission }));
+  const { isLoggedIn, phase, hasPermission } = useAuthStore((s) => ({ isLoggedIn: s.isLoggedIn, phase: s.phase ?? (s.authReady ? 'ready' : 'idle'), hasPermission: s.hasPermission }));
   const {
     data = [], // Proporciona un valor por defecto para evitar 'undefined'
     isLoading,

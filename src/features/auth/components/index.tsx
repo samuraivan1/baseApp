@@ -27,7 +27,7 @@ const LoginPage = ({ backgroundImage }: LoginPageProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const login = useAuthStore((state) => state.login);
-  const phase = (useAuthStore.getState() as any).phase ?? (useAuthStore.getState().authReady ? 'ready' : 'idle');
+  const phase = useAuthStore.getState().phase ?? (useAuthStore.getState().authReady ? 'ready' : 'idle');
   async function postLoginFinalize() {
     try {
       const { finalizeLogin } = await import('@/shared/auth/bootstrapAuth');
