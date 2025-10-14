@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { shellLayoutMessages } from './Layout.messages';
 import { useLocation } from 'react-router-dom';
 import AppRoutes from '@/routes/AppRoutes';
@@ -7,6 +7,7 @@ import Header from '../components/Header';
 import ErrorBoundary from '@/shared/components/ErrorBoundary';
 import './Layout.scss';
 import { useAuthStore } from '@/features/shell/state/authStore';
+import { bootstrapAuth } from '@/shared/auth/bootstrapAuth';
 import { useIdleLogout } from '@/shared/auth/useIdleLogout';
 import SecurityHeadersCheck from '@/shared/components/dev/SecurityHeadersCheck';
 import DevAuthInspector from '@/shared/dev/DevAuthInspector';
@@ -17,14 +18,20 @@ const Layout: React.FC = () => {
 
   const contentClassName = `layout__content ${isLoginPage ? 'layout__content--login' : ''}`;
 
-  const { authReady } = useAuthStore();
+  const { authReady, phase } = useAuthStore() as unknown as { authReady: boolean; phase?: 'idle' | 'loading' | 'ready' | 'error' };
+
+  useEffect(() => {
+    if ((phase ?? 'idle') === 'idle') {
+      void bootstrapAuth();
+    }
+  }, [phase]);
   useIdleLogout();
 
   return (
     <div className="layout">
       {!isLoginPage && <Header />}
       <main className={contentClassName}>
-        {!authReady ? (
+        {((phase ?? 'idle') !== 'ready') ? (
           <div style={{ display: 'grid', placeItems: 'center', minHeight: '40vh' }}>
             <div style={{ textAlign: 'center', color: '#666' }}>{shellLayoutMessages.restoringSession}</div>
           </div>

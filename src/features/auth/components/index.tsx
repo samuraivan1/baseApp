@@ -27,6 +27,15 @@ const LoginPage = ({ backgroundImage }: LoginPageProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const login = useAuthStore((state) => state.login);
+  const phase = (useAuthStore.getState() as any).phase ?? (useAuthStore.getState().authReady ? 'ready' : 'idle');
+  async function postLoginFinalize() {
+    try {
+      const { finalizeLogin } = await import('@/shared/auth/bootstrapAuth');
+      await finalizeLogin();
+    } catch (e) {
+      // Ignorar errores de depuración; el login ya validó
+    }
+  }
   // ✅ 2. Obtenemos el estado de autenticación del store
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
@@ -47,6 +56,7 @@ const LoginPage = ({ backgroundImage }: LoginPageProps) => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await login(data.emailOrUsername, data.password);
+      await postLoginFinalize();
       toast.success(authMessages.loginSuccess);
       const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;
       const safe = ensureSafeInternalPath(from, '/home');
@@ -70,7 +80,7 @@ const LoginPage = ({ backgroundImage }: LoginPageProps) => {
     [backgroundImage]
   );
 
-  if (isLoggedIn) {
+  if (isLoggedIn && phase === 'ready') {
     return <Navigate to="/home" replace />;
   }
   return (

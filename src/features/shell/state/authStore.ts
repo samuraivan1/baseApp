@@ -10,46 +10,24 @@ export const useAuthStore = create<AuthStoreType>()(
     (set, get) => ({
       isLoggedIn: false,
       authReady: false,
+      phase: 'idle' as 'idle' | 'loading' | 'ready' | 'error',
       user: null,
       accessToken: null,
       refreshToken: null,
 
       async login(username: string, password: string): Promise<UserSession> {
-        // 1) Login para obtener tokens
+        // Solo obtiene tokens y prepara el pipeline; la sesión completa se hará en finalizeLogin()
         const res = await apiLogin({ username, password });
         const accessToken =
           ((res as unknown as Record<string, unknown>)?.['access_token'] as string | undefined) ??
           ((res as unknown as Record<string, unknown>)?.['accessToken'] as string | undefined) ??
           null;
 
-        // Setear token primero para habilitar getSession en mocks (requiere Bearer)
-        set({ accessToken });
-
-        // 2) Obtener sesión (usuario) con permisos derivados vía mocks
-        let sessionUser: UserSession | null = null;
-        try {
-          const session = await getSession();
-          sessionUser = session.user as unknown as UserSession;
-        } catch {
-          sessionUser = res.user as unknown as UserSession;
-        }
-
-        // 3) Marcar logged-in y authReady solo al final
-        set({
-          isLoggedIn: true,
-          authReady: true,
-          user: sessionUser,
-          accessToken,
-          refreshToken: null,
-        });
-        try {
-          console.log('[Auth] login complete, authReady:true');
-        } catch (err) {
-          // Ignorar errores de consola en entornos sin console
-        }
-
+        set({ accessToken, phase: 'loading' });
         localStorage.removeItem(SESSION_STORAGE_KEYS.AUTH_REVOKED);
-        return sessionUser as UserSession;
+        // Devolvemos el user si vino en la respuesta, pero NO marcamos listo aquí
+        const sessionUser = (res as any)?.user as UserSession | null;
+        return sessionUser ?? (null as unknown as UserSession);
       },
 
       logout() {
@@ -74,10 +52,10 @@ export const useAuthStore = create<AuthStoreType>()(
         }
         set({
           isLoggedIn: false,
-          authReady: true,
           user: null,
           accessToken: null,
           refreshToken: null,
+          phase: 'ready',
         });
       },
 
@@ -102,7 +80,11 @@ export const useAuthStore = create<AuthStoreType>()(
       },
 
       setAuthReady(flag: boolean) {
-        set({ authReady: flag });
+        // Mantener compatibilidad pero sin mutar arbitrariamente: authReady se deriva de phase==='ready'
+        if (flag) set({ phase: 'ready' });
+      },
+      setPhase(next: 'idle' | 'loading' | 'ready' | 'error') {
+        set({ phase: next, authReady: next === 'ready' });
       },
 
       hasPermission(permissionString) {
@@ -126,14 +108,9 @@ export const useAuthStore = create<AuthStoreType>()(
         return persistedState as unknown as AuthStoreType;
       },
       partialize: (state) => ({ user: state.user }),
-      onRehydrateStorage: () => (state) => {
-        const nextState: Partial<AuthStoreType> = { authReady: true };
-        const isRevoked =
-          localStorage.getItem(SESSION_STORAGE_KEYS.AUTH_REVOKED) === '1';
-        if (state?.user && !isRevoked) {
-          nextState.isLoggedIn = true;
-        }
-        useAuthStore.setState(nextState);
+      onRehydrateStorage: () => () => {
+        // No forzar loggedIn ni authReady desde persistencia; bootstrapAuth decidirá
+        useAuthStore.setState({ authReady: false, phase: 'idle' });
       },
     }
   )

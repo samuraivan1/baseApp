@@ -34,7 +34,7 @@ function hasItemPermission(hasPermission: (p: string) => boolean, item: NavMenuI
 }
 
 export const useMainMenu = () => {
-  const { isLoggedIn, authReady, hasPermission } = useAuthStore((s) => ({ isLoggedIn: s.isLoggedIn, authReady: s.authReady, hasPermission: s.hasPermission }));
+  const { isLoggedIn, phase, hasPermission } = useAuthStore((s) => ({ isLoggedIn: s.isLoggedIn, phase: (s as any).phase ?? (s.authReady ? 'ready' : 'idle'), hasPermission: s.hasPermission }));
   const {
     data = [], // Proporciona un valor por defecto para evitar 'undefined'
     isLoading,
@@ -43,7 +43,7 @@ export const useMainMenu = () => {
   } = useQuery<NavMenuItem[]>({
     queryKey: ['mainMenu'],
     queryFn: fetchMenu,
-    enabled: isLoggedIn,
+    enabled: isLoggedIn && phase === 'ready',
   });
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export const useMainMenu = () => {
   }, [isError, error]);
 
   const menuItems = useMemo<NavMenuItem[]>(() => {
-    if (!authReady || !Array.isArray(data)) return [];
+    if (phase !== 'ready' || !Array.isArray(data)) return [];
     const filterTree = (items: NavMenuItem[]): NavMenuItem[] => {
       return items
         .map((it) => {
@@ -73,7 +73,7 @@ export const useMainMenu = () => {
         });
     };
     return filterTree(data);
-  }, [data, authReady, hasPermission]);
+  }, [data, phase, hasPermission]);
 
   // Devuelve un objeto con nombres claros y solo los datos que el componente necesita
   return { menuItems, isLoadingMenu: isLoading };
