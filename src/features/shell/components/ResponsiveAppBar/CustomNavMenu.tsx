@@ -41,9 +41,9 @@ const MenuItem: React.FC<MenuItemProps> = ({ item, onItemClick }) => {
         className="nav-menu__link"
         onClick={handleClick}
       >
-        {iconMap[item.iconKey ?? item.titulo] && (
+        {(iconMap[item.iconKey ?? item.titulo]) && (
           <FontAwesomeIcon
-            icon={iconMap[item.iconKey ?? item.titulo]}
+            icon={iconMap[item.iconKey ?? item.titulo]!}
             className="nav-menu__icon"
           />
         )}

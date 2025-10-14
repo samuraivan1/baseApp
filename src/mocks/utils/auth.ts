@@ -5,7 +5,7 @@ export function getBearer(req: Request): string | null {
   const auth = req.headers.get('authorization') || req.headers.get('Authorization');
   if (!auth) return null;
   const m = auth.match(/^Bearer\s+(.+)$/i);
-  return m ? m[1] : null;
+  return (m && typeof m[1] === 'string') ? m[1] : null;
 }
 
 export type AuthedUser = { user: { user_id: number; username?: string; correo?: string } | undefined; token: string };
@@ -32,8 +32,6 @@ export function requireAuth(req: Request): AuthedUser | HttpResponse<null> {
 }
 
 export function hasPermission(userId: number, permString: string): boolean {
-  // Bypass total para usuario 1 (Super Admin)
-  if (Number(userId) === 1) return true;
   const roleIds = db.user_roles
     .filter((ur: { user_id: number; role_id: number }) => Number(ur.user_id) === Number(userId))
     .map((ur: { role_id: number }) => Number(ur.role_id));

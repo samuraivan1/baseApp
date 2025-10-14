@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
-import PermissionGate from '@/shared/components/common/PermissionGate';
+import PermissionGate from '@/shared/components/PermissionGate';
 import { EntityTableColumn } from '@/shared/components/common/Entitytable';
 import PaginatedEntityTable from '@/shared/components/common/PaginatedEntityTable';
 // import Pagination from '@/shared/components/common/Pagination';

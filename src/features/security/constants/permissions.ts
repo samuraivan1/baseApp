@@ -40,8 +40,8 @@ export const PERMISSIONS = {
   SECURITY_PERMISSIONS_UPDATE: 'security.permissions.update',
   SECURITY_PERMISSIONS_DELETE: 'security.permissions.delete',
 
-  // --- Contact (marcado para revisión) ---
-  CONTACT_FORM_SUBMIT: 'contact.form.submit',
+  // --- Contact (reservado/futuro) ---
+  // CONTACT_FORM_SUBMIT: 'contact.form.submit',
 } as const;
 
 // Helper type para obtener los valores de los permisos

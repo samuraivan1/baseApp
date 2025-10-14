@@ -4,28 +4,39 @@
       "idTarea-1": {
         "idTarea": "idTarea-1",
         "contenido": "007306 Check list Equipos de arrastre CDRs",
-        "usuariosAsignados": ["AR"],
+        "usuariosAsignados": [
+          "AR"
+        ],
         "fechaVencimiento": "2025-09-12",
         "diasActivo": 15
       },
       "idTarea-2": {
         "idTarea": "idTarea-2",
         "contenido": "Mejora - Eticolor",
-        "usuariosAsignados": ["AL"],
+        "usuariosAsignados": [
+          "AL"
+        ],
         "fechaVencimiento": "2025-08-20",
         "diasActivo": 6
       },
       "idTarea-3": {
         "idTarea": "idTarea-3",
         "contenido": "006520 Evaluación scanner SUNLUX y NETUM",
-        "usuariosAsignados": ["GV", "RO"],
+        "usuariosAsignados": [
+          "GV",
+          "RO"
+        ],
         "fechaVencimiento": "2025-08-29",
         "diasActivo": 11
       },
       "idTarea-4": {
         "idTarea": "idTarea-4",
         "contenido": "007135 Actualizar logotipo Grupo Truper CIAT",
-        "usuariosAsignados": ["AR", "GV", "AL"],
+        "usuariosAsignados": [
+          "AR",
+          "GV",
+          "AL"
+        ],
         "fechaVencimiento": "2025-09-30",
         "diasActivo": 43
       }
@@ -34,20 +45,31 @@
       "idColumna-1": {
         "idColumna": "idColumna-1",
         "titulo": "PENDIENTES",
-        "tareasIds": ["idTarea-2", "idTarea-1"]
+        "tareasIds": [
+          "idTarea-2",
+          "idTarea-1"
+        ]
       },
       "idColumna-2": {
         "idColumna": "idColumna-2",
         "titulo": "EN PROCESO",
-        "tareasIds": ["idTarea-4"]
+        "tareasIds": [
+          "idTarea-4"
+        ]
       },
       "idColumna-3": {
         "idColumna": "idColumna-3",
         "titulo": "PRUEBAS QAS",
-        "tareasIds": ["idTarea-3"]
+        "tareasIds": [
+          "idTarea-3"
+        ]
       }
     },
-    "ordenColumnas": ["idColumna-1", "idColumna-2", "idColumna-3"]
+    "ordenColumnas": [
+      "idColumna-1",
+      "idColumna-2",
+      "idColumna-3"
+    ]
   },
   "menu": [
     {
@@ -55,14 +77,16 @@
       "titulo": "Home",
       "iconKey": "Home",
       "ruta": "/home",
-      "permisoId": 100
+      "permisoId": 100,
+      "permission_string": "home.dashboard.view"
     },
     {
       "idMenu": 2,
       "titulo": "Kanban",
       "iconKey": "Kanban",
       "ruta": "/kanban",
-      "permisoId": 200
+      "permisoId": 200,
+      "permission_string": "kanban.board.view"
     },
     {
       "idMenu": 3,
@@ -70,27 +94,31 @@
       "iconKey": "Dashboard",
       "ruta": "/seguridad",
       "permisoId": 300,
+      "permission_string": "security.overview.view",
       "items": [
         {
           "idMenu": 31,
           "titulo": "Usuarios",
           "iconKey": "Users",
           "ruta": "/seguridad/usuarios",
-          "permisoId": 310
+          "permisoId": 310,
+          "permission_string": "security.users.view"
         },
         {
           "idMenu": 32,
           "titulo": "Roles",
           "iconKey": "Roles",
           "ruta": "/seguridad/roles",
-          "permisoId": 320
+          "permisoId": 320,
+          "permission_string": "security.roles.view"
         },
         {
           "idMenu": 33,
           "titulo": "Permisos",
           "iconKey": "Key",
           "ruta": "/seguridad/permisos",
-          "permisoId": 330
+          "permisoId": 330,
+          "permission_string": "security.permissions.view"
         }
       ]
     }
@@ -103,20 +131,49 @@
       "ruta": "/profile",
       "permisoId": null
     },
-    { "idMenu": "divider-1", "titulo": "divider", "kind": "divider" },
+    {
+      "idMenu": "divider-1",
+      "titulo": "divider",
+      "kind": "divider"
+    },
     {
       "idMenu": "2",
       "titulo": "Cuenta",
       "iconKey": "Account",
       "ruta": "/account",
       "items": [
-        { "idMenu": "21", "titulo": "Preferencias", "iconKey": "Settings", "ruta": "/account/preferences" },
-        { "idMenu": "22", "titulo": "Notificaciones", "iconKey": "Bell", "ruta": "/account/notifications" }
+        {
+          "idMenu": "21",
+          "titulo": "Preferencias",
+          "iconKey": "Settings",
+          "ruta": "/account/preferences"
+        },
+        {
+          "idMenu": "22",
+          "titulo": "Notificaciones",
+          "iconKey": "Bell",
+          "ruta": "/account/notifications"
+        }
       ]
     },
-    { "idMenu": "5", "titulo": "Actividad", "iconKey": "List", "ruta": "/account/activity" },
-    { "idMenu": "6", "titulo": "Soporte", "iconKey": "Link", "ruta": "/support" },
-    { "idMenu": "divider-2", "titulo": "divider", "kind": "divider" },
+    {
+      "idMenu": "5",
+      "titulo": "Actividad",
+      "iconKey": "List",
+      "ruta": "/account/activity",
+      "permission_string": "home.dashboard.view"
+    },
+    {
+      "idMenu": "6",
+      "titulo": "Soporte",
+      "iconKey": "Link",
+      "ruta": "/support"
+    },
+    {
+      "idMenu": "divider-2",
+      "titulo": "divider",
+      "kind": "divider"
+    },
     {
       "idMenu": "4",
       "titulo": "Cerrar Sesión",
@@ -204,7 +261,7 @@
     {
       "role_id": 2,
       "name": "Editor",
-      "description": "Puede ver y editar la mayoría de los recursos, pero no puede crear ni eliminar."
+      "description": "Puede ver, crear y editar todos  los recursos, pero no puede eliminar."
     },
     {
       "role_id": 3,
@@ -399,5 +456,170 @@
       "role_id": 3
     }
   ],
-  "role_permissions": []
+  "role_permissions": [
+    {
+      "role_id": 1,
+      "permission_id": 100
+    },
+    {
+      "role_id": 1,
+      "permission_id": 200
+    },
+    {
+      "role_id": 1,
+      "permission_id": 201
+    },
+    {
+      "role_id": 1,
+      "permission_id": 202
+    },
+    {
+      "role_id": 1,
+      "permission_id": 203
+    },
+    {
+      "role_id": 1,
+      "permission_id": 204
+    },
+    {
+      "role_id": 1,
+      "permission_id": 205
+    },
+    {
+      "role_id": 1,
+      "permission_id": 300
+    },
+    {
+      "role_id": 1,
+      "permission_id": 310
+    },
+    {
+      "role_id": 1,
+      "permission_id": 311
+    },
+    {
+      "role_id": 1,
+      "permission_id": 312
+    },
+    {
+      "role_id": 1,
+      "permission_id": 313
+    },
+    {
+      "role_id": 1,
+      "permission_id": 320
+    },
+    {
+      "role_id": 1,
+      "permission_id": 321
+    },
+    {
+      "role_id": 1,
+      "permission_id": 322
+    },
+    {
+      "role_id": 1,
+      "permission_id": 323
+    },
+    {
+      "role_id": 1,
+      "permission_id": 330
+    },
+    {
+      "role_id": 1,
+      "permission_id": 331
+    },
+    {
+      "role_id": 1,
+      "permission_id": 332
+    },
+    {
+      "role_id": 1,
+      "permission_id": 333
+    },
+    {
+      "role_id": 1,
+      "permission_id": 900
+    },
+    {
+      "role_id": 2,
+      "permission_id": 100
+    },
+    {
+      "role_id": 2,
+      "permission_id": 200
+    },
+    {
+      "role_id": 2,
+      "permission_id": 201
+    },
+    {
+      "role_id": 2,
+      "permission_id": 202
+    },
+    {
+      "role_id": 2,
+      "permission_id": 300
+    },
+    {
+      "role_id": 2,
+      "permission_id": 310
+    },
+    {
+      "role_id": 2,
+      "permission_id": 311
+    },
+    {
+      "role_id": 2,
+      "permission_id": 312
+    },
+    {
+      "role_id": 2,
+      "permission_id": 320
+    },
+    {
+      "role_id": 2,
+      "permission_id": 321
+    },
+    {
+      "role_id": 2,
+      "permission_id": 322
+    },
+    {
+      "role_id": 2,
+      "permission_id": 330
+    },
+    {
+      "role_id": 2,
+      "permission_id": 331
+    },
+    {
+      "role_id": 2,
+      "permission_id": 332
+    },
+    {
+      "role_id": 3,
+      "permission_id": 100
+    },
+    {
+      "role_id": 3,
+      "permission_id": 200
+    },
+    {
+      "role_id": 3,
+      "permission_id": 300
+    },
+    {
+      "role_id": 3,
+      "permission_id": 310
+    },
+    {
+      "role_id": 3,
+      "permission_id": 320
+    },
+    {
+      "role_id": 3,
+      "permission_id": 330
+    }
+  ]
 }

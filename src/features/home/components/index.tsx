@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '@/features/shell/state/authStore';
+import { silentRefresh } from '@/shared/auth/silentRefresh';
 import { HOME_BACKGROUND_IMAGE } from '@/constants/uiConstants';
 import { homeMessages } from './Home.messages';
 import './Home.scss';
@@ -11,7 +12,17 @@ import { toast } from 'react-toastify';
 import { useTheme } from '@/core';
 
 const Home: React.FC = () => {
-  const user = useAuthStore((state) => state.user);
+  const { user, authReady, isLoggedIn, logout } = useAuthStore((s) => ({ user: s.user, authReady: s.authReady, isLoggedIn: s.isLoggedIn, logout: s.logout }));
+  const [showInspector, setShowInspector] = useState(false);
+  const [didRecover, setDidRecover] = useState(false);
+
+  // Recuperación post-login: si authReady está true pero no hay permisos aún, intenta refrescar una vez.
+  useEffect(() => {
+    if (import.meta.env.DEV && isLoggedIn && authReady && (!user || !user.permissions || user.permissions.length === 0) && !didRecover) {
+      setDidRecover(true);
+      silentRefresh().catch(() => void 0);
+    }
+  }, [isLoggedIn, authReady, user, didRecover]);
   const safeBg = useMemo(
     () =>
       ensureSafeUrl(HOME_BACKGROUND_IMAGE, {
@@ -20,6 +31,18 @@ const Home: React.FC = () => {
       }),
     []
   );
+  if (!authReady) {
+    return (
+      <div className="home-page" style={safeBg ? { backgroundImage: `url(${safeBg})` } : undefined}>
+        <div className="home-overlay"></div>
+        <div className="home-content">
+          <h2>Cargando sesión…</h2>
+          <p>Esperando autenticación y permisos.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className="home-page"
@@ -34,6 +57,43 @@ const Home: React.FC = () => {
         <Link to="/kanban" className="home-button">
           {homeMessages.button}
         </Link>
+
+        {import.meta.env.DEV && (
+          <div style={{ position: 'absolute', top: 16, right: 16 }}>
+            <Button variant="secondary" onClick={() => setShowInspector((v) => !v)}>
+              {showInspector ? 'Ocultar Inspector Dev' : 'Inspector Dev'}
+            </Button>
+          </div>
+        )}
+
+        {import.meta.env.DEV && showInspector && (
+          <div style={{
+            position: 'fixed', top: 72, right: 16, width: 360, maxWidth: '90vw',
+            background: 'white', color: '#222', border: '1px solid #ddd', borderRadius: 8, padding: 12,
+            boxShadow: '0 8px 24px rgba(0,0,0,0.12)', zIndex: 9999
+          }}>
+            <h4 style={{ marginTop: 0 }}>Inspector de Autenticación</h4>
+            <div style={{ fontSize: 12, lineHeight: 1.6 }}>
+              <div><strong>isLoggedIn:</strong> {String(isLoggedIn)}</div>
+              <div><strong>authReady:</strong> {String(authReady)}</div>
+              <div><strong>user_id:</strong> {user?.user_id ?? '—'}</div>
+              <div><strong>username:</strong> {'username' in (user as object || {}) ? (user as { username?: string }).username ?? '—' : '—'}</div>
+              <div><strong>full_name:</strong> {user?.full_name ?? '—'}</div>
+              <div><strong>email:</strong> {user?.email ?? '—'}</div>
+              <div><strong>roles (ids):</strong> {(user?.roles as Array<{ role_id: number }> | undefined)?.map(r => r.role_id).join(', ') ?? '—'}</div>
+              <div><strong>permissions:</strong></div>
+              <ul style={{ maxHeight: 160, overflow: 'auto', marginTop: 4 }}>
+                {(user?.permissions ?? []).map((p, i) => (
+                  <li key={i}><code>{p.permission_string}</code></li>
+                ))}
+              </ul>
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+              <Button variant="primary" onClick={() => silentRefresh()}>Refrescar sesión</Button>
+              <Button variant="danger" onClick={() => logout()}>Cerrar sesión</Button>
+            </div>
+          </div>
+        )}
 
         <div style={{ marginTop: 24 }}>
           <h3 style={{ marginBottom: 12 }}>Demo de Botones</h3>

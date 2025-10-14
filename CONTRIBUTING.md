@@ -6,6 +6,7 @@ Este documento define normas prácticas para mantener el código consistente, se
 
 - Sin `any`.
   - Si el tipo no es evidente, define interfaces mínimas o usa genéricos con `Record<string, unknown>`.
+  - Excepciones documentadas: en `src/mocks/data/db.ts` se emplean guards adicionales (función `isDev()`) para entornos de test donde `import.meta` o `window` podrían no existir; mantener tipado estricto y evitar `any` igualmente.
 - Sin bloques vacíos.
   - En `catch` u otros bloques, agrega comentario `// ignore` o `// no-op` si no hay acción.
 - Evitar `@ts-expect-error`.
@@ -21,6 +22,16 @@ Este documento define normas prácticas para mantener el código consistente, se
   - No usar prop `right`. Renderiza botones/acciones fuera del header.
 - `FormActions`
   - `onAccept` siempre debe ser una función. Si no aplica aceptar (solo lectura), usar `onAccept={() => {}}` y controlar el estado a nivel de formulario.
+  
+  Control de UI por permisos (si no existe `PermissionGate`):
+  
+  ```tsx
+  import { PERMISSIONS } from '@/features/security/constants/permissions';
+  import { useAuthStore } from '@/features/shell/state/authStore';
+  
+  const canCreate = useAuthStore((s) => s.hasPermission(PERMISSIONS.SECURITY_USERS_CREATE));
+  {canCreate && <Button onClick={onCreate}>Crear</Button>}
+  ```
 - Formularios
   - `defaultValues` estáticos. La carga dinámica se hace con `reset`/mappers.
   - `logger.error(err as Error, { context })` al capturar errores.
@@ -35,6 +46,7 @@ Este documento define normas prácticas para mantener el código consistente, se
   - En MSW, valida `auth.user` antes de `ensurePermission`. Si no hay usuario, devolver 401.
 - `useEnsureAllPermsForUserRole`
   - Usa `const isDev = import.meta.env.DEV` para toasts/logs solo en dev.
+  - Nota: En mocks (`src/mocks/data/db.ts`) se usa un helper `isDev()` con guards por compatibilidad de tests; es una excepción válida en mocks.
 
 ## Mocks (MSW)
 
@@ -102,4 +114,3 @@ Copia-pega en la descripción del PR:
 > - `isDev` viene de `import.meta.env.DEV`.
 > - `silentRefresh` mapea `Permission[]` completos.
 > - Build y typecheck OK.
-

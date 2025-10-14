@@ -5,6 +5,8 @@ import { PERMISSIONS } from '@/features/security/constants/permissions';
 export default function ProfileDev() {
   const { user, hasPermission } = useAuthStore((s) => ({ user: s.user, hasPermission: s.hasPermission }));
   const perms = user?.permissions ?? [];
+  console.log('[Dev/Profile] User:', user?.user_id, (user && 'username' in user ? (user as { username?: string }).username : undefined));
+  console.log('[Dev/Profile] Permissions:', perms.map(p => p.permission_string));
   const checks = [
     PERMISSIONS.HOME_DASHBOARD_VIEW,
     PERMISSIONS.KANBAN_BOARD_VIEW,

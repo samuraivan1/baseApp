@@ -62,6 +62,12 @@ src/
   routes/
     AppRoutes.tsx
     ProtectedRoute.tsx
+  constants/
+    routes.ts            // APP_ROUTES
+  features/
+    security/
+      constants/
+        permissions.ts   // PERMISSIONS
   features/
     auth/
       index.ts             // API pública
@@ -121,6 +127,20 @@ Convenciones clave
 ESLint
 - Regla activa: `import/no-internal-modules`.
 - Añade símbolos a la API pública de cada feature (`index.ts`) para cumplir la regla.
+
+## Rutas y permisos
+- Fuente de verdad de permisos: `src/features/security/constants/permissions.ts`.
+- Fuente de verdad de rutas: `src/constants/routes.ts` (`APP_ROUTES`).
+
+Control de UI por permisos (si no existe PermissionGate):
+
+```tsx
+import { PERMISSIONS } from '@/features/security/constants/permissions';
+import { useAuthStore } from '@/features/shell/state/authStore';
+
+const canCreate = useAuthStore((s) => s.hasPermission(PERMISSIONS.SECURITY_USERS_CREATE));
+{canCreate && <Button>Crear</Button>}
+```
 
 ## Contribución
 - Añade/ajusta exports en barrels al exponer nuevas APIs.

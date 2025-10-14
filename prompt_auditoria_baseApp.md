@@ -53,6 +53,8 @@ Auditar y refactorizar componentes, hooks y estilos para garantizar:
 - [ ] Textos centralizados  
 - [ ] ESLint sin errores  
 
+Para lineamientos completos y checklist oficial, revisar `CONTRIBUTING.md`.
+
 ## 🧩 Prompt de Auditoría
 > “Realiza una auditoría completa sobre los componentes `menu en árbol` y `menu de perfil` del proyecto baseApp.  
 > - Evalúa su estructura, tipado, estilos y adherencia al OrangeAlex Design System.  

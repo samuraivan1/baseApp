@@ -110,9 +110,12 @@ devHandlers.push(
     const idx = PRODUCTS_DB.findIndex((p) => p.product_id === id);
     if (idx === -1)
       return HttpResponse.json({ message: 'No encontrado' }, { status: 404 });
-    if (body && typeof body.name === 'string') PRODUCTS_DB[idx].name = body.name;
-    if (body && typeof body.price === 'number') PRODUCTS_DB[idx].price = body.price;
-    if (body && 'description' in body) PRODUCTS_DB[idx].description = body.description ?? null;
+    const prod = PRODUCTS_DB[idx];
+    if (prod) {
+      if (body && typeof body.name === 'string') prod.name = body.name;
+      if (body && typeof body.price === 'number') prod.price = body.price;
+      if (body && 'description' in body) prod.description = (body as { description?: string | null }).description ?? null;
+    }
     return HttpResponse.json(PRODUCTS_DB[idx], { status: 200 });
   }),
   http.delete('/api/products/:id', async ({ params }) => {

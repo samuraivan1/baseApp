@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { login as apiLogin } from '@/shared/api/authService';
+import { login as apiLogin, getSession } from '@/shared/api/authService';
 import { AuthStoreType } from './store.types';
 import { SESSION_STORAGE_KEYS } from '@/constants/sessionConstants';
 import type { UserSession } from '@/features/security/types';
@@ -15,23 +15,41 @@ export const useAuthStore = create<AuthStoreType>()(
       refreshToken: null,
 
       async login(username: string, password: string): Promise<UserSession> {
+        // 1) Login para obtener tokens
         const res = await apiLogin({ username, password });
-        // Map LoginResponse -> UserSession shape for store consumers
         const accessToken =
           ((res as unknown as Record<string, unknown>)?.['access_token'] as string | undefined) ??
           ((res as unknown as Record<string, unknown>)?.['accessToken'] as string | undefined) ??
           null;
 
+        // Setear token primero para habilitar getSession en mocks (requiere Bearer)
+        set({ accessToken });
+
+        // 2) Obtener sesión (usuario) con permisos derivados vía mocks
+        let sessionUser: UserSession | null = null;
+        try {
+          const session = await getSession();
+          sessionUser = session.user as unknown as UserSession;
+        } catch {
+          sessionUser = res.user as unknown as UserSession;
+        }
+
+        // 3) Marcar logged-in y authReady solo al final
         set({
           isLoggedIn: true,
           authReady: true,
-          user: res.user,
+          user: sessionUser,
           accessToken,
-          refreshToken: null, // No persistimos refreshToken en frontend
+          refreshToken: null,
         });
+        try {
+          console.log('[Auth] login complete, authReady:true');
+        } catch (err) {
+          // Ignorar errores de consola en entornos sin console
+        }
 
         localStorage.removeItem(SESSION_STORAGE_KEYS.AUTH_REVOKED);
-        return res as unknown as UserSession;
+        return sessionUser as UserSession;
       },
 
       logout() {
@@ -90,7 +108,6 @@ export const useAuthStore = create<AuthStoreType>()(
       hasPermission(permissionString) {
         const u = get().user;
         if (!u) return false;
-        if (Number(u.user_id) === 1) return true; // Super admin bypass
         return (
           u.permissions?.some(
             (p) => p.permission_string === permissionString

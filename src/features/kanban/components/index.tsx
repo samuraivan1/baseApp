@@ -30,13 +30,16 @@ const Kanban: React.FC = () => {
   const findColumnOfTask = (taskId: string): ColumnaType | undefined => {
     const state = useBoardStore.getState();
     const colId = Object.keys(state.columnas).find((id) =>
-      state.columnas[id].tareasIds.includes(taskId)
+      Boolean(state.columnas[id]?.tareasIds?.includes(taskId))
     );
     return colId ? state.columnas[colId] : undefined;
   };
 
   const handleDragStart = (event: DragStartEvent) => {
-    setActiveTask(tareas[event.active.id as string]);
+    {
+      const t = tareas[event.active.id as string];
+      setActiveTask(t ?? null);
+    }
   };
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -127,7 +130,7 @@ const Kanban: React.FC = () => {
           if (!column) return null;
           const columnTasks = column.tareasIds
             .map((taskId) => tareas[taskId])
-            .filter(Boolean);
+            .filter((t): t is TareaType => Boolean(t));
           return (
             <Column
               key={column.idColumna}

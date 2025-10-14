@@ -42,6 +42,16 @@ Cada feature debe ser autocontenida: su lógica de API, hooks, componentes y tip
 
 ---
 
+## 2.1 Fuentes de Verdad (SoT)
+
+- Rutas de la app: `src/constants/routes.ts` (`APP_ROUTES`).
+- Permisos RBAC: `src/features/security/constants/permissions.ts` (`PERMISSIONS`).
+- Mock DB / RBAC de desarrollo: `src/mocks/data/db.ts`.
+
+Toda verificación de permisos y rutas debe depender de estas constantes.
+
+---
+
 ## 3. Gestión de Estado
 
 ### 3.1 Estado del Servidor (TanStack Query)
@@ -105,12 +115,10 @@ import { PERMISSIONS } from '@/features/security/constants/permissions';
   <UsersPage />
 </ProtectedRoute>
 
-<PermissionGate perm={PERMISSIONS.SECURITY_USERS_CREATE}>
-  <Button>Crear Usuario</Button>
-</PermissionGate>
+// También puedes usar el componente `PermissionGate` (shared) para gateo de UI.
 ```
 
-No se deben usar strings literales en el código.
+No se deben usar strings literales en el código. Centralización: `src/features/security/constants/permissions.ts`.
 
 #### Política de Roles (Mock Data)
 
@@ -137,10 +145,13 @@ En el entorno de desarrollo (`src/mocks/data/db.ts`):
 
 **Protección de UI:**
 
+Si no existe `PermissionGate`, aplicar una verificación con el store:
+
 ```tsx
-<PermissionGate perm={PERMISSIONS.SECURITY_USERS_CREATE}>
+const canCreate = useAuthStore((s) => s.hasPermission(PERMISSIONS.SECURITY_USERS_CREATE));
+{canCreate && (
   <Button onClick={handleCreate}>Añadir Usuario</Button>
-</PermissionGate>
+)}
 ```
 
 **Verificación de Permisos (Zustand):**

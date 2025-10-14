@@ -32,6 +32,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (permiso !== undefined && !hasPermission(permiso)) {
+    // Log de diagnóstico no bloqueante
+    try {
+      console.warn('[Route Guard] Missing permission', { permiso, pathname: location.pathname });
+    } catch {
+      // noop
+    }
     return <Navigate to="/unauthorized" replace />;
   }
 

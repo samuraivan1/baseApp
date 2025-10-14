@@ -101,6 +101,8 @@ Se eliminaron imports no usados (incluyendo React en JSX).
 SectionHeader no usa la prop right. FormActions.onAccept siempre es una función (no undefined).
 No se castea a DTOs; se usan toCreateUserDto/toUpdateUserDto.
 En MSW, todas las rutas con permisos validan auth.user antes de ensurePermission.
-isDev se obtiene de import.meta.env.DEV.
+isDev se obtiene de import.meta.env.DEV (excepción en mocks: `src/mocks/data/db.ts` usa helper con guards).
 silentRefresh mapea derivedPermissions a Permission[] completos.
 Build y typecheck pasan en local.
+
+Para lineamientos completos y checklist oficial, ver `CONTRIBUTING.md`.

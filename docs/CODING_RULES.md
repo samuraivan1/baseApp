@@ -37,3 +37,11 @@ Estas reglas son obligatorias. Documentan errores recurrentes que NO debemos per
 - Objetos con propiedades conocidas
   - Cumplir las firmas de librerías: no agregar props no soportadas.
 
+## Permisos y seguridad
+- Usa `PERMISSIONS` desde `src/features/security/constants/permissions.ts`.
+- Evita strings literales de permisos.
+- Si no existe `PermissionGate`, controla la UI con `useAuthStore().hasPermission(...)`.
+
+## Entorno
+- Usa `import.meta.env.DEV` para lógica exclusiva de desarrollo en app.
+- Nota en mocks: `src/mocks/data/db.ts` utiliza un helper `isDev()` con guards para compatibilidad en tests; esta excepción aplica solo en mocks.

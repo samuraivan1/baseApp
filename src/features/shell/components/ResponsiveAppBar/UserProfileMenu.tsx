@@ -36,10 +36,12 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
     return (
       <li className="user-menu__item">
         <button onClick={onLogout} className="user-menu__button">
-          <FontAwesomeIcon
-            icon={iconMap[item.iconKey ?? item.titulo]}
-            className="user-menu__icon"
-          />
+          {iconMap[item.iconKey ?? item.titulo] && (
+            <FontAwesomeIcon
+              icon={iconMap[item.iconKey ?? item.titulo]!}
+              className="user-menu__icon"
+            />
+          )}
           {item.titulo}
         </button>
       </li>
@@ -51,7 +53,7 @@ const MenuItem: React.FC<{ item: NavMenuItem; onLogout: () => void }> = ({
       <NavLink to={item.ruta || '#'} className="user-menu__button">
         {iconMap[item.iconKey ?? item.titulo] && (
           <FontAwesomeIcon
-            icon={iconMap[item.iconKey ?? item.titulo]}
+            icon={iconMap[item.iconKey ?? item.titulo]!}
             className="user-menu__icon"
           />
         )}

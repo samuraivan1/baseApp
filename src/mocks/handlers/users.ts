@@ -81,11 +81,13 @@ export const usersHandlers = [
     const idx = getUsersTable().findIndex((u) => Number(u.user_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
     const users = getUsersTable();
+    const current = users[idx]!; // idx validated above
     users[idx] = {
-      ...users[idx],
+      ...current,
       ...body,
+      username: String((body.username ?? current.username) ?? ''),
       user_id: id,
-    };
+    } as User;
     persistDb();
     return HttpResponse.json(users[idx], { status: 200 });
   }),
@@ -105,11 +107,13 @@ export const usersHandlers = [
     const idx = getUsersTable().findIndex((u) => Number(u.user_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
     const users = getUsersTable();
+    const current = users[idx]!; // idx validated above
     users[idx] = {
-      ...users[idx],
+      ...current,
       ...body,
+      username: String((body.username ?? current.username) ?? ''),
       user_id: id,
-    };
+    } as User;
     persistDb();
     return HttpResponse.json(users[idx], { status: 200 });
   }),
