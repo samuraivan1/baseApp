@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   useUsersCrud,
@@ -7,13 +7,12 @@ import {
   toCreateUserDto,
   toUpdateUserDto,
   addUserRole,
-  CreateUserDto,
-  UpdateUserDto,
 } from '@/features/security';
+type UserInput = Partial<User>;
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
 import PermissionGate from '@/shared/components/common/PermissionGate';
-import { EntityTableColumn } from '@/shared/components/common/Entitytable';
+import type { EntityTableColumn } from '@/shared/components/common/Entitytable';
 import PaginatedEntityTable from '@/shared/components/common/PaginatedEntityTable';
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import UserForm from './UserForm';
@@ -28,7 +27,7 @@ import ListLoading from '@/shared/components/common/ListLoading';
 import { useAuthStore } from '@/features/shell/state/authStore';
 
 // Combinación del usuario con su rol para la vista
-type UserWithRole = User & { rolId?: number };
+type UserWithRole = (User & { rolId?: number }) & Record<string, unknown>;
 
 const UsuariosPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -48,7 +47,7 @@ const UsuariosPage: React.FC = () => {
   const { list: userRolesList } = useUserRolesCrud();
   const { data: userRoles = [], isLoading: isLoadingRoles } = userRolesList;
 
-  const usuarios: UserWithRole[] = React.useMemo(() => {
+  const usuarios: UserWithRole[] = useMemo(() => {
     const roleByUserId = new Map<number, number>();
     if (Array.isArray(userRoles)) {
       userRoles.forEach((ur: UserRole) => {
@@ -59,9 +58,10 @@ const UsuariosPage: React.FC = () => {
     if (!Array.isArray(usersRaw)) return [];
 
     return usersRaw.map((user: User) => ({
-      ...user,
+      ...(user as unknown as Record<string, unknown>),
+      is_active: Boolean((user as unknown as { is_active?: boolean | number })?.is_active),
       rolId: roleByUserId.get(user.user_id),
-    }));
+    })) as unknown as UserWithRole[];
   }, [usersRaw, userRoles]);
 
   const isLoading = isLoadingUsers || isLoadingRoles;
@@ -135,7 +135,7 @@ const UsuariosPage: React.FC = () => {
     [filteredData, currentPage, rowsPerPage]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, activeFilters]);
 
@@ -165,7 +165,7 @@ const UsuariosPage: React.FC = () => {
     setCurrentPage(1);
   };
   const handleExportCSV = () => {
-    const rows = filteredData.map((u) => [
+    const rows = filteredData.map((u: UserWithRole) => [
       u.user_id,
       u.first_name,
       u.last_name_p ?? '',
@@ -231,18 +231,18 @@ const UsuariosPage: React.FC = () => {
       >
         {isError && (
           <div className="segu-users__error" role="alert">
-            {(error as Error)?.message ?? 'Ocurrió un error al cargar los usuarios.'}
+            {(error as { message?: string } | null)?.message ?? 'Ocurrió un error al cargar los usuarios.'}
           </div>
         )}
         {!isFormOpen && (
           <div className="fs-row-span-2 fs-table-container">
-            <PaginatedEntityTable
+            <PaginatedEntityTable<UserWithRole>
               columns={columns}
               data={currentTableData}
               keyField="user_id"
               autoFit
               centered
-              onRowDoubleClick={(row) => {
+              onRowDoubleClick={(row: UserWithRole) => {
                 if (hasUpdatePermission) openEdit(row);
                 else openView(row);
               }}
@@ -280,7 +280,24 @@ const UsuariosPage: React.FC = () => {
       {isFormOpen && (
         <div className="segu-users__embedded-form">
           <UserForm
-            initialData={editing || undefined}
+            initialData={
+              editing
+                ? {
+                    ...editing,
+                    is_active: Boolean(
+                      (editing as unknown as { is_active?: boolean | number })
+                        .is_active
+                    ),
+                    mfa_enabled:
+                      ((editing as unknown as { mfa_enabled?: boolean | number })
+                        .mfa_enabled === 1 ||
+                        (editing as unknown as { mfa_enabled?: boolean | number })
+                          .mfa_enabled === true)
+                        ? true
+                        : false,
+                  }
+                : undefined
+            }
             readOnly={formReadOnly}
             hasEditPermission={hasUpdatePermission}
             onCancel={() => setIsFormOpen(false)}
@@ -292,8 +309,12 @@ const UsuariosPage: React.FC = () => {
 
               if (!editing) {
                 if (!hasCreatePermission) return;
-                const dto = toCreateUserDto(values as CreateUserDto);
-                const created = await create.mutateAsync(dto);
+                const dto = toCreateUserDto(values);
+                const { password_hash, ...rest } = dto;
+                const created = await create.mutateAsync({
+                  ...rest,
+                  ...(password_hash != null ? { password_hash } : {}),
+                });
                 if (values.rolId != null) {
                   try {
                     await addUserRole(created.user_id, Number(values.rolId));
@@ -303,10 +324,14 @@ const UsuariosPage: React.FC = () => {
                 }
               } else {
                 if (!hasUpdatePermission) return;
-                const dto = toUpdateUserDto(values as UpdateUserDto);
+                const dto = toUpdateUserDto(values);
+                const { password_hash: ph, ...restUpdate } = dto as { password_hash?: string | null };
                 await update.mutateAsync({
                   id: editing.user_id,
-                  input: dto,
+                  input: ({
+                    ...restUpdate,
+                    ...(ph != null ? { password_hash: ph } : {}),
+                  } as UserInput),
                 });
               }
               setIsFormOpen(false);

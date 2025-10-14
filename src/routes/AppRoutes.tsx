@@ -1,5 +1,5 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { Home } from '@/features/home';
 import { Kanban } from '@/features/kanban';
 import { LoginPage } from '@/features/auth';

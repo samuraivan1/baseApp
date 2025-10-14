@@ -4,7 +4,28 @@ import { requireAuth, ensurePermission } from '../utils/auth';
 
 // Normaliza items al formato legacy que consume el front:
 // { idMenu, titulo, ruta, permisoId, items }
-function mapItemToLegacy(raw: any): any {
+type LegacyMenuItem = {
+  id: number | string;
+  parentId?: number | string | null;
+  titulo?: string;
+  label?: string;
+  title?: string;
+  name?: string;
+  permisoId?: number;
+  permissionId?: number;
+  permission?: number | string;
+  items?: LegacyMenuItem[];
+  children?: LegacyMenuItem[];
+  hijos?: LegacyMenuItem[];
+  url?: string;
+  path?: string;
+  ruta?: string;
+  idMenu?: number | string;
+  menu_id?: number | string;
+  key?: string;
+};
+
+function mapItemToLegacy(raw: LegacyMenuItem): LegacyMenuItem {
   const childrenRaw = raw.items || raw.children || raw.hijos || undefined;
   const mapped = {
     idMenu:
@@ -16,7 +37,7 @@ function mapItemToLegacy(raw: any): any {
     titulo: raw.titulo ?? raw.title ?? raw.label ?? raw.name ?? '',
     ruta: raw.ruta ?? raw.path ?? raw.url ?? undefined,
     permisoId: raw.permisoId ?? raw.permissionId ?? raw.permission ?? undefined,
-  } as any;
+  } as LegacyMenuItem;
   if (Array.isArray(childrenRaw)) {
     mapped.items = childrenRaw.map(mapItemToLegacy);
   }
@@ -26,7 +47,7 @@ function mapItemToLegacy(raw: any): any {
 const resolveMenus: HttpHandler['resolver'] = ({ request }) => {
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
-  const tree = ((db as any).menus ?? (db as any).menu ?? []) as any[];
+  const tree = ((db as unknown as Record<string, unknown>).menus ?? (db as unknown as Record<string, unknown>).menu ?? []) as LegacyMenuItem[];
   const mapped = tree.map(mapItemToLegacy);
   return HttpResponse.json(mapped, { status: 200 });
 };
@@ -34,7 +55,7 @@ const resolveMenus: HttpHandler['resolver'] = ({ request }) => {
 const resolveMenu: HttpHandler['resolver'] = ({ request }) => {
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
-  const tree = ((db as any).menu ?? (db as any).menus ?? []) as any[];
+  const tree = ((db as unknown as Record<string, unknown>).menu ?? (db as unknown as Record<string, unknown>).menus ?? []) as LegacyMenuItem[];
   const mapped = tree.map(mapItemToLegacy);
   return HttpResponse.json(mapped, { status: 200 });
 };
@@ -42,8 +63,8 @@ const resolveMenu: HttpHandler['resolver'] = ({ request }) => {
 const resolveMenuPerfil: HttpHandler['resolver'] = ({ request }) => {
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
-  const menu = ((db as any).menuPerfil ?? (db as any).menu ?? []) as any[];
-  const mapAndFilter = (items: any[]): any[] =>
+  const menu = ((db as unknown as Record<string, unknown>).menuPerfil ?? (db as unknown as Record<string, unknown>).menu ?? []) as LegacyMenuItem[];
+  const mapAndFilter = (items: LegacyMenuItem[]): LegacyMenuItem[] =>
     items
       .map(mapItemToLegacy)
       .map((it) => ({
@@ -51,8 +72,8 @@ const resolveMenuPerfil: HttpHandler['resolver'] = ({ request }) => {
         items: Array.isArray(it.items) ? mapAndFilter(it.items) : undefined,
       }))
       .filter((it) => {
-        const pid = (it.permisoId ?? it.permissionId) as any;
-        if (pid != null) {
+        const pid = (it.permisoId ?? it.permissionId) as number | undefined;
+        if (pid != null && auth.user) {
           const denied = ensurePermission(auth.user.user_id, String(pid));
           if (denied) return false;
         }

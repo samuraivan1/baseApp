@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import SectionHeader from '@/shared/components/common/SectionHeader';
-import Button from '@/shared/components/ui/Button';
+// removed unused Button import
 import FormActions from '@/shared/components/common/FormActions';
 import { permissionFormMessages as m } from './PermissionForm.messages';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -95,14 +95,9 @@ export default function PermissionForm({
   return (
     <div className="orangealex-form oa-form--md oa-form--left">
       <SectionHeader
-        title={initialValues ? (readOnly ? (m.viewTitle ?? m.editTitle) : m.editTitle) : m.newTitle}
+        title={initialValues ? (readOnly ? m.editTitle : m.editTitle) : m.newTitle}
         icon={faKey}
         onBack={onClose}
-        right={readOnly && hasEditPermission ? (
-          <Button type="button" onClick={(e) => { e.preventDefault(); try { document.dispatchEvent(new CustomEvent('permissionform:request-edit')); } catch {} }}>
-            {commonDefaultMessages.edit}
-          </Button>
-        ) : undefined}
       />
       <form onSubmit={handleSubmit(onValid)} className="orangealex-form__body">
         <LoadingOverlay
@@ -187,13 +182,7 @@ export default function PermissionForm({
         </div>
 
         <div className="orangealex-form__footer">
-          <FormActions
-            onCancel={onClose}
-            onAccept={() => {}}
-            isAccepting={isSubmitting}
-            hideAccept={readOnly || !hasEditPermission}
-            cancelClassName="oa-button--orange"
-          />
+          <FormActions onCancel={onClose} onAccept={() => {}} isAccepting={isSubmitting} />
         </div>
       </form>
     </div>

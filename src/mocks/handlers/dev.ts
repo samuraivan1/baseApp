@@ -78,11 +78,13 @@ devHandlers.push(
     HttpResponse.json(PRODUCTS_DB, { status: 200 })
   ),
   http.post('/api/products', async ({ request }) => {
-    const body = await request.json().catch(() => ({}) as any);
+    const body = (await request.json().catch(() => ({}))) as Partial<{
+      name: string;
+      price: number;
+      description?: string | null;
+    }>;
     if (
-      !body ||
-      typeof (body as any).name !== 'string' ||
-      typeof (body as any).price !== 'number'
+      !body || typeof body.name !== 'string' || typeof body.price !== 'number'
     ) {
       return HttpResponse.json(
         { message: 'Nombre y precio son obligatorios' },
@@ -91,25 +93,26 @@ devHandlers.push(
     }
     const newProd = {
       product_id: NEXT_PRODUCT_ID++,
-      name: (body as any).name,
-      price: (body as any).price,
-      description: (body as any).description ?? null,
+      name: body.name,
+      price: body.price,
+      description: body.description ?? null,
     };
     PRODUCTS_DB.push(newProd);
     return HttpResponse.json(newProd, { status: 201 });
   }),
   http.put('/api/products/:id', async ({ params, request }) => {
     const id = Number(params.id);
-    const body = await request.json().catch(() => ({}) as any);
+    const body = (await request.json().catch(() => ({}))) as Partial<{
+      name?: string;
+      price?: number;
+      description?: string | null;
+    }>;
     const idx = PRODUCTS_DB.findIndex((p) => p.product_id === id);
     if (idx === -1)
       return HttpResponse.json({ message: 'No encontrado' }, { status: 404 });
-    if (body && typeof (body as any).name === 'string')
-      PRODUCTS_DB[idx].name = (body as any).name;
-    if (body && typeof (body as any).price === 'number')
-      PRODUCTS_DB[idx].price = (body as any).price;
-    if (body && 'description' in (body as any))
-      PRODUCTS_DB[idx].description = (body as any).description ?? null;
+    if (body && typeof body.name === 'string') PRODUCTS_DB[idx].name = body.name;
+    if (body && typeof body.price === 'number') PRODUCTS_DB[idx].price = body.price;
+    if (body && 'description' in body) PRODUCTS_DB[idx].description = body.description ?? null;
     return HttpResponse.json(PRODUCTS_DB[idx], { status: 200 });
   }),
   http.delete('/api/products/:id', async ({ params }) => {
@@ -132,16 +135,15 @@ devHandlers.push(
         { status: 422 }
       );
     }
-    const normalized = (body as any[]).map((p, i) => ({
-      product_id:
-        typeof (p as any).product_id === 'number'
-          ? (p as any).product_id
-          : i + 1,
-      name: String((p as any).name ?? ''),
-      price: Number((p as any).price ?? 0),
-      description: (p as any).description ?? null,
-    }));
-    resetProducts(normalized as any);
+    const normalized = (body as Array<Partial<{ product_id: number; name: string; price: number; description?: string | null }>>).map(
+      (p, i) => ({
+        product_id: typeof p.product_id === 'number' ? p.product_id : i + 1,
+        name: String(p.name ?? ''),
+        price: Number(p.price ?? 0),
+        description: p.description ?? null,
+      })
+    );
+    resetProducts(normalized);
     return new HttpResponse(null, { status: 204 });
   })
 );

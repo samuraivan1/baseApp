@@ -10,17 +10,14 @@ export function useEnsureAllPermsForUserRole(targetUsernames: string[] = ['iamen
   const { data: users = [] } = useQuery({
     queryKey: ['usuarios'],
     queryFn: getUsers,
-    onError: (err) => { if (isDev) toast.error(mapAppErrorMessage(err)); },
   });
   const { data: relations = [] } = useQuery({
     queryKey: ['userRoles'],
     queryFn: getUserRoles,
-    onError: (err) => { if (isDev) toast.error(mapAppErrorMessage(err)); },
   });
   const { data: perms = [] } = useQuery({
     queryKey: ['permissions'],
     queryFn: getPermissions,
-    onError: (err) => { if (isDev) toast.error(mapAppErrorMessage(err)); },
   });
 
   useEffect(() => {
@@ -39,9 +36,10 @@ export function useEnsureAllPermsForUserRole(targetUsernames: string[] = ['iamen
         if (toAssign.length > 0) {
           await assignPermissionsToRole(roleId, toAssign);
         }
-      } catch {
-        // Swallow errors to avoid blocking UI; logging handled by callers usually.
-        // console.error(e);
+      } catch (err) {
+        const msg = mapAppErrorMessage(err);
+        const isDev = typeof import.meta !== 'undefined' && !!import.meta.env?.DEV;
+        if (isDev) toast.error(msg);
       }
     })();
   }, [users, relations, perms, targetUsernames, targetIds]);

@@ -18,9 +18,9 @@ interface CustomNavMenuProps {
 
 // --- Componente MenuItem (recursivo) ---
 const MenuItem: React.FC<MenuItemProps> = ({ item, onItemClick }) => {
-  const hasSubmenu = item.items && item.items.length > 0;
+  const hasSubmenu = 'items' in item && Array.isArray(item.items) && item.items.length > 0;
 
-  if (item.kind === 'divider' || item.titulo === 'divider') {
+  if ((item as Partial<NavMenuItem> & { kind?: string }).kind === 'divider' || item.titulo === 'divider') {
     return <li className="nav-menu__divider" />;
   }
 
@@ -57,7 +57,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ item, onItemClick }) => {
       </NavLink>
       {hasSubmenu && (
         <ul className="nav-menu__submenu">
-          {item.items?.map((subItem) => (
+          {(item.items as NavMenuItem[] | undefined)?.map((subItem: NavMenuItem) => (
             <MenuItem
               key={subItem.idMenu}
               item={subItem}

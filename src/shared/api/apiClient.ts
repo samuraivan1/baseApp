@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import { getAuthStore } from '@/features/shell/state/authStore';
 import { getCsrfToken, setCsrfToken } from './csrf';
 import { API_ENDPOINTS } from '@/constants/apiConstants';

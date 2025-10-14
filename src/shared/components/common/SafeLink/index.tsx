@@ -10,9 +10,8 @@ const SafeLink: React.FC<Props> = ({ href, target, rel, allowRelative = true, ..
   const safe = ensureSafeUrl(href, { allowRelative, allowHttpSameOrigin: true });
   const finalRel = target === '_blank' ? (rel ? `${rel} noopener noreferrer` : 'noopener noreferrer') : rel;
   // Si la URL no es segura, no navega
-  if (!safe) return <span {...(rest as any)} />;
+  if (!safe) return <span {...(rest as Record<string, unknown>)} />;
   return <a href={safe} target={target} rel={finalRel} {...rest} />;
 };
 
 export default SafeLink;
-

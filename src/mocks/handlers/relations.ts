@@ -16,6 +16,7 @@ function getRolePermissionsTable(): RolePermission[] {
 const getUserRoles: HttpHandler['resolver'] = ({ request }) => {
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
+  if (!auth.user) return new HttpResponse(null, { status: 401 });
   const denied = ensurePermission(
     auth.user.user_id,
     PERMISSIONS.SECURITY_ROLES_VIEW
@@ -29,6 +30,7 @@ const createUserRole: HttpHandler['resolver'] = async ({ request }) => {
   if (csrf) return csrf;
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
+  if (!auth.user) return new HttpResponse(null, { status: 401 });
   const denied = ensurePermission(
     auth.user.user_id,
     PERMISSIONS.SECURITY_ROLES_UPDATE
@@ -56,6 +58,7 @@ const deleteUserRole: HttpHandler['resolver'] = ({ params, request }) => {
   if (csrf) return csrf;
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
+  if (!auth.user) return new HttpResponse(null, { status: 401 });
   const denied = ensurePermission(
     auth.user.user_id,
     PERMISSIONS.SECURITY_ROLES_UPDATE
@@ -76,6 +79,7 @@ const deleteUserRole: HttpHandler['resolver'] = ({ params, request }) => {
 const getRolePermissions: HttpHandler['resolver'] = ({ request }) => {
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
+  if (!auth.user) return new HttpResponse(null, { status: 401 });
   const denied = ensurePermission(
     auth.user.user_id,
     PERMISSIONS.SECURITY_PERMISSIONS_VIEW
@@ -89,6 +93,7 @@ const createRolePermission: HttpHandler['resolver'] = async ({ request }) => {
   if (csrf) return csrf;
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
+  if (!auth.user) return new HttpResponse(null, { status: 401 });
   const denied = ensurePermission(
     auth.user.user_id,
     PERMISSIONS.SECURITY_PERMISSIONS_UPDATE
@@ -116,6 +121,7 @@ const deleteRolePermission: HttpHandler['resolver'] = ({ params, request }) => {
   if (csrf) return csrf;
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
+  if (!auth.user) return new HttpResponse(null, { status: 401 });
   const denied = ensurePermission(
     auth.user.user_id,
     PERMISSIONS.SECURITY_PERMISSIONS_UPDATE

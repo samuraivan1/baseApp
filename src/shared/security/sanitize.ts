@@ -2,7 +2,7 @@
 // Requiere instalar dompurify si decides usarla: `npm i dompurify`.
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+// @ts-expect-error: Tipificado externo no incluye tipos para DOMPurify addHook
 import DOMPurify from 'dompurify';
 
 export function sanitizeHtml(html: string): string {
@@ -13,4 +13,3 @@ export function sanitizeHtml(html: string): string {
     return html;
   }
 }
-

@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 // import Button from '@/shared/components/ui/Button';
 import FormActions from '@/shared/components/common/FormActions';
 import SectionHeader from '@/shared/components/common/SectionHeader';
-import Button from '@/shared/components/ui/Button';
+// removed unused Button import
 import { roleFormMessages as m } from './RoleForm.messages';
 import { CreateRoleDTO } from '@/shared/types/security';
 import { toast } from 'react-toastify';
@@ -70,14 +70,9 @@ export default function RoleForm({
   return (
     <div className="orangealex-form oa-form--md oa-form--left">
       <SectionHeader
-        title={initialValues ? (readOnly ? (m.viewTitle ?? m.editTitle) : m.editTitle) : m.newTitle}
+        title={initialValues ? (readOnly ? m.editTitle : m.editTitle) : m.newTitle}
         icon={faUserShield}
         onBack={onClose}
-        right={readOnly && hasEditPermission ? (
-          <Button type="button" onClick={(e) => { e.preventDefault(); try { document.dispatchEvent(new CustomEvent('roleform:request-edit')); } catch {} }}>
-            {m.editTitleBtn ?? 'Editar'}
-          </Button>
-        ) : undefined}
       />
 
       {/* Contenido */}
@@ -114,12 +109,11 @@ export default function RoleForm({
 
         {/* Botonera común */}
         <div className="orangealex-form__footer">
-          <FormActions
-            onCancel={onClose}
-            onAccept={() => {}}
-            isAccepting={isSubmitting}
-            hideAccept={readOnly || !hasEditPermission}
-          />
+          {readOnly || !hasEditPermission ? (
+            <FormActions onCancel={onClose} onAccept={() => {}} isAccepting={isSubmitting} />
+          ) : (
+            <FormActions onCancel={onClose} onAccept={() => {}} isAccepting={isSubmitting} />
+          )}
         </div>
       </form>
     </div>

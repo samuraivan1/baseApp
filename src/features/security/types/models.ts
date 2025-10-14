@@ -2,7 +2,7 @@ export interface Role {
   role_id: number;
   name: string;
   description?: string | null;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface Permission {
@@ -13,7 +13,7 @@ export interface Permission {
   scope?: string | null;
   action?: string | null;
   description?: string | null;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface User {

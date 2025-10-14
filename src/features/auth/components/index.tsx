@@ -48,7 +48,7 @@ const LoginPage = ({ backgroundImage }: LoginPageProps) => {
     try {
       await login(data.emailOrUsername, data.password);
       toast.success(authMessages.loginSuccess);
-      const from = (location.state as any)?.from?.pathname;
+      const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;
       const safe = ensureSafeInternalPath(from, '/home');
       navigate(safe, { replace: true });
     } catch (error) {

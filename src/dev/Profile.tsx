@@ -21,7 +21,7 @@ export default function ProfileDev() {
       </pre>
       <h3>Permisos efectivos ({perms.length})</h3>
       <ul>
-        {perms.map((p: any, i: number) => (
+        {perms.map((p, i: number) => (
           <li key={i}>{String(p.permission_string)}</li>
         ))}
       </ul>
@@ -34,4 +34,3 @@ export default function ProfileDev() {
     </div>
   );
 }
-

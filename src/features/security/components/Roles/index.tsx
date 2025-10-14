@@ -93,8 +93,8 @@ const RolesPage: React.FC = () => {
         setFormReadOnly(false);
       }
     };
-    document.addEventListener('roleform:request-edit', handler as any);
-    return () => document.removeEventListener('roleform:request-edit', handler as any);
+    document.addEventListener('roleform:request-edit', handler as EventListener);
+    return () => document.removeEventListener('roleform:request-edit', handler as EventListener);
   }, [formReadOnly]);
 
   const handleSearch = () => setCurrentPage(1);

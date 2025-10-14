@@ -27,8 +27,10 @@ export const handlers = [
         // eslint-disable-next-line no-console
         console.debug('[MSW][passthrough]', request.method, new URL(request.url).pathname);
       }
-    } catch {}
+} catch {
+  // ignore
+}
     // Use the special symbol to bypass mocking in MSW v2
-    return undefined as any; // returning undefined lets MSW fall through to network
+    return undefined as unknown as never; // returning undefined lets MSW fall through to network
   }),
 ];

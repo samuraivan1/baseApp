@@ -16,21 +16,22 @@ const btnStyle: React.CSSProperties = {
 };
 
 export default function DevAuthInspector() {
-  if (!(import.meta as any).env?.DEV) return null;
+  const isDev = (import.meta as unknown as { env?: { DEV?: boolean } }).env?.DEV ?? false;
   const user = useAuthStore((s) => s.user);
+  if (!isDev) return null;
 
   const onClick = async () => {
     try {
       const { db } = await import('@/mocks/data/db');
       const { PERMISSIONS } = await import('@/features/security/constants/permissions');
       const uid = Number(user?.user_id);
-      const roles = (db.user_roles as any[])
+      const roles = (db.user_roles as Array<{ user_id: number; role_id: number }>)
         .filter((ur) => Number(ur.user_id) === uid)
         .map((ur) => Number(ur.role_id));
-      const roleRows = (db.roles as any[]).filter((r) => roles.includes(Number(r.role_id)));
-      const rp = (db.role_permissions as any[]).filter((r) => roles.includes(Number(r.role_id)));
+      const roleRows = (db.roles as Array<{ role_id: number; name?: string }>).filter((r) => roles.includes(Number(r.role_id)));
+      const rp = (db.role_permissions as Array<{ role_id: number; permission_id: number }>).filter((r) => roles.includes(Number(r.role_id)));
       const permIds = new Set(rp.map((r) => Number(r.permission_id)));
-      const perms = (db.permissions as any[])
+      const perms = (db.permissions as Array<{ permission_id: number; permission_string: string }>)
         .filter((p) => permIds.has(Number(p.permission_id)))
         .map((p) => String(p.permission_string));
 
@@ -83,4 +84,3 @@ export default function DevAuthInspector() {
     </button>
   );
 }
-

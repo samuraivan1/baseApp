@@ -5,18 +5,18 @@ import { requireAuth, ensurePermission } from '../utils/auth';
 const getTablero: HttpHandler['resolver'] = ({ request }) => {
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
-  const denied = ensurePermission(auth.user.user_id, 'dashboard:read');
+  const denied = auth.user ? ensurePermission(auth.user.user_id, 'dashboard:read') : null;
   if (denied) return denied;
-  return HttpResponse.json((db as any).tablero ?? {}, { status: 200 });
+  return HttpResponse.json((db as Record<string, unknown>).tablero ?? {}, { status: 200 });
 };
 
 const updateTablero: HttpHandler['resolver'] = async ({ request }) => {
   const auth = requireAuth(request);
   if (auth instanceof HttpResponse) return auth;
-  const denied = ensurePermission(auth.user.user_id, 'dashboard:write');
+  const denied = auth.user ? ensurePermission(auth.user.user_id, 'dashboard:write') : null;
   if (denied) return denied;
   const body = await request.json();
-  (db as any).tablero = body;
+  (db as Record<string, unknown>).tablero = body as unknown as Record<string, unknown>;
   persistDb();
   return HttpResponse.json(body, { status: 200 });
 };

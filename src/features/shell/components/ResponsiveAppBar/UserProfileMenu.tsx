@@ -12,12 +12,10 @@ import iconMap from './iconMap';
 
 // Type guards para evitar 'any' implícitos
 function isDivider(item: NavMenuItem): boolean {
-  return (item as any).kind === 'divider' || item.titulo === 'divider';
+  return (item as Partial<NavMenuItem> & { kind?: string }).kind === 'divider' || item.titulo === 'divider';
 }
-function hasChildren(
-  item: NavMenuItem
-): item is NavMenuItem & { items: NavMenuItem[] } {
-  return Array.isArray((item as any).items) && (item as any).items.length > 0;
+function hasChildren(item: NavMenuItem): item is NavMenuItem & { items: NavMenuItem[] } {
+  return 'items' in item && Array.isArray((item as { items?: NavMenuItem[] }).items) && ((item as { items?: NavMenuItem[] }).items?.length ?? 0) > 0;
 }
 import './UserProfileMenu.scss';
 
@@ -100,7 +98,9 @@ const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
     }
     try {
       await apiLogout();
-    } catch {}
+    } catch {
+      // ignore logout transport errors in UI
+    }
     logout();
     toast.info(authMessages.logoutSuccess);
     navigate('/login');

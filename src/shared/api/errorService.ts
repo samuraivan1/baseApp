@@ -152,7 +152,7 @@ export function normalizeError(
   const isAxiosLike = Boolean((anyErr && (anyErr['isAxiosError'] as boolean)) || response || request);
   if (isAxiosLike) {
     const status = (response?.['status'] as number | undefined) ?? null;
-    const data = response?.['data'] as unknown;
+    const data = response?.['data'] as { message?: string; code?: string } | unknown;
     let message = (anyErr['message'] as string | undefined) || (status ? `HTTP ${status}` : 'HTTP error');
     const hasStringMessage = (v: unknown): v is { message: string } => {
       if (typeof v !== 'object' || v === null) return false;
@@ -194,10 +194,10 @@ export interface AppError {
 
 export function handleApiError(error: unknown): AppError {
   const timestamp = new Date().toISOString();
-  if (typeof error === 'object' && error && 'message' in (error as any)) {
-    const maybeAxios = error as any;
+  if (typeof error === 'object' && error && 'message' in (error as Record<string, unknown>)) {
+    const maybeAxios = error as { response?: { data?: unknown; status?: number } };
     const status = maybeAxios?.response?.status as number | undefined;
-    const msg = maybeAxios?.response?.data?.message || maybeAxios?.message || 'Error de comunicación con el servidor.';
+    const msg = (maybeAxios?.response?.data as { message?: string } | undefined)?.message || (maybeAxios as unknown as { message?: string })?.message || 'Error de comunicación con el servidor.';
     return { message: msg, code: status, timestamp };
   }
   return { message: 'Error desconocido.', timestamp };

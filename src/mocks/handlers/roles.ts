@@ -15,10 +15,11 @@ export const rolesHandlers = [
   http.get(BASE, ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
+    const denied = auth.user ? ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_ROLES_VIEW
-    );
+    ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     return HttpResponse.json(getRolesTable(), { status: 200 });
   }),
@@ -26,10 +27,10 @@ export const rolesHandlers = [
   http.get(`${BASE}/:id`, ({ params, request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(
+    const denied = auth.user ? ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_ROLES_VIEW
-    );
+    ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     const id = Number(params.id);
     const row = getRolesTable().find((item) => Number(item.role_id) === id);
@@ -42,10 +43,10 @@ export const rolesHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(
+    const denied = auth.user ? ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_ROLES_CREATE
-    );
+    ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     const body = (await request.json()) as Partial<Role>;
     const role_id = nextId('roles');
@@ -66,10 +67,10 @@ export const rolesHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(
+    const denied = auth.user ? ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_ROLES_UPDATE
-    );
+    ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<Role>;
@@ -86,10 +87,10 @@ export const rolesHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(
+    const denied = auth.user ? ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_ROLES_UPDATE
-    );
+    ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     const id = Number(params.id);
     const body = (await request.json()) as Partial<Role>;
@@ -110,10 +111,10 @@ export const rolesHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
-    const denied = ensurePermission(
+    const denied = auth.user ? ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_ROLES_DELETE
-    );
+    ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     const id = Number(params.id);
     const roles = getRolesTable();

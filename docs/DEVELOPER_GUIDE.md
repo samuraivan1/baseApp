@@ -18,6 +18,8 @@ Este documento consolida el estándar de programación del proyecto: arquitectur
 - Hooks consumen `onError` consistente con `mapAppErrorMessage` y `useSafeMutation`.
 - UI unifica toasts (`showToast*`) y `ErrorBoundary` con “Reintentar”.
 
+Además, consulta `docs/CODING_RULES.md` para reglas obligatorias (tipado estricto, React Query v5, imports y supresiones TS).
+
 ## Estilos
 - SCSS modular por componente; globales mínimos (`_variables.scss`, `_mixins.scss`, `_base.scss`, `index.scss`).
 - Evita estilos globales invasivos; usa utilidades opt‑in y clases locales.

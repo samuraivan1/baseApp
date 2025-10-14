@@ -15,6 +15,7 @@ export const permissionsHandlers = [
   http.get(BASE, ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
     const denied = ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_PERMISSIONS_VIEW
@@ -26,6 +27,7 @@ export const permissionsHandlers = [
   http.get(`${BASE}/:id`, ({ params, request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
     const denied = ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_PERMISSIONS_VIEW
@@ -44,6 +46,7 @@ export const permissionsHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
     const denied = ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_PERMISSIONS_CREATE
@@ -70,6 +73,7 @@ export const permissionsHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
     const denied = ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_PERMISSIONS_UPDATE
@@ -96,6 +100,7 @@ export const permissionsHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
     const denied = ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_PERMISSIONS_UPDATE
@@ -122,6 +127,7 @@ export const permissionsHandlers = [
     if (csrf) return csrf;
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
     const denied = ensurePermission(
       auth.user.user_id,
       PERMISSIONS.SECURITY_PERMISSIONS_DELETE

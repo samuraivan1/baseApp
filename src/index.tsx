@@ -5,8 +5,7 @@ import reportWebVitals from '@/reportWebVitals';
 import '@/styles/index.scss';
 import { CoreProviders } from '@/core';
 import { loadConfig } from '@/shared/api/configService';
-import ErrorBoundary from '@/shared/components/ErrorBoundary';
-import { queryClient } from '@/lib/queryClient';
+// Removed unused imports: ErrorBoundary, queryClient
 import { store } from '@/app/store';
 
 const rootElement = document.getElementById('root') as HTMLElement;
@@ -33,7 +32,9 @@ const initializeApp = async () => {
   try {
     const { getAuthStore } = await import('@/features/shell/state/authStore');
     getAuthStore().setAuthReady(true);
-  } catch {}
+  } catch {
+    // ignore
+  }
 
   root.render(
     <React.StrictMode>

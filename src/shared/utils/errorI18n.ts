@@ -10,7 +10,7 @@ export function mapAppErrorMessage(err: unknown): string {
     if (status === 404) return errorMessages.notFound;
     if (status === 422) return errorMessages.validation;
     if (status === 0) return errorMessages.network;
-    const msg = (err.response?.data as any)?.message || err.message;
+    const msg = (err.response?.data as { message?: string })?.message || err.message;
     return msg || errorMessages.unknown;
   }
   const app = err as Partial<AppError> | undefined;
@@ -20,4 +20,3 @@ export function mapAppErrorMessage(err: unknown): string {
   if (app?.code === 422) return errorMessages.validation;
   return (app?.message && String(app.message)) || errorMessages.unknown;
 }
-

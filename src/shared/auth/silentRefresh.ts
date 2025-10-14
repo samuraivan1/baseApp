@@ -1,7 +1,8 @@
 import apiClient from '@/shared/api/apiClient';
 import { getAuthStore } from '@/features/shell';
 import { getSession } from '@/shared/api/authService';
-import type { User, Permission } from '@/features/security';
+import type { User, Permission, UserSession } from '@/features/security/types';
+import type { Role } from '@/features/security/types/models';
 
 /**
  * Deriva los permisos de un usuario a partir de la base de datos mock.
@@ -11,27 +12,34 @@ import type { User, Permission } from '@/features/security';
  */
 async function getMockDerivedPermissions(
   userId: number
-): Promise<Pick<Permission, 'permission_string'>[] | undefined> {
+): Promise<Permission[] | undefined> {
   if (Number.isNaN(userId)) return undefined;
 
   const { db } = await import('@/mocks/data/db');
-  const userRoleLinks = (db.user_roles as any[]).filter(
+  const userRoleLinks = (db.user_roles as Array<{ user_id: number; role_id: number }>).filter(
     (r) => Number(r.user_id) === userId
   );
   const roleIds = userRoleLinks.map((r) => Number(r.role_id));
-  const rolePermissions = (db.role_permissions as any[]).filter((r) =>
+  const rolePermissions = (db.role_permissions as Array<{ role_id: number; permission_id: number }>).filter((r) =>
     roleIds.includes(Number(r.role_id))
   );
   const permissionIds = new Set(
     rolePermissions.map((r) => Number(r.permission_id))
   );
-  const permissions = (db.permissions as any[]).filter((p) =>
+  const permissions = (db.permissions as Array<{ permission_id: number; permission_string: string }>).filter((p) =>
     permissionIds.has(Number(p.permission_id))
   );
 
   return permissions.map((p) => ({
+    permission_id: Number(p.permission_id),
     permission_string: String(p.permission_string),
-  }));
+    resource: '',
+    action: '',
+    scope: '',
+    description: '',
+    created_at: undefined,
+    updated_at: undefined,
+  } satisfies Permission));
 }
 
 /**
@@ -63,10 +71,17 @@ export async function silentRefresh(): Promise<boolean> {
     const session = await getSession().catch(() => null);
     if (session?.user) {
       const user = session.user as unknown as User;
-      const derivedPermissions = await getMockDerivedPermissions(
+      const derivedPermissions = (await getMockDerivedPermissions(
         user.user_id
-      ).catch(() => undefined);
-      getAuthStore().setUser({ ...user, permissions: derivedPermissions });
+      ).catch(() => undefined)) || [];
+      // Construir un UserSession mínimo para cumplir la firma del store
+      const sessionUser: UserSession = {
+        ...(user as unknown as UserSession),
+        permissions: derivedPermissions,
+        roles: ((session as { roles?: Role[] } | null)?.roles ?? []) as Role[],
+        full_name: (user.first_name ?? '') + ' ' + (user.last_name_p ?? ''),
+      };
+      getAuthStore().setUser(sessionUser);
     }
 
     return true;

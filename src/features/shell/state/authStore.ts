@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { login as apiLogin } from '@/shared/api/authService';
 import { AuthStoreType } from './store.types';
 import { SESSION_STORAGE_KEYS } from '@/constants/sessionConstants';
-import type { UserSession } from '@/features/security';
+import type { UserSession } from '@/features/security/types';
 
 export const useAuthStore = create<AuthStoreType>()(
   persist(
@@ -16,13 +16,10 @@ export const useAuthStore = create<AuthStoreType>()(
 
       async login(username: string, password: string): Promise<UserSession> {
         const res = await apiLogin({ username, password });
+        // Map LoginResponse -> UserSession shape for store consumers
         const accessToken =
-          ((res as unknown as Record<string, unknown>)?.['access_token'] as
-            | string
-            | undefined) ??
-          ((res as unknown as Record<string, unknown>)?.['accessToken'] as
-            | string
-            | undefined) ??
+          ((res as unknown as Record<string, unknown>)?.['access_token'] as string | undefined) ??
+          ((res as unknown as Record<string, unknown>)?.['accessToken'] as string | undefined) ??
           null;
 
         set({
@@ -34,7 +31,7 @@ export const useAuthStore = create<AuthStoreType>()(
         });
 
         localStorage.removeItem(SESSION_STORAGE_KEYS.AUTH_REVOKED);
-        return res;
+        return res as unknown as UserSession;
       },
 
       logout() {
@@ -82,7 +79,7 @@ export const useAuthStore = create<AuthStoreType>()(
         set({ isLoggedIn: flag });
       },
 
-      setUser(user) {
+      setUser(user: UserSession | null) {
         set({ user });
       },
 
@@ -104,12 +101,12 @@ export const useAuthStore = create<AuthStoreType>()(
     {
       name: SESSION_STORAGE_KEYS.AUTH_STATE,
       version: 3, // Incrementar versión por cambio en la lógica de permisos
-      migrate: (persistedState: any, version) => {
+      migrate: (persistedState: unknown, version) => {
         if (version < 3) {
           // Lógica de migración si es necesaria. Por ahora, solo reiniciamos.
           return { user: null };
         }
-        return persistedState;
+        return persistedState as unknown as AuthStoreType;
       },
       partialize: (state) => ({ user: state.user }),
       onRehydrateStorage: () => (state) => {

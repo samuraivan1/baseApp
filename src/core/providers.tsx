@@ -23,8 +23,11 @@ export function useTheme() {
   return useContext(ThemeContext);
 }
 
+import type { EnhancedStore } from '@reduxjs/toolkit';
+type CoreStore = EnhancedStore;
+
 type CoreProvidersProps = {
-  store: any;
+  store: CoreStore;
   children: React.ReactNode;
 };
 

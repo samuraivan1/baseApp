@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw';
-import { db, persistDb } from '../data/db';
+import { db } from '../data/db';
 import { requireAuth } from '../utils/auth';
 
 type LoginBody = { username?: string; email?: string; password: string };
@@ -8,7 +8,7 @@ export const authHandlers = [
   http.post('/api/auth/login', async ({ request }) => {
     const body = (await request.json()) as LoginBody;
     const { username, email } = body;
-    const user = db.users.find((u: any) =>
+    const user = db.users.find((u: { username?: string; email?: string }) =>
       username ? u.username === username : email ? u.email === email : false
     );
     if (!user) {
@@ -23,7 +23,9 @@ export const authHandlers = [
       expires_in: 3600,
       csrf_token: 'mock-csrf-token',
     };
-    try { if (typeof window !== 'undefined' && 'localStorage' in window) localStorage.setItem('mock:current_user_id', String(user.user_id)); } catch {}
+    try { if (typeof window !== 'undefined' && 'localStorage' in window) localStorage.setItem('mock:current_user_id', String(user.user_id)); } catch {
+      // ignore
+    }
     return HttpResponse.json(session, {
       status: 200,
       headers: {
@@ -35,7 +37,9 @@ export const authHandlers = [
 
   http.post('/api/auth/refresh', async () => {
     let uid: string | null = null;
-    try { if (typeof window !== 'undefined' && 'localStorage' in window) uid = localStorage.getItem('mock:current_user_id'); } catch {}
+    try { if (typeof window !== 'undefined' && 'localStorage' in window) uid = localStorage.getItem('mock:current_user_id'); } catch {
+      // ignore
+    }
     if (!uid) {
       return new HttpResponse(null, { status: 401 });
     }
@@ -54,7 +58,9 @@ export const authHandlers = [
   }),
 
   http.post('/api/auth/logout', async () => {
-    try { if (typeof window !== 'undefined' && 'localStorage' in window) localStorage.removeItem('mock:current_user_id'); } catch {}
+    try { if (typeof window !== 'undefined' && 'localStorage' in window) localStorage.removeItem('mock:current_user_id'); } catch {
+      // ignore
+    }
     return new HttpResponse(null, {
       status: 204,
       headers: {
@@ -68,6 +74,7 @@ export const authHandlers = [
   http.get('/api/auth/session', ({ request }) => {
     const auth = requireAuth(request);
     if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
     return HttpResponse.json({ user: auth.user }, { status: 200 });
   }),
 ];

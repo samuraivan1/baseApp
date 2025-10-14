@@ -34,7 +34,17 @@ export default function DetailDrawer<T>({ title, open, data, fields, onClose, se
             <div className="detail-drawer__row" key={String(f.key)}>
               <div className="detail-drawer__label">{f.label}</div>
               <div className="detail-drawer__value">
-                {f.render ? f.render(data) : String((data as any)[f.key] ?? '')}
+                {f.render
+                  ? f.render(data)
+                  : (() => {
+                      const k = f.key;
+                      if (typeof k === 'string') {
+                        const rec = data as unknown as Record<string, unknown>;
+                        return String(rec[k] ?? '');
+                      }
+                      const key = k as keyof T;
+                      return String((data as unknown as T)[key] ?? '');
+                    })()}
               </div>
             </div>
           ))}

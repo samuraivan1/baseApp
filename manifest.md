@@ -45,11 +45,13 @@ Cada feature debe ser autocontenida: su lógica de API, hooks, componentes y tip
 ## 3. Gestión de Estado
 
 ### 3.1 Estado del Servidor (TanStack Query)
+
 - Toda data que provenga del backend debe manejarse con React Query.
 - Hooks ubicados dentro de cada feature (`features/security/hooks`).
 - No se deben almacenar datos de API en Zustand o `useState`.
 
 ### 3.2 Estado Global del Cliente (Zustand)
+
 - Exclusivo para estado de UI o sesión.
 - Uso del patrón **slice por dominio**.
 - `src/store` combina slices (`authSlice`, `menuSlice`, etc.).
@@ -64,6 +66,7 @@ Cada feature debe ser autocontenida: su lógica de API, hooks, componentes y tip
 - Variables en `src/styles/_variables.scss` y exportadas en `:root`.
 
 Ejemplo:
+
 ```scss
 :root {
   --color-primary: #f26822;
@@ -120,6 +123,7 @@ En el entorno de desarrollo (`src/mocks/data/db.ts`):
 #### Uso en el Frontend
 
 **Protección de Rutas:**
+
 ```tsx
 <Route
   path="/seguridad/usuarios"
@@ -132,6 +136,7 @@ En el entorno de desarrollo (`src/mocks/data/db.ts`):
 ```
 
 **Protección de UI:**
+
 ```tsx
 <PermissionGate perm={PERMISSIONS.SECURITY_USERS_CREATE}>
   <Button onClick={handleCreate}>Añadir Usuario</Button>
@@ -139,18 +144,23 @@ En el entorno de desarrollo (`src/mocks/data/db.ts`):
 ```
 
 **Verificación de Permisos (Zustand):**
+
 ```typescript
-useAuthStore.getState().hasPermission('security.users.create');
-useAuthStore.getState().hasAllPermissions(['security.users.view', 'security.users.update']);
-useAuthStore.getState().hasAnyPermission(['security.users.view', 'security.users.delete']);
+useAuthStore.getState().hasPermission("security.users.create");
+useAuthStore
+  .getState()
+  .hasAllPermissions(["security.users.view", "security.users.update"]);
+useAuthStore
+  .getState()
+  .hasAnyPermission(["security.users.view", "security.users.delete"]);
 ```
 
 #### Flujo de Autenticación y Permisos
 
-1. **Login:** El usuario se autentica.  
-2. **Sesión:** El backend (o mock) devuelve roles.  
-3. **Permisos:** El frontend calcula los `permission_string`.  
-4. **Contexto:** `useAuthStore` expone `hasPermission`.  
+1. **Login:** El usuario se autentica.
+2. **Sesión:** El backend (o mock) devuelve roles.
+3. **Permisos:** El frontend calcula los `permission_string`.
+4. **Contexto:** `useAuthStore` expone `hasPermission`.
 5. **Persistencia:** Mantiene permisos activos tras recargar (`F5`).
 
 ---
@@ -254,29 +264,35 @@ useAuthStore.getState().hasAnyPermission(['security.users.view', 'security.users
 ## 17. Estándares y Reglas Adicionales
 
 ### 17.1 Fronteras entre Módulos
-- Ningún feature puede importar internamente otro feature.  
-- Comunicación vía Zustand, eventos o `index.ts` públicos.  
+
+- Ningún feature puede importar internamente otro feature.
+- Comunicación vía Zustand, eventos o `index.ts` públicos.
 - Enforced by ESLint (`import/no-restricted-paths`).
 
 ### 17.2 Patrón de Slices en Zustand
-- Cada feature define su propio slice (`src/features/auth/slice.ts`).  
+
+- Cada feature define su propio slice (`src/features/auth/slice.ts`).
 - El store principal (`src/store`) los combina.
 
 ### 17.3 Convención de Nombres TanStack Query
-- `useRoles`, `useUsers` → listas.  
-- `useRole(id)` → entidad.  
+
+- `useRoles`, `useUsers` → listas.
+- `useRole(id)` → entidad.
 - `useRoleMutations` → agrupa create/update/delete.
 
 ### 17.4 Uso de DTOs
-- Crear DTOs cuando payload ≠ respuesta API.  
+
+- Crear DTOs cuando payload ≠ respuesta API.
 - Ejemplo: `src/features/security/api/user.dto.ts`.
 
 ### 17.5 Componentes Compuestos
-- Agrupar patrones repetidos (ej. `PaginatedEntityTable`).  
+
+- Agrupar patrones repetidos (ej. `PaginatedEntityTable`).
 - Documentar en Storybook.
 
 ### 17.6 Design Tokens
-- Definidos en `_variables.scss` y expuestos en `:root`.  
+
+- Definidos en `_variables.scss` y expuestos en `:root`.
 - Ejemplo: `--color-primary`, `--spacing-md`, `--radius-md`.
 
 ---
@@ -301,10 +317,63 @@ useAuthStore.getState().hasAnyPermission(['security.users.view', 'security.users
 
 ## 20. Conclusión
 
-El proyecto **baseApp** representa un estándar de arquitectura empresarial:  
-- Modular, escalable, accesible y fuertemente tipado.  
-- Visualmente consistente bajo el **OrangeAlex Design System**.  
-- Con flujos de desarrollo estandarizados y auditables por IA.  
+El proyecto **baseApp** representa un estándar de arquitectura empresarial:
+
+- Modular, escalable, accesible y fuertemente tipado.
+- Visualmente consistente bajo el **OrangeAlex Design System**.
+- Con flujos de desarrollo estandarizados y auditables por IA.
 
 **Este manifiesto es vinculante.**  
 Toda contribución debe alinearse a estos lineamientos para mantener la calidad, coherencia y sustentabilidad del sistema.
+
+##Adidiconal
+TypeScript
+No usar any. Si no hay tipo, definir interfaces mínimas o usar genéricos con Record<string, unknown>.
+No bloques vacíos. En catch o bloques vacíos, añade un comentario // ignore o // no-op.
+Evita casts de DTOs. Usa los mappers toCreateUserDto / toUpdateUserDto en lugar de castear.
+No exportar/usar tipos de auth desde rutas ambiguas; usar siempre features/security/types.
+React
+No importar React por defecto en componentes con JSX moderno. Solo importa lo que uses (useState, useEffect, etc.).
+SectionHeader: no usar la prop right. Si se necesita botón secundario, renderizarlo fuera del header.
+FormActions: onAccept siempre debe ser una función. Si no corresponde aceptar, pasar onAccept={() => {}} y manejar readOnly/permiso a nivel de formulario.
+Hooks: no llamar hooks condicionalmente. Mover la lógica de retorno o condicional fuera del orden de hooks.
+API/Cliente
+apiClient: eliminar imports no usados (p. ej., AxiosRequestConfig). Usar interceptores ya definidos para auth y CSRF.
+CSRF: manejar el token con getCsrfToken/setCsrfToken del módulo csrf. No leer cookies manualmente.
+Seguridad y permisos
+useEnsureAllPermsForUserRole: usar const isDev = import.meta.env.DEV para logs/toasts solo en desarrollo.
+Al usar ensurePermission en handlers MSW, validar auth.user antes de llamar. Si no hay usuario, devolver 401.
+Mocks (MSW)
+No usar import msw/browser; usar import { setupWorker } from 'msw'.
+Tipar adecuadamente tablas y datos. No @ts-expect-error en db; preferir tipos explícitos.
+crudFactory: schema.partial() solo si schema es ZodObject. Evitar spreads de tipos no objeto, castear a object cuando corresponda.
+roles/menu/tablero: agregar guardias de auth.user antes de verificar permisos.
+Usuarios y formularios
+Users/index.tsx:
+Tipar UserWithRole como (User & { rolId?: number }) & Record<string, unknown>.
+Normalizar is_active a boolean en la vista.
+Evitar variables no usadas. Eliminar imports y estados no utilizados.
+No castear objetos a CreateUserDto/UpdateUserDto; usar mappers.
+UserForm.tsx:
+Mantener defaultValues estáticos. Población dinámica vía reset/map.
+logger.error(err as Error, { context: ... }).
+No usar viewTitle ni right en SectionHeader. FormActions sin hideAccept.
+Autenticación
+authStore: mapear respuesta de login al shape que consume el store; no persistir refreshToken en frontend; limpiar localStorage con cuidado y marcar AUTH_REVOKED en logout.
+silentRefresh: derivedPermissions deben mapear a Permission[] completos y tipados.
+Rutas
+AppRoutes: no importar React; usar Suspense y lazy.
+Import hygiene
+Eliminar imports sin uso inmediatamente. Mantener el linter en “error” para no-unused-vars.
+Checklist de PRs
+
+No hay any ni ts-expect-error.
+No hay bloques vacíos sin comentario.
+No hay imports sin uso (incluyendo React/AxiosRequestConfig).
+FormActions tiene onAccept={() => {}} (nunca undefined).
+SectionHeader no usa right.
+No hay casts a DTOs; se usan mappers.
+Handlers MSW validan auth.user antes de ensurePermission.
+isDev se obtiene con import.meta.env.DEV.
+silentRefresh mapea permisos a Permission[] completos.
+Build y typecheck OK.

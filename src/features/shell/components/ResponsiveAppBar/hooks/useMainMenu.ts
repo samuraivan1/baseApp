@@ -2,7 +2,9 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
+import { appBarLogContexts, appBarMessages } from '@/features/shell/components/ResponsiveAppBar/ResponsiveAppBar.messages';
 import { fetchMenu } from '@/features/shell';
+import type { NavMenuItem } from '@/features/shell/types';
 import logger from '@/shared/api/logger';
 import { useAuthStore } from '@/features/shell/state/authStore';
 
@@ -13,18 +15,17 @@ export const useMainMenu = () => {
     isLoading,
     isError,
     error,
-  } = useQuery({
+  } = useQuery<NavMenuItem[]>({
     queryKey: ['mainMenu'],
     queryFn: fetchMenu,
     enabled: isLoggedIn,
-    onError: (err) => toast.error(String((err as any)?.message ?? 'No se pudo cargar la navegación.')),
   });
 
   useEffect(() => {
     if (isError) {
-      logger.error(error as Error, {
-        context: 'Error al cargar el menú principal',
-      });
+      const message = (error instanceof Error && error.message) || appBarMessages.navigationLoadError;
+      toast.error(message);
+      logger.error(error as Error, { context: appBarLogContexts.mainMenu });
     }
   }, [isError, error]);
 

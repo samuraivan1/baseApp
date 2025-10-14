@@ -98,8 +98,8 @@ const PermissionsPage: React.FC = () => {
         setFormReadOnly(false);
       }
     };
-    document.addEventListener('permissionform:request-edit', handler as any);
-    return () => document.removeEventListener('permissionform:request-edit', handler as any);
+    document.addEventListener('permissionform:request-edit', handler as EventListener);
+    return () => document.removeEventListener('permissionform:request-edit', handler as EventListener);
   }, [formReadOnly]);
 
   // Handlers

@@ -1,27 +1,17 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQueryClient } from '@tanstack/react-query';
 import { useUsersCrud } from '@/features/security';
 import { toast } from 'react-toastify';
 import logger from '@/shared/api/logger';
 import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
-import { createUser, updateUser } from '@/features/security';
-import {
-  toCreateUserDto,
-  toUpdateUserDto,
-} from '@/features/security';
-import {
-  addUserRole,
-  getUserRoles,
-  removeUserRole,
-} from '@/features/security';
+// removed unused API/helper imports
 import { userSchema, UserFormValues } from './validationSchema';
-import { userFormMessages } from './UserForm.messages';
+// removed unused userFormMessages import
 import './UserForm.scss';
 import '@/shared/components/common/forms/orangealex-form.scss';
 import SectionHeader from '@/shared/components/common/SectionHeader';
-import Button from '@/shared/components/ui/Button';
+// removed unused Button import
 import { usersMessages } from './Users.messages';
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import FormActions from '@/shared/components/common/FormActions';
@@ -31,25 +21,54 @@ import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 import FormSelect from '@/shared/components/common/forms/inputs/FormSelect';
 // import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
 
+// Aceptamos datos desde la lista (UserWithRole) y los mapeamos al shape del formulario
 interface UsuarioCompleto extends UserFormValues {
   idUsuario: number;
 }
+// Revert to local UserWithRole to avoid missing module
+type UserWithRole = {
+  user_id: number;
+  first_name?: string | null;
+  second_name?: string | null;
+  last_name_p?: string | null;
+  last_name_m?: string | null;
+  email?: string | null;
+  username?: string | null;
+  rolId?: number | null;
+  is_active?: boolean;
+  initials?: string | null;
+  auth_provider?: string | null;
+  phone_number?: string | null;
+  mfa_enabled?: boolean | null;
+  avatar_url?: string | null;
+  bio?: string | null;
+  azure_ad_object_id?: string | null;
+  upn?: string | null;
+  email_verified_at?: string | null;
+  last_login_at?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  idUsuario?: number;
+};
 
-interface UpdateUsuarioVariables {
-  id: number;
-  payload: UserFormValues;
-}
+// removed unused UpdateUsuarioVariables interface
 
 interface Props {
-  initialData?: UsuarioCompleto | null;
+  initialData?: UsuarioCompleto | UserWithRole | null;
   onSubmit?: (values: UserFormValues) => Promise<void> | void;
   onCancel: () => void;
   readOnly?: boolean;
   hasEditPermission?: boolean;
 }
 
-const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel, readOnly = false, hasEditPermission = true }) => {
-  const _qc = useQueryClient();
+const UserForm: React.FC<Props> = ({
+  initialData,
+  onSubmit,
+  onCancel,
+  readOnly = false,
+  hasEditPermission = true,
+}) => {
+  // removed unused query client
 
   const {
     register,
@@ -58,7 +77,7 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel, readOnly =
     formState: { errors, isSubmitting },
   } = useForm<UserFormValues>({
     resolver: zodResolver(userSchema),
-    defaultValues: initialData ?? {
+    defaultValues: {
       nombre: '',
       segundoNombre: '',
       apellidoPaterno: '',
@@ -83,67 +102,58 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel, readOnly =
   });
 
   useEffect(() => {
-    const fullShape: UserFormValues = {
-      idUsuario: initialData?.idUsuario,
-      nombre: initialData?.nombre ?? '',
-      segundoNombre: initialData?.segundoNombre ?? '',
-      apellidoPaterno: initialData?.apellidoPaterno ?? '',
-      apellidoMaterno: initialData?.apellidoMaterno ?? '',
-      correoElectronico: initialData?.correoElectronico ?? '',
-      nombreUsuario: initialData?.nombreUsuario ?? '',
-      rolId: initialData?.rolId,
-      status: initialData?.status ?? 'activo',
-      initials: initialData?.initials ?? '',
-      auth_provider: initialData?.auth_provider ?? '',
-      phone_number: initialData?.phone_number ?? '',
-      mfa_enabled: initialData?.mfa_enabled ?? false,
-      avatar_url: initialData?.avatar_url ?? '',
-      bio: initialData?.bio ?? '',
-      azure_ad_object_id: initialData?.azure_ad_object_id ?? '',
-      upn: initialData?.upn ?? '',
-      email_verified_at: initialData?.email_verified_at ?? '',
-      last_login_at: initialData?.last_login_at ?? '',
-      created_at: initialData?.created_at ?? '',
-      updated_at: initialData?.updated_at ?? '',
+    if (!initialData) {
+      reset();
+      return;
+    }
+    const mapFromAny = (
+      src: UsuarioCompleto | UserWithRole
+    ): UserFormValues => {
+      const asUser = src as UserWithRole;
+      const asForm = src as UsuarioCompleto;
+      const status =
+        'status' in (src as UsuarioCompleto | Record<string, unknown>)
+          ? (asForm.status ?? (asUser.is_active ? 'activo' : 'inactivo'))
+          : asUser.is_active
+            ? 'activo'
+            : 'inactivo';
+      return {
+        idUsuario: (asForm.idUsuario ??
+          (asUser.user_id as number | undefined)) as number | undefined,
+        nombre: asForm.nombre ?? asUser.first_name ?? '',
+        segundoNombre: asForm.segundoNombre ?? asUser.second_name ?? '',
+        apellidoPaterno: asForm.apellidoPaterno ?? asUser.last_name_p ?? '',
+        apellidoMaterno: asForm.apellidoMaterno ?? asUser.last_name_m ?? '',
+        correoElectronico: asForm.correoElectronico ?? asUser.email ?? '',
+        nombreUsuario: asForm.nombreUsuario ?? asUser.username ?? '',
+        rolId: asForm.rolId ?? asUser.rolId ?? undefined,
+        status,
+        initials: asForm.initials ?? asUser.initials ?? '',
+        auth_provider: asForm.auth_provider ?? asUser.auth_provider ?? '',
+        phone_number: asForm.phone_number ?? asUser.phone_number ?? '',
+        mfa_enabled: asForm.mfa_enabled ?? asUser.mfa_enabled ?? false,
+        avatar_url: asForm.avatar_url ?? asUser.avatar_url ?? '',
+        bio: asForm.bio ?? asUser.bio ?? '',
+        azure_ad_object_id:
+          asForm.azure_ad_object_id ?? asUser.azure_ad_object_id ?? '',
+        upn: asForm.upn ?? asUser.upn ?? '',
+        email_verified_at:
+          asForm.email_verified_at ?? asUser.email_verified_at ?? '',
+        last_login_at: asForm.last_login_at ?? asUser.last_login_at ?? '',
+        created_at: asForm.created_at ?? asUser.created_at ?? '',
+        updated_at: asForm.updated_at ?? asUser.updated_at ?? '',
+      };
     };
-    // Reset siempre con el shape completo, incluso al crear
-    reset(fullShape);
+    reset(mapFromAny(initialData));
   }, [initialData, reset]);
 
   const { create: createMutation, update: updateMutation } = useUsersCrud();
-  const createUserWrapped = async (payload: UserFormValues) => {
-    const created = await createUser(toCreateUserDto(payload));
-    if (payload.rolId != null) {
-      try {
-        await addUserRole(created.user_id, Number(payload.rolId));
-      } catch {
-        // noop: asignar rol es best-effort tras crear usuario
-      }
-    }
-    return created;
-  };
-
-  const updateUserWrapped = async ({ id, payload }: UpdateUsuarioVariables) => {
-    const updated = await updateUser(id, toUpdateUserDto(payload));
-
-    if (payload.rolId !== undefined) {
-      const relations = await getUserRoles();
-      const current = relations.find((ur) => ur.user_id === id);
-      if (current && current.role_id !== Number(payload.rolId)) {
-        await removeUserRole(current.id);
-      }
-      if (payload.rolId != null) {
-        await addUserRole(id, Number(payload.rolId));
-      }
-    }
-    return updated;
-  };
 
   const submit = async (data: UserFormValues) => {
     try {
       await onSubmit?.(data);
     } catch (err) {
-      logger.error(err, { context: 'submitUsuario' });
+      logger.error(err as Error, { context: 'submitUsuario' });
       toast.error(mapAppErrorMessage(err));
     }
   };
@@ -151,25 +161,23 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel, readOnly =
   return (
     <div className="orangealex-form oa-form--md oa-form--left">
       <SectionHeader
-        title={initialData ? (readOnly ? (usersMessages.viewTitle ?? 'Detalle de usuario') : usersMessages.editUser) : usersMessages.createUser}
+        title={
+          initialData
+            ? readOnly
+              ? 'Detalle de usuario'
+              : usersMessages.editUser
+            : usersMessages.createUser
+        }
         icon={faUser}
         onBack={onCancel}
-        right={readOnly && hasEditPermission ? (
-          <Button type="button" onClick={(e) => {
-            e.preventDefault();
-            // Emitimos un submit "vacío" que el padre intercepta para conmutar a edición
-            // Alternativa: exponer un onRequestEdit prop específico; por simplicidad reutilizamos onSubmit guardado arriba
-            // Aquí disparamos un CustomEvent para no acoplar lógica interna
-            try { document.dispatchEvent(new CustomEvent('userform:request-edit')); } catch {}
-          }}>
-            {usersMessages.edit ?? 'Editar'}
-          </Button>
-        ) : undefined}
       />
-      <form className="user-form" onSubmit={handleSubmit(async (data) => {
-        if (readOnly || !hasEditPermission) return; // abort submit
-        await submit(data);
-      })}>
+      <form
+        className="user-form"
+        onSubmit={handleSubmit(async (data) => {
+          if (readOnly || !hasEditPermission) return; // abort submit
+          await submit(data);
+        })}
+      >
         <LoadingOverlay
           open={
             isSubmitting || createMutation.isPending || updateMutation.isPending
@@ -228,8 +236,12 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel, readOnly =
             {...register('status')}
             disabled={readOnly}
           >
-            <option value="activo">{usersMessages.form?.statusActivo ?? 'Activo'}</option>
-            <option value="inactivo">{usersMessages.form?.statusInactivo ?? 'Inactivo'}</option>
+            <option value="activo">
+              {usersMessages.form?.statusActivo ?? 'Activo'}
+            </option>
+            <option value="inactivo">
+              {usersMessages.form?.statusInactivo ?? 'Inactivo'}
+            </option>
           </FormSelect>
           <FormInput
             label={usersMessages.form?.initials ?? 'Iniciales'}
@@ -314,7 +326,6 @@ const UserForm: React.FC<Props> = ({ initialData, onSubmit, onCancel, readOnly =
               createMutation.isPending ||
               updateMutation.isPending
             }
-            hideAccept={readOnly || !hasEditPermission}
           />
         </div>
       </form>

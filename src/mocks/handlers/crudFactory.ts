@@ -1,5 +1,5 @@
 import { http, HttpResponse, HttpHandler } from 'msw';
-import { z, ZodType } from 'zod';
+import { ZodType, ZodObject, ZodRawShape } from 'zod';
 import { db, nextId, persistDb, TableName, inferIdField } from '../data/db';
 import { requireAuth, ensurePermission } from '../utils/auth';
 import { requireCsrfOnMutation } from '../utils/csrf';
@@ -26,14 +26,14 @@ export function createCrudHandlers<T extends ZodType>(
   const idField = config.idField ?? inferIdField(tableName);
   const baseUrl = config.baseUrl ?? `/api/${tableName}`;
 
-  const getTable = () => db[tableName] as any[];
+  const getTable = <R extends Record<string, unknown>>() => db[tableName] as unknown as R[];
 
   return [
     // GET all
     http.get(baseUrl, ({ request }) => {
       const auth = requireAuth(request);
       if (auth instanceof HttpResponse) return auth;
-      const denied = ensurePermission(auth.user.user_id, permissions.view);
+      const denied = auth.user ? ensurePermission(auth.user.user_id, permissions.view) : new HttpResponse(null, { status: 401 });
       if (denied) return denied;
       return HttpResponse.json(getTable());
     }),
@@ -42,7 +42,7 @@ export function createCrudHandlers<T extends ZodType>(
     http.get(`${baseUrl}/:id`, ({ request, params }) => {
       const auth = requireAuth(request);
       if (auth instanceof HttpResponse) return auth;
-      const denied = ensurePermission(auth.user.user_id, permissions.view);
+      const denied = auth.user ? ensurePermission(auth.user.user_id, permissions.view) : new HttpResponse(null, { status: 401 });
       if (denied) return denied;
 
       const id = Number(params.id);
@@ -60,7 +60,7 @@ export function createCrudHandlers<T extends ZodType>(
       if (csrf) return csrf;
       const auth = requireAuth(request);
       if (auth instanceof HttpResponse) return auth;
-      const denied = ensurePermission(auth.user.user_id, permissions.create);
+      const denied = auth.user ? ensurePermission(auth.user.user_id, permissions.create) : new HttpResponse(null, { status: 401 });
       if (denied) return denied;
 
       const body = await request.json();
@@ -71,7 +71,7 @@ export function createCrudHandlers<T extends ZodType>(
       }
 
       const newItem = {
-        ...validation.data,
+        ...(validation.data as object),
         [idField]: nextId(tableName),
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -88,7 +88,7 @@ export function createCrudHandlers<T extends ZodType>(
       if (csrf) return csrf;
       const auth = requireAuth(request);
       if (auth instanceof HttpResponse) return auth;
-      const denied = ensurePermission(auth.user.user_id, permissions.update);
+      const denied = auth.user ? ensurePermission(auth.user.user_id, permissions.update) : new HttpResponse(null, { status: 401 });
       if (denied) return denied;
 
       const id = Number(params.id);
@@ -100,7 +100,10 @@ export function createCrudHandlers<T extends ZodType>(
       }
 
       const body = await request.json();
-      const validation = schema.partial().safeParse(body);
+      const partialSchema = (schema instanceof (ZodObject as unknown as new (shape: ZodRawShape) => ZodObject<ZodRawShape>)
+        ? (schema as unknown as ZodObject<ZodRawShape>).partial()
+        : schema);
+      const validation = partialSchema.safeParse(body);
 
       if (!validation.success) {
         return HttpResponse.json({ error: validation.error.flatten() }, { status: 400 });
@@ -108,7 +111,7 @@ export function createCrudHandlers<T extends ZodType>(
 
       const updatedItem = {
         ...table[itemIndex],
-        ...validation.data,
+        ...(validation.data as object),
         updated_at: new Date().toISOString(),
       };
 
@@ -123,7 +126,7 @@ export function createCrudHandlers<T extends ZodType>(
       if (csrf) return csrf;
       const auth = requireAuth(request);
       if (auth instanceof HttpResponse) return auth;
-      const denied = ensurePermission(auth.user.user_id, permissions.delete);
+      const denied = auth.user ? ensurePermission(auth.user.user_id, permissions.delete) : new HttpResponse(null, { status: 401 });
       if (denied) return denied;
 
       const id = Number(params.id);

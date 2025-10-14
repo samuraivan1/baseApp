@@ -8,7 +8,7 @@ export function getBearer(req: Request): string | null {
   return m ? m[1] : null;
 }
 
-export type AuthedUser = { user: any; token: string };
+export type AuthedUser = { user: { user_id: number; username?: string; correo?: string } | undefined; token: string };
 
 export function requireAuth(req: Request): AuthedUser | HttpResponse<null> {
   const token = getBearer(req);
@@ -20,11 +20,11 @@ export function requireAuth(req: Request): AuthedUser | HttpResponse<null> {
   // En mock, resolvemos usuario por token fijo o por primer usuario si hay sesión mock.
   // Alternativa: mapear token->user en localStorage, pero aquí usamos primer usuario válido.
   // Intentar extraer user_id codificado en token (mock-access-token[:id])
-  let user: any | undefined;
+  let user: { user_id: number; username?: string; correo?: string } | undefined;
   const parts = token.split(':');
   if (parts.length > 1) {
     const id = Number(parts[1]);
-    const byId = db.users.find((u: any) => Number(u.user_id) === id);
+    const byId = db.users.find((u: { user_id: number }) => Number(u.user_id) === id);
     if (byId) user = byId;
   }
   if (!user) return new HttpResponse<null>(null, { status: 401 });
@@ -35,18 +35,18 @@ export function hasPermission(userId: number, permString: string): boolean {
   // Bypass total para usuario 1 (Super Admin)
   if (Number(userId) === 1) return true;
   const roleIds = db.user_roles
-    .filter((ur: any) => Number(ur.user_id) === Number(userId))
-    .map((ur: any) => Number(ur.role_id));
+    .filter((ur: { user_id: number; role_id: number }) => Number(ur.user_id) === Number(userId))
+    .map((ur: { role_id: number }) => Number(ur.role_id));
   if (!roleIds.length) return false;
   const permIds = new Set(
     db.role_permissions
-      .filter((rp: any) => roleIds.includes(Number(rp.role_id)))
-      .map((rp: any) => Number(rp.permission_id))
+      .filter((rp: { role_id: number; permission_id: number }) => roleIds.includes(Number(rp.role_id)))
+      .map((rp: { permission_id: number }) => Number(rp.permission_id))
   );
   const assignedPermStrings = new Set(
     db.permissions
-      .filter((p: any) => permIds.has(Number(p.permission_id)))
-      .map((p: any) => String(p.permission_string))
+      .filter((p: { permission_id: number; permission_string: string }) => permIds.has(Number(p.permission_id)))
+      .map((p: { permission_string: string }) => String(p.permission_string))
   );
   return assignedPermStrings.has(permString);
 }
