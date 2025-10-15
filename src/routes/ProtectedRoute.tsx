@@ -12,14 +12,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
 }) => {
   const location = useLocation();
-  const { isLoggedIn, phase, hasPermission } = useAuthStore((s) => ({
+  const { isLoggedIn, authReady, hasPermission } = useAuthStore((s) => ({
     isLoggedIn: s.isLoggedIn,
-    phase: s.phase ?? (s.authReady ? 'ready' : 'idle'),
+    authReady: s.authReady,
     hasPermission: s.hasPermission,
   }));
 
   // Espera a que el estado de auth esté listo para evitar redirecciones prematuras
-  if (phase !== 'ready') return null;
+  if (!authReady) return null;
 
   if (!isLoggedIn) {
     return (

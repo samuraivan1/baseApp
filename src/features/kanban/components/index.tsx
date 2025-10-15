@@ -15,29 +15,29 @@ import { useBoardStore } from '@/features/shell/state/boardStore';
 import Column from './components/Column';
 import { Task } from './components/Task';
 import './Kanban.scss';
-import { ColumnaType, TareaType } from '@/shared/types/ui';
+import type { Column as ColumnType, Task as TaskType, Board } from '@/features/kanban/types';
 import { kanbanMessages } from './Kanban.messages';
 import { useKanbanBoard } from './hooks/useKanbanBoard';
 
 const Kanban: React.FC = () => {
   const { isLoading, isError, updateTablero } = useKanbanBoard();
-  const { tareas, columnas, ordenColumnas, setBoardState } = useBoardStore();
-  const [activeTask, setActiveTask] = useState<TareaType | null>(null);
+  const { tasks, columns, columnOrder, setBoardState } = useBoardStore();
+  const [activeTask, setActiveTask] = useState<TaskType | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
-  const findColumnOfTask = (taskId: string): ColumnaType | undefined => {
+  const findColumnOfTask = (taskId: string): ColumnType | undefined => {
     const state = useBoardStore.getState();
-    const colId = Object.keys(state.columnas).find((id) =>
-      Boolean(state.columnas[id]?.tareasIds?.includes(taskId))
+    const colId = Object.keys(state.columns).find((id) =>
+      Boolean(state.columns[id]?.taskIds?.includes(taskId))
     );
-    return colId ? state.columnas[colId] : undefined;
+    return colId ? state.columns[colId] : undefined;
   };
 
   const handleDragStart = (event: DragStartEvent) => {
     {
-      const t = tareas[event.active.id as string];
+      const t = tasks[event.active.id as string];
       setActiveTask(t ?? null);
     }
   };
@@ -50,28 +50,29 @@ const Kanban: React.FC = () => {
     const activeColumn = findColumnOfTask(activeId);
     const overColumn =
       over.data.current?.type === 'Column'
-        ? columnas[overId]
+        ? columns[overId]
         : findColumnOfTask(overId);
 
     if (
       activeColumn &&
       overColumn &&
-      activeColumn.idColumna !== overColumn.idColumna
+      activeColumn.id !== overColumn.id
     ) {
-      setBoardState({
+      const next: Board = {
         ...useBoardStore.getState(),
-        columnas: {
-          ...columnas,
-          [activeColumn.idColumna]: {
+        columns: {
+          ...columns,
+          [activeColumn.id]: {
             ...activeColumn,
-            tareasIds: activeColumn.tareasIds.filter((id) => id !== activeId),
+            taskIds: activeColumn.taskIds.filter((id) => id !== activeId),
           },
-          [overColumn.idColumna]: {
+          [overColumn.id]: {
             ...overColumn,
-            tareasIds: [...overColumn.tareasIds, activeId],
+            taskIds: [...overColumn.taskIds, activeId],
           },
         },
-      });
+      };
+      setBoardState(next);
     }
   };
 
@@ -86,23 +87,20 @@ const Kanban: React.FC = () => {
     const activeColumn = findColumnOfTask(activeId);
 
     if (activeColumn && activeId !== overId) {
-      const activeIndex = activeColumn.tareasIds.indexOf(activeId);
-      const overIndex = activeColumn.tareasIds.indexOf(overId);
+      const activeIndex = activeColumn.taskIds.indexOf(activeId);
+      const overIndex = activeColumn.taskIds.indexOf(overId);
       if (activeIndex !== overIndex) {
-        setBoardState({
+        const next: Board = {
           ...useBoardStore.getState(),
-          columnas: {
-            ...columnas,
-            [activeColumn.idColumna]: {
+          columns: {
+            ...columns,
+            [activeColumn.id]: {
               ...activeColumn,
-              tareasIds: arrayMove(
-                activeColumn.tareasIds,
-                activeIndex,
-                overIndex
-              ),
+              taskIds: arrayMove(activeColumn.taskIds, activeIndex, overIndex),
             },
           },
-        });
+        };
+        setBoardState(next);
       }
     }
 
@@ -125,15 +123,15 @@ const Kanban: React.FC = () => {
       onDragEnd={handleDragEnd}
     >
       <div className="kanban">
-        {ordenColumnas.map((columnId) => {
-          const column = columnas[columnId];
+        {columnOrder.map((columnId) => {
+          const column = columns[columnId];
           if (!column) return null;
-          const columnTasks = column.tareasIds
-            .map((taskId) => tareas[taskId])
-            .filter((t): t is TareaType => Boolean(t));
+          const columnTasks = column.taskIds
+            .map((taskId) => tasks[taskId])
+            .filter((t): t is TaskType => Boolean(t));
           return (
             <Column
-              key={column.idColumna}
+              key={column.id}
               column={column}
               tasks={columnTasks}
             />

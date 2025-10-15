@@ -7,6 +7,8 @@ import { fetchMenu } from '@/features/shell';
 import type { NavMenuItem } from '@/features/shell/types';
 import logger from '@/shared/api/logger';
 import { useAuthStore } from '@/features/shell/state/authStore';
+import { z } from 'zod';
+import { MenuItemSchema } from '@/features/shell/types/schemas.menu';
 
 type MenuItemWithPerm = NavMenuItem & {
   permission_string?: string;
@@ -16,7 +18,8 @@ type MenuItemWithPerm = NavMenuItem & {
 };
 
 function isMenuGroup(item: NavMenuItem): item is MenuItemWithPerm & { items: NavMenuItem[] } {
-  return Boolean((item as { items?: unknown }).items) && Array.isArray((item as { items?: unknown }).items);
+  const maybe: Partial<MenuItemWithPerm> = item as Partial<MenuItemWithPerm>;
+  return Boolean(maybe.items) && Array.isArray(maybe.items);
 }
 
 function getItemPermission(item: MenuItemWithPerm): string | undefined {
@@ -34,16 +37,20 @@ function hasItemPermission(hasPermission: (p: string) => boolean, item: NavMenuI
 }
 
 export const useMainMenu = () => {
-  const { isLoggedIn, phase, hasPermission } = useAuthStore((s) => ({ isLoggedIn: s.isLoggedIn, phase: s.phase ?? (s.authReady ? 'ready' : 'idle'), hasPermission: s.hasPermission }));
+  const { isLoggedIn, authReady, hasPermission } = useAuthStore((s) => ({
+    isLoggedIn: s.isLoggedIn,
+    authReady: s.authReady,
+    hasPermission: s.hasPermission,
+  }));
   const {
-    data = [], // Proporciona un valor por defecto para evitar 'undefined'
+    data = [],
     isLoading,
     isError,
     error,
   } = useQuery<NavMenuItem[]>({
     queryKey: ['mainMenu'],
     queryFn: fetchMenu,
-    enabled: isLoggedIn && phase === 'ready',
+    enabled: isLoggedIn && authReady,
   });
 
   useEffect(() => {
@@ -55,7 +62,10 @@ export const useMainMenu = () => {
   }, [isError, error]);
 
   const menuItems = useMemo<NavMenuItem[]>(() => {
-    if (phase !== 'ready' || !Array.isArray(data)) return [];
+    if (!authReady || !Array.isArray(data)) return [];
+    // Normalize/validate menu to canonical UI shape (best-effort)
+    const parse = z.array(MenuItemSchema).safeParse(data);
+    const base: NavMenuItem[] = parse.success ? (parse.data as unknown as NavMenuItem[]) : data;
     const filterTree = (items: NavMenuItem[]): NavMenuItem[] => {
       return items
         .map((it) => {
@@ -72,8 +82,8 @@ export const useMainMenu = () => {
           return allowedSelf || hasChildren;
         });
     };
-    return filterTree(data);
-  }, [data, phase, hasPermission]);
+    return filterTree(base);
+  }, [data, authReady, hasPermission]);
 
   // Devuelve un objeto con nombres claros y solo los datos que el componente necesita
   return { menuItems, isLoadingMenu: isLoading };

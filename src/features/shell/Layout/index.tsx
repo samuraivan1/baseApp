@@ -18,20 +18,20 @@ const Layout: React.FC = () => {
 
   const contentClassName = `layout__content ${isLoginPage ? 'layout__content--login' : ''}`;
 
-  const { authReady, phase } = useAuthStore() as unknown as { authReady: boolean; phase?: 'idle' | 'loading' | 'ready' | 'error' };
+  const { authReady } = useAuthStore();
 
   useEffect(() => {
-    if ((phase ?? 'idle') === 'idle') {
+    if (!authReady) {
       void bootstrapAuth();
     }
-  }, [phase]);
+  }, [authReady]);
   useIdleLogout();
 
   return (
     <div className="layout">
       {!isLoginPage && <Header />}
       <main className={contentClassName}>
-        {((phase ?? 'idle') !== 'ready') ? (
+        {!authReady ? (
           <div style={{ display: 'grid', placeItems: 'center', minHeight: '40vh' }}>
             <div style={{ textAlign: 'center', color: '#666' }}>{shellLayoutMessages.restoringSession}</div>
           </div>

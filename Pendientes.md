@@ -170,13 +170,6 @@ src/features/security/types/dto.ts|13|export type UpdateUserDTO = Partial<
 - Core/tokens: creado `src/core/tokens.ts` con tokens base (color, spacing, radius) como esqueleto compatible con OrangeAlex DS.
 - ErrorBoundary: añadido componente en `src/shared/components/ErrorBoundary/` para observabilidad por feature.
 
-### Ajuste MSW – Auth Refresh determinista (DEV)
-
-- Handler `/api/auth/refresh` ahora lee `SESSION_STORAGE_KEYS.MOCK_CURRENT_USER_ID` (o clave legacy `mock:current_user_id`) para determinar el usuario actual desde la DB mock.
-- Si existe y es válido, responde 200 con `{ access_token, refresh_token, csrf_token, user }`.
-- Si no existe o es inválido, responde 401. Sin hardcode de usuarios; compatible con los 3 usuarios temporales actuales.
-- No requiere cambios al conectar con un backend real: el contrato del cliente no cambia.
-
 Checklist Fase 1.1
 - [x] Schema de menú (UI)
 - [x] Helpers de paginación en Security

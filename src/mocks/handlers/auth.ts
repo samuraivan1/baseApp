@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import { db } from '../data/db';
 import { requireAuth } from '../utils/auth';
+import { SESSION_STORAGE_KEYS } from '@/constants/sessionConstants';
 
 type LoginBody = { username?: string; email?: string; password: string };
 
@@ -37,20 +38,27 @@ export const authHandlers = [
 
   http.post('/api/auth/refresh', async () => {
     let uid: string | null = null;
-    try { if (typeof window !== 'undefined' && 'localStorage' in window) uid = localStorage.getItem('mock:current_user_id'); } catch {
+    try {
+      if (typeof window !== 'undefined' && 'localStorage' in window) {
+        uid =
+          localStorage.getItem(SESSION_STORAGE_KEYS.MOCK_CURRENT_USER_ID) ??
+          localStorage.getItem('mock:current_user_id'); // compat legado
+      }
+    } catch {
       // ignore
     }
-    if (!uid) {
+    const userId = uid ? Number(uid) : NaN;
+    const user = db.users.find((u) => Number(u.user_id) === userId);
+    if (!user) {
       return new HttpResponse(null, { status: 401 });
     }
-    const access_token = `mock-access-token:${uid}`;
+    const access_token = `mock-access-token:${user.user_id}`;
     const refresh_token = 'mock-refresh-token';
     return HttpResponse.json(
-      { access_token, refresh_token, expires_in: 3600, csrf_token: 'mock-csrf-token' },
+      { access_token, refresh_token, expires_in: 3600, csrf_token: 'mock-csrf-token', user },
       {
         status: 200,
         headers: {
-          // Re‑emite CSRF token en cada refresh para garantizar disponibilidad
           'Set-Cookie': `csrf_token=${encodeURIComponent('mock-csrf-token')}; Path=/; SameSite=Lax`,
         },
       }

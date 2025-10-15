@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { login as apiLogin, getSession } from '@/shared/api/authService';
+import { login as apiLogin } from '@/shared/api/authService';
 import { AuthStoreType } from './store.types';
 import { SESSION_STORAGE_KEYS } from '@/constants/sessionConstants';
 import type { UserSession } from '@/features/security/types';
@@ -80,11 +80,7 @@ export const useAuthStore = create<AuthStoreType>()(
       },
 
       setAuthReady(flag: boolean) {
-        // Mantener compatibilidad pero sin mutar arbitrariamente: authReady se deriva de phase==='ready'
-        if (flag) set({ phase: 'ready' });
-      },
-      setPhase(next: 'idle' | 'loading' | 'ready' | 'error') {
-        set({ phase: next, authReady: next === 'ready' });
+        set({ authReady: Boolean(flag) });
       },
 
       hasPermission(permissionString) {

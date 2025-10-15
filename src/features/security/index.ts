@@ -31,3 +31,8 @@ export * from './api/hooks/useUsersCrud';
 export * from './api/hooks/useRolesCrud';
 export * from './api/hooks/usePermissionsCrud';
 export * from './api/hooks/useUserRolesCrud';
+export * from './types';
+export * from './types/schemas';
+export * from './types/schemas.extra';
+// export surface from api/ submodules only; there is no ./api index
+export * from './components';

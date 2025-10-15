@@ -2,11 +2,11 @@ import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { formatDate, getDateStatus } from '@/shared/utils/dateUtils';
-import { TareaType } from '@/shared/types/ui';
+import type { Task as TaskType } from '@/features/kanban/types';
 import { taskMessages } from './Task.messages';
 
 interface TaskProps {
-  task: TareaType;
+  task: TaskType;
 }
 
 const renderAvatars = (users?: string[]) => {
@@ -31,13 +31,13 @@ export const Task: React.FC<TaskProps> = ({ task }) => {
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: task.idTarea });
+  } = useSortable({ id: task.id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
-  const dateStatusClass = getDateStatus(task.fechaVencimiento);
+  const dateStatusClass = getDateStatus(task.dueDate);
 
   return (
     <div
@@ -47,20 +47,20 @@ export const Task: React.FC<TaskProps> = ({ task }) => {
       {...listeners}
       className="task"
     >
-      <p className="task__content">{task.contenido}</p>
-      {task.diasActivo !== undefined && (
+      <p className="task__content">{task.content}</p>
+      {task.activeDays !== undefined && (
         <div className="task__days">
-          {task.diasActivo} {taskMessages.days}
+          {task.activeDays} {taskMessages.days}
         </div>
       )}
       <div className="task__footer">
-        {task.fechaVencimiento && (
+        {task.dueDate && (
           <div className={`task__date task__date--${dateStatusClass}`}>
             <span>📅</span>
-            <span>{formatDate(task.fechaVencimiento)}</span>
+            <span>{formatDate(task.dueDate)}</span>
           </div>
         )}
-        {renderAvatars(task.usuariosAsignados)}
+        {renderAvatars(task.assignees)}
       </div>
     </div>
   );

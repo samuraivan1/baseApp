@@ -36,7 +36,9 @@ export function CoreProviders({ store, children }: CoreProvidersProps) {
     <ReduxProvider store={store}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <ErrorBoundary>{children}</ErrorBoundary>
+          <ErrorBoundary fallback={<div role="alert" style={{ padding: 16 }}>Ha ocurrido un error. Intenta recargar.</div>}>
+            {children}
+          </ErrorBoundary>
           <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick pauseOnFocusLoss={false} />
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />

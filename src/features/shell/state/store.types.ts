@@ -1,6 +1,6 @@
 // src/store/store.types.ts
-import { TableroType } from '@/shared/types/ui';
-import { UserSession } from '@/shared/types/security';
+import type { Board } from '@/features/kanban/types';
+import type { UserSession } from '@/features/security/types';
 
 // --- Auth Store ---
 export interface AuthState {
@@ -27,10 +27,10 @@ export interface AuthActions {
   setAuthReady: (flag: boolean) => void;
 }
 
-export type AuthStoreType = AuthState & AuthActions;
+export type AuthStoreType = AuthState & AuthActions & { phase?: 'idle' | 'loading' | 'ready' | 'error' };
 
 // --- Board Store ---
-export type BoardState = TableroType;
+export type BoardState = Board;
 
 export interface BoardActions {
   setBoardState: (newState: BoardState) => void;

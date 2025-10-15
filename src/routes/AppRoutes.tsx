@@ -17,7 +17,6 @@ import { images } from '@/assets/images';
 import { APP_ROUTES } from '@/constants/routes';
 
 const DevMutationPlayground = lazy(() => import('@/dev/DevMutationPlayground'));
-const DevProducts = lazy(() => import('@/features/products/components'));
 const DevProfile = lazy(() => import('@/dev/Profile'));
 
 const LOGIN_BACKGROUND_IMAGE = images.loginImg;
@@ -32,10 +31,7 @@ const AppRoutes = () => {
             path={APP_ROUTES.DEV_MUTATION}
             element={<Suspense fallback={<div>Cargando...</div>}><DevMutationPlayground /></Suspense>}
           />
-          <Route
-            path={APP_ROUTES.DEV_PRODUCTS}
-            element={<Suspense fallback={<div>Cargando...</div>}><DevProducts /></Suspense>}
-          />
+          {/* Ruta Dev Products removida: feature eliminada */}
           <Route
             path={APP_ROUTES.DEV_PROFILE}
             element={<Suspense fallback={<div>Cargando...</div>}><DevProfile /></Suspense>}
