@@ -11,8 +11,7 @@ import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
 import LoadingOverlay from '@/shared/components/ui/LoadingOverlay';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
-import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
-import { toast } from 'react-toastify';
+import { withApiCall } from '@/shared/api/withApiCall';
 
 export type PermissionFormValues = {
   permission_string: string;
@@ -85,11 +84,10 @@ export default function PermissionForm({
 
   const onValid = async (data: PermissionFormValues) => {
     if (readOnly || !hasEditPermission) return;
-    try {
-      await onSubmit(data);
-    } catch (err) {
-      toast.error(mapAppErrorMessage(err));
-    }
+    await withApiCall(
+      () => Promise.resolve(onSubmit(data)),
+      { where: 'security.permissions.form.submit' }
+    );
   };
 
   return (

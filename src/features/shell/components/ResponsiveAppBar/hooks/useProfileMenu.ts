@@ -1,8 +1,7 @@
 // src/hooks/useProfileMenu.ts
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
-import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
+import { apiCall } from '@/shared/api/apiCall';
 import { appBarLogContexts, appBarMessages } from '@/features/shell/components/ResponsiveAppBar/ResponsiveAppBar.messages';
 import { fetchProfileMenu } from '@/features/shell';
 import type { NavMenuItem } from '@/features/shell/types';
@@ -18,15 +17,16 @@ export const useProfileMenu = () => {
     error,
   } = useQuery<NavMenuItem[]>({
     queryKey: ['profileMenu'],
-    queryFn: fetchProfileMenu,
+    queryFn: async () => {
+      const res = await apiCall(() => fetchProfileMenu(), { where: 'shell.menu.profile', toastOnError: true });
+      if (!res.ok) throw res.error as unknown as Error;
+      return res.value;
+    },
     enabled: isLoggedIn,
   });
 
   useEffect(() => {
     if (isError) {
-      const mapped = mapAppErrorMessage(error);
-      const message = mapped || appBarMessages.profileLoadError;
-      toast.error(message);
       logger.error(error as Error, { context: appBarLogContexts.profileMenu });
     }
   }, [isError, error]);

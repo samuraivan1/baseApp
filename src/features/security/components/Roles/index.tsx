@@ -252,7 +252,7 @@ const RolesPage: React.FC = () => {
             initialValues={editingRole || undefined}
             readOnly={formReadOnly}
             hasEditPermission={useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE)}
-            onSubmit={(values) => {
+            onSubmit={async (values) => {
               if (formReadOnly) {
                 if (useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE)) {
                   setFormReadOnly(false);
@@ -265,14 +265,22 @@ const RolesPage: React.FC = () => {
                 name: String(values.name || ''),
                 description: values.description ?? null,
               };
+              const { apiCall } = await import('@/shared/api/apiCall');
               if (editingRole) {
                 if (!canUpdate) return;
-                update.mutate({ id: editingRole.role_id, input: dto });
+                const res = await apiCall(
+                  () => update.mutateAsync({ id: editingRole.role_id, input: dto }),
+                  { where: 'security.roles.update', toastOnError: true }
+                );
+                if (res.ok) setIsFormOpen(false);
               } else {
                 if (!canCreate) return;
-                create.mutate(dto);
+                const res = await apiCall(
+                  () => create.mutateAsync(dto),
+                  { where: 'security.roles.create', toastOnError: true }
+                );
+                if (res.ok) setIsFormOpen(false);
               }
-              setIsFormOpen(false);
             }}
           />
         </div>
@@ -285,7 +293,15 @@ const RolesPage: React.FC = () => {
         cancelLabel={rolesMessages.cancelLabel ?? 'Cancelar'}
         danger
         onCancel={() => setDeletingId(null)}
-        onConfirm={() => { if (deletingId != null) remove.mutate(deletingId, { onSettled: () => setDeletingId(null) }); }}
+        onConfirm={async () => {
+          if (deletingId == null) return;
+          const { withApiCall } = await import('@/shared/api/withApiCall');
+          const res = await withApiCall(
+            () => remove.mutateAsync(deletingId),
+            { where: 'security.roles.delete', onOk: () => setDeletingId(null) }
+          );
+          return res;
+        }}
       />
     </div>
   );

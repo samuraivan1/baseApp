@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
 import errorService, { normalizeError } from '@/shared/api/errorService';
 import { fetchBoard, updateBoard } from '@/features/kanban';
+import { apiCall } from '@/shared/api/apiCall';
 import { useBoardStore } from '@/features/shell/state/boardStore';
 import logger from '@/shared/api/logger';
 import { kanbanLogContexts } from '../Kanban.messages';
@@ -17,18 +18,18 @@ export const useKanbanBoard = () => {
   const { data: serverBoardData, isLoading, isError } = useQuery<TableroType, Error>({
     queryKey: ['board'],
     queryFn: async () => {
-      try {
-        return await fetchBoard();
-      } catch (err) {
-        toast.error(mapAppErrorMessage(err));
-        errorService.logError(normalizeError(err, { where: 'kanban:list' }));
-        throw err;
-      }
+      const res = await apiCall(() => fetchBoard(), { where: 'kanban.board.fetch', toastOnError: true });
+      if (!res.ok) throw res.error as unknown as Error;
+      return res.value;
     },
   });
 
   const boardMutation = useMutation<TableroType, Error, TableroType, { previousState?: TableroType }>({
-    mutationFn: updateBoard,
+    mutationFn: async (state: TableroType) => {
+      const res = await apiCall(() => updateBoard(state), { where: 'kanban.board.save', toastOnError: true });
+      if (!res.ok) throw res.error as unknown as Error;
+      return res.value;
+    },
     onMutate: async (newState: TableroType) => {
       await queryClient.cancelQueries({ queryKey: ['board'] });
       const previousState = queryClient.getQueryData<TableroType>(['board']);
@@ -41,7 +42,6 @@ export const useKanbanBoard = () => {
         setBoardState(context.previousState);
       }
       logger.error(err as Error, { context: kanbanLogContexts.boardSave });
-      toast.error(mapAppErrorMessage(err));
       errorService.logError(normalizeError(err, { where: 'kanban:save' }));
     },
     onSettled: () => {

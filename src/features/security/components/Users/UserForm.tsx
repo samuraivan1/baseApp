@@ -2,9 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useUsersCrud } from '@/features/security';
-import { toast } from 'react-toastify';
-import logger from '@/shared/api/logger';
-import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
+import { withApiCall } from '@/shared/api/withApiCall';
 // removed unused API/helper imports
 import { userSchema, UserFormValues } from './validationSchema';
 // removed unused userFormMessages import
@@ -150,12 +148,10 @@ const UserForm: React.FC<Props> = ({
   const { create: createMutation, update: updateMutation } = useUsersCrud();
 
   const submit = async (data: UserFormValues) => {
-    try {
-      await onSubmit?.(data);
-    } catch (err) {
-      logger.error(err as Error, { context: 'submitUsuario' });
-      toast.error(mapAppErrorMessage(err));
-    }
+    await withApiCall(
+      () => Promise.resolve(onSubmit?.(data) as unknown as Promise<void>),
+      { where: 'security.users.form.submit' }
+    );
   };
 
   return (

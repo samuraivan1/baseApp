@@ -16,6 +16,8 @@ Este documento consolida el estándar de programación del proyecto: arquitectur
 ## Estado y Errores
 - Servicios normalizan errores con `handleApiError` y lanzan `AppError`.
 - Hooks consumen `onError` consistente con `mapAppErrorMessage` y `useSafeMutation`.
+- Para acciones en contenedores, usar `apiCall` o `withApiCall` con `where` y `toastOnError`.
+- Ver también: docs/ERROR_HANDLING.md
 - UI unifica toasts (`showToast*`) y `ErrorBoundary` con “Reintentar”.
 
 Además, consulta `docs/CODING_RULES.md` para reglas obligatorias (tipado estricto, React Query v5, imports y supresiones TS).

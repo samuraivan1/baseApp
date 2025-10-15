@@ -6,8 +6,7 @@ import SectionHeader from '@/shared/components/common/SectionHeader';
 // removed unused Button import
 import { roleFormMessages as m } from './RoleForm.messages';
 import { CreateRoleDTO } from '@/shared/types/security';
-import { toast } from 'react-toastify';
-import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
+import { withApiCall } from '@/shared/api/withApiCall';
 import { faUserShield } from '@fortawesome/free-solid-svg-icons';
 // estilos de página centralizados en features/security/styles/index.scss
 import FormInput from '@/shared/components/common/forms/inputs/FormInput';
@@ -79,8 +78,10 @@ export default function RoleForm({
       <form
         onSubmit={handleSubmit(async (v) => {
           if (readOnly || !hasEditPermission) return;
-          try { await onSubmit(v as CreateRoleDTO); }
-          catch (err) { toast.error(mapAppErrorMessage(err)); }
+          await withApiCall(
+            () => Promise.resolve(onSubmit(v as CreateRoleDTO)),
+            { where: 'security.roles.form.submit' }
+          );
         })}
         className="orangealex-form__body"
       >

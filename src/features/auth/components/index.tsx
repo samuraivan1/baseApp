@@ -108,21 +108,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (data: LoginFormData) => {
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-      await login(data.emailOrUsername, data.password);
-      await postLoginFinalize();
+      const { apiCall } = await import('@/shared/api/apiCall');
+      const loginRes = await apiCall(() => login(data.emailOrUsername, data.password), { where: 'auth.login', toastOnError: true });
+      if (!loginRes.ok) return;
+      const finalizeRes = await apiCall(() => postLoginFinalize(), { where: 'auth.finalize', toastOnError: true });
+      if (!finalizeRes.ok) return;
       toast.success(authMessages.loginSuccess);
       const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;
       const safe = ensureSafeInternalPath(from, '/home');
       navigate(safe, { replace: true });
-    } catch (error) {
-      try {
-        const { mapAppErrorMessage } = await import('@/shared/utils/errorI18n');
-        toast.error(mapAppErrorMessage(error));
-      } catch {
-        toast.error(authMessages.loginGenericError);
-      }
     } finally {
       setIsSubmitting(false);
     }

@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSafeMutation } from '@/shared/hooks/useSafeMutation';
-import { toast } from 'react-toastify';
-import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
+import { apiCall } from '@/shared/api/apiCall';
 
 type Id = number | string;
 
@@ -18,18 +17,12 @@ export function useEntityCrud<T, C = Partial<T>>(entityKey: string, service: Ent
     all: [entityKey] as const,
     detail: (id: Id) => [entityKey, id] as const,
   };
-  const handleError = (err: unknown) => {
-    toast.error(mapAppErrorMessage(err));
-  };
   const list = useQuery<T[], Error>({
     queryKey: keys.all,
     queryFn: async () => {
-      try {
-        return await service.list();
-      } catch (err) {
-        handleError(err);
-        throw err;
-      }
+      const res = await apiCall(() => service.list(), { where: `${entityKey}.list`, toastOnError: true });
+      if (!res.ok) throw res.error as unknown as Error;
+      return res.value;
     },
   });
 
@@ -37,12 +30,9 @@ export function useEntityCrud<T, C = Partial<T>>(entityKey: string, service: Ent
     fn: (...args: Args) => Promise<Result>
   ): ((...args: Args) => Promise<Result>) => {
     return async (...args: Args) => {
-      try {
-        return await fn(...args);
-      } catch (err) {
-        handleError(err);
-        throw err;
-      }
+      const res = await apiCall(() => fn(...args), { where: `${entityKey}.mutation`, toastOnError: true });
+      if (!res.ok) throw res.error as unknown as Error;
+      return res.value as unknown as Result;
     };
   };
 

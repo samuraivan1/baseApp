@@ -306,28 +306,36 @@ const UsuariosPage: React.FC = () => {
                 if (!hasCreatePermission) return;
                 const dto = toCreateUserDto(values);
                 const { password_hash, ...rest } = dto;
-                const created = await create.mutateAsync({
-                  ...rest,
-                  ...(password_hash != null ? { password_hash } : {}),
-                });
+                const { withApiCall } = await import('@/shared/api/withApiCall');
+                const createRes = await withApiCall(
+                  () => create.mutateAsync({
+                    ...rest,
+                    ...(password_hash != null ? { password_hash } : {}),
+                  }),
+                  { where: 'security.users.create' }
+                );
+                const created = createRes.ok ? createRes.value : undefined;
                 if (values.rolId != null) {
-                  try {
-                    await addUserRole(created.user_id, Number(values.rolId));
-                  } catch (e) {
-                    console.error('Failed to assign role', e);
+                  if (created) {
+                    const { apiCall } = await import('@/shared/api/apiCall');
+                    await apiCall(() => addUserRole(created.user_id, Number(values.rolId)), { where: 'security.user_roles.assign', toastOnError: true });
                   }
                 }
               } else {
                 if (!hasUpdatePermission) return;
                 const dto = toUpdateUserDto(values);
                 const { password_hash: ph, ...restUpdate } = dto as { password_hash?: string | null };
-                await update.mutateAsync({
-                  id: editing.user_id,
-                  input: ({
-                    ...restUpdate,
-                    ...(ph != null ? { password_hash: ph } : {}),
-                  } as UserInput),
-                });
+                const { withApiCall } = await import('@/shared/api/withApiCall');
+                await withApiCall(
+                  () => update.mutateAsync({
+                    id: editing.user_id,
+                    input: ({
+                      ...restUpdate,
+                      ...(ph != null ? { password_hash: ph } : {}),
+                    } as UserInput),
+                  }),
+                  { where: 'security.users.update' }
+                );
               }
               setIsFormOpen(false);
               setEditing(null);
@@ -346,15 +354,13 @@ const UsuariosPage: React.FC = () => {
         danger
         onCancel={() => setConfirmOpen(false)}
         onConfirm={async () => {
-          if (deletingId != null) {
-            try {
-              await remove.mutateAsync(deletingId);
-            } finally {
-              setDeletingId(null);
-              setConfirmOpen(false);
-              queryClient.invalidateQueries({ queryKey: usersKeys.all });
-            }
-          }
+          if (deletingId == null) return;
+          const { withApiCall } = await import('@/shared/api/withApiCall');
+          const res = await withApiCall(
+            () => remove.mutateAsync(deletingId),
+            { where: 'security.users.delete', onOk: () => { setDeletingId(null); setConfirmOpen(false); queryClient.invalidateQueries({ queryKey: usersKeys.all }); } }
+          );
+          return res;
         }}
       />
     </div>

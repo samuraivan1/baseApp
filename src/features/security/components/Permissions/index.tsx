@@ -191,12 +191,12 @@ const PermissionsPage: React.FC = () => {
               ? {
                   renderActions: (p: Permission) => (
                     <>
-                      {canEdit && (
-                        <TableActionsCell onEdit={() => handleOpenEdit(p)} editLabel={commonDefaultMessages.edit} />
-                      )}
-                      {canDelete && (
-                        <TableActionsCell onDelete={() => { setDeletingId(p.permission_id); setConfirmOpen(true); }} deleteLabel={commonDefaultMessages.delete} />
-                      )}
+                    {canEdit && (
+                      <TableActionsCell onEdit={() => handleOpenEdit(p)} editLabel={commonDefaultMessages.edit} />
+                    )}
+                    {canDelete && (
+                      <TableActionsCell onDelete={() => { setDeletingId(p.permission_id); setConfirmOpen(true); }} deleteLabel={commonDefaultMessages.delete} />
+                    )}
                     </>
                   ),
                 }
@@ -230,7 +230,7 @@ const PermissionsPage: React.FC = () => {
               } : undefined}
               readOnly={formReadOnly}
               hasEditPermission={useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_UPDATE)}
-              onSubmit={(values: PermissionFormValues) => {
+              onSubmit={async (values: PermissionFormValues) => {
                 if (formReadOnly) {
                   if (useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_PERMISSIONS_UPDATE)) {
                     setFormReadOnly(false);
@@ -247,14 +247,22 @@ const PermissionsPage: React.FC = () => {
                   scope: values.scope ?? null,
                   description: values.description ?? null,
                 };
+                const { apiCall } = await import('@/shared/api/apiCall');
                 if (editing) {
                   if (!canUpdate) return;
-                  updateMut.mutate({ id: editing.permission_id, input: dto });
+                  const res = await apiCall(
+                    () => updateMut.mutateAsync({ id: editing.permission_id, input: dto }),
+                    { where: 'security.permissions.update', toastOnError: true }
+                  );
+                  if (res.ok) setIsFormOpen(false);
                 } else {
                   if (!canCreate) return;
-                  createMut.mutate(dto);
+                  const res = await apiCall(
+                    () => createMut.mutateAsync(dto),
+                    { where: 'security.permissions.create', toastOnError: true }
+                  );
+                  if (res.ok) setIsFormOpen(false);
                 }
-                setIsFormOpen(false);
               }}
             />
         </div>
@@ -268,7 +276,18 @@ const PermissionsPage: React.FC = () => {
         cancelLabel={commonDefaultMessages.cancel}
         danger
         onCancel={() => setConfirmOpen(false)}
-        onConfirm={() => { if (deletingId != null) delMutation.mutate(deletingId, { onSettled: () => { setDeletingId(null); setConfirmOpen(false); } }); }}
+        onConfirm={async () => {
+          if (deletingId == null) return;
+          const { withApiCall } = await import('@/shared/api/withApiCall');
+          const res = await withApiCall(
+            () => delMutation.mutateAsync(deletingId),
+            {
+              where: 'security.permissions.delete',
+              onOk: () => { setDeletingId(null); setConfirmOpen(false); },
+            }
+          );
+          return res;
+        }}
       />
     </div>
   );

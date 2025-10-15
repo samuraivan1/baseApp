@@ -20,6 +20,14 @@ const initializeApp = async () => {
     const { exposeAuth } = await import('@/dev/exposeAuth');
     exposeAuth();
   }
+  // Inicializa el adaptador de errores (console) para todos los entornos
+  try {
+    const errorService = (await import('@/shared/api/errorService')).default;
+    const { consoleAdapter } = await import('@/shared/api/errorAdapter');
+    errorService.setAdapter(consoleAdapter);
+  } catch {
+    // noop: no bloquear el arranque si falla
+  }
   await loadConfig();
   // Silent refresh antes de renderizar, para restaurar sesión sin exponer tokens
   try {

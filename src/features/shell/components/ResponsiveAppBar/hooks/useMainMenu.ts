@@ -1,7 +1,7 @@
 // src/hooks/useMainMenu.ts
 import { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
+import { apiCall } from '@/shared/api/apiCall';
 import { appBarLogContexts, appBarMessages } from '@/features/shell/components/ResponsiveAppBar/ResponsiveAppBar.messages';
 import { fetchMenu } from '@/features/shell';
 import type { NavMenuItem } from '@/features/shell/types';
@@ -45,14 +45,16 @@ export function useMainMenuBase(
   const { enabled, hasPermission } = options;
   const { data = [], isLoading, isError, error } = useQuery<NavMenuItem[]>({
     queryKey: ['mainMenu'],
-    queryFn: fetchMenu,
+    queryFn: async () => {
+      const res = await apiCall(() => fetchMenu(), { where: 'shell.menu.main', toastOnError: true });
+      if (!res.ok) throw res.error as unknown as Error;
+      return res.value;
+    },
     enabled,
   });
 
   useEffect(() => {
     if (isError) {
-      const message = (error instanceof Error && error.message) || appBarMessages.navigationLoadError;
-      toast.error(message);
       logger.error(error as Error, { context: appBarLogContexts.mainMenu });
     }
   }, [isError, error]);

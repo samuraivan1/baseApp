@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
-import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
+import { apiCall } from '@/shared/api/apiCall';
 import { getUsers, getUserRoles, getPermissions, assignPermissionsToRole, getRolePermissions as getRolePermissionsForRole } from '@/features/security';
 
 // This hook ensures the role assigned to the target user has all permissions.
@@ -29,17 +28,12 @@ export function useEnsureAllPermsForUserRole(targetUsernames: string[] = ['iamen
     if (!roleId) return;
 
     (async () => {
-      try {
-        const existing = await getRolePermissionsForRole(roleId);
-        const existingSet = new Set(existing.map(e => e.permission_id));
-        const toAssign = perms.map(p => p.permission_id).filter(id => !existingSet.has(id));
-        if (toAssign.length > 0) {
-          await assignPermissionsToRole(roleId, toAssign);
-        }
-      } catch (err) {
-        const msg = mapAppErrorMessage(err);
-        const isDev = typeof import.meta !== 'undefined' && !!import.meta.env?.DEV;
-        if (isDev) toast.error(msg);
+      const existingRes = await apiCall(() => getRolePermissionsForRole(roleId), { where: 'security.role_permissions.list', toastOnError: true });
+      if (!existingRes.ok) return;
+      const existingSet = new Set(existingRes.value.map(e => e.permission_id));
+      const toAssign = perms.map(p => p.permission_id).filter(id => !existingSet.has(id));
+      if (toAssign.length > 0) {
+        await apiCall(() => assignPermissionsToRole(roleId, toAssign), { where: 'security.role_permissions.assign', toastOnError: true });
       }
     })();
   }, [users, relations, perms, targetUsernames, targetIds]);

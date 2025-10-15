@@ -65,6 +65,11 @@ class ErrorService {
     this.flushQueue();
   }
 
+  public clearAdapter() {
+    this.adapter = null;
+    this.adapterInitialized = false;
+  }
+
   public async flushQueue() {
     if (
       !this.adapterInitialized ||
