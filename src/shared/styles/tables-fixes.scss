@@ -1,0 +1,4 @@
+/* Global fixes for table containers overlapping embedded panels */
+.fs-table-container { position: relative; z-index: 0; }
+.fs-table-container .table-wrapper { overflow: visible; }
+

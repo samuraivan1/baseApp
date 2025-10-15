@@ -13,6 +13,7 @@ import { useRolesCrud } from '@/features/security';
 import { Role } from '@/shared/types/security';
 import rolesMessages from './Roles.messages';
 import RoleForm from './RoleForm';
+import RolePermissionsForm from './RolePermissionsForm';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';
 
 import './Roles.scss';
@@ -29,6 +30,7 @@ const RolesPage: React.FC = () => {
   const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
+  const [isPermsOpen, setIsPermsOpen] = useState(false);
   const [formReadOnly, setFormReadOnly] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -116,6 +118,10 @@ const RolesPage: React.FC = () => {
     setEditingRole(role);
     setIsFormOpen(true);
     setFormReadOnly(false);
+  };
+  const handleOpenPermissions = (role: Role) => {
+    setEditingRole(role);
+    setIsPermsOpen(true);
   };
   const handleOpenView = (role: Role) => { setEditingRole(role); setIsFormOpen(true); setFormReadOnly(true); };
   const handleExportExcel = () => {
@@ -223,6 +229,7 @@ const RolesPage: React.FC = () => {
                             {canEdit && (
                               <TableActionsCell onEdit={() => handleOpenEdit(role)} editLabel={rolesMessages.update} />
                             )}
+                            <TableActionsCell onCustomAction={() => handleOpenPermissions(role)} customLabel={rolesMessages.permissions ?? 'Permisos'} customIcon="key" />
                             {canDelete && (
                               <TableActionsCell onDelete={() => { setDeletingId(role.role_id); }} deleteLabel={rolesMessages.delete} />
                             )}
@@ -283,6 +290,11 @@ const RolesPage: React.FC = () => {
               }
             }}
           />
+        </div>
+      )}
+      {isPermsOpen && editingRole && (
+        <div className="segu-roles__embedded-form">
+          <RolePermissionsForm role={editingRole} onClose={() => setIsPermsOpen(false)} />
         </div>
       )}
       <ConfirmDialog

@@ -4,12 +4,8 @@ import { commonDefaultMessages } from '@/i18n/commonMessages';
 import { Home } from '@/features/home';
 import { Kanban } from '@/features/kanban';
 import { LoginPage } from '@/features/auth';
-import {
-  Seguridad,
-  UsuariosPage,
-  RolesPage,
-  PermissionsPage,
-} from '@/features/security';
+import { Seguridad, UsuariosPage, RolesPage, PermissionsPage } from '@/features/security';
+import PermissionsV2Page from '@/features/security/components/PermissionsV2';
 import { Unauthorized } from '@/features/shell';
 import { FormLayoutDemo } from '@/features/demo';
 import ProtectedRoute from './ProtectedRoute';
@@ -78,6 +74,10 @@ const AppRoutes = () => {
         <Route
           path='permisos'
           element={<ProtectedRoute permiso={PERMISSIONS.SECURITY_PERMISSIONS_VIEW}><PermissionsPage /></ProtectedRoute>}
+        />
+        <Route
+          path='permisos2'
+          element={<ProtectedRoute permiso={PERMISSIONS.SECURITY_PERMISSIONS_VIEW}><PermissionsV2Page /></ProtectedRoute>}
         />
       </Route>
 

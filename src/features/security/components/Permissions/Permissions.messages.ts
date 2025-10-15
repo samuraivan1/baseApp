@@ -1,7 +1,7 @@
 export const permissionsMessages = {
   title: 'Permisos',
   loading: 'Cargando permisos...',
-  searchPlaceholder: 'Buscar por string, acción, recurso...',
+  searchPlaceholder: 'Buscar por recurso, acción, ambito,...',
   searchLabel: 'Buscar',
   createButton: 'Nuevo',
   edit: 'Editar',
@@ -14,9 +14,9 @@ export const permissionsMessages = {
     actions: 'Acciones',
   },
   deleteTitle: 'Eliminar Permiso',
-  deleteMessage: '¿Deseas eliminar este permiso? Esta acción no se puede deshacer.',
+  deleteMessage:
+    '¿Deseas eliminar este permiso? Esta acción no se puede deshacer.',
   delete: 'Eliminar',
   deleteSuccess: 'Permiso eliminado correctamente',
   genericError: 'Ocurrió un error al realizar la operación',
 };
-

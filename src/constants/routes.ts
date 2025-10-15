@@ -8,6 +8,7 @@ export const APP_ROUTES = {
   SECURITY_USERS: '/seguridad/usuarios',
   SECURITY_ROLES: '/seguridad/roles',
   SECURITY_PERMISSIONS: '/seguridad/permisos',
+  SECURITY_PERMISSIONS_V2: '/seguridad/permisos2',
   DEV_MUTATION: '/dev/mutation',
   // DEV_PRODUCTS removed (feature products deleted)
   DEV_PROFILE: '/dev/profile',

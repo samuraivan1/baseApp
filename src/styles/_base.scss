@@ -1,5 +1,7 @@
 @use './variables';
 @use './mixins';
+@use './variables' as v;
+@forward '../shared/styles/tables-fixes.scss';
 * {
   padding: 0;
   margin: 0;
