@@ -22,7 +22,7 @@ import { usePermissionsCrud } from '@/features/security';
 import { findColumnOfTask } from '@/features/kanban/utils/findColumnOfTask';
 
 const Kanban: React.FC = () => {
-  const { isLoading, isError, updateTablero } = useKanbanBoard();
+  const { isLoading, isError, updateBoard } = useKanbanBoard();
   const { tasks, columns, columnOrder, setBoardState } = useBoardStore();
   const { list } = usePermissionsCrud();
   const { data: permissions = [] } = list;
@@ -105,7 +105,7 @@ const Kanban: React.FC = () => {
     }
 
     const finalState = useBoardStore.getState();
-    updateTablero(finalState);
+    updateBoard(finalState);
     setActiveTask(null);
   };
 

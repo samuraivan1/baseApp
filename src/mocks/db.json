@@ -1,75 +1,53 @@
 {
-  "tablero": {
-    "tareas": {
-      "idTarea-1": {
-        "idTarea": "idTarea-1",
-        "contenido": "007306 Check list Equipos de arrastre CDRs",
-        "usuariosAsignados": [
-          "AR"
-        ],
-        "fechaVencimiento": "2025-09-12",
-        "diasActivo": 15
+  "board": {
+    "tasks": {
+      "task-1": {
+        "id": "task-1",
+        "content": "007306 Check list Equipos de arrastre CDRs",
+        "assignees": ["AR"],
+        "dueDate": "2025-09-12",
+        "activeDays": 15
       },
-      "idTarea-2": {
-        "idTarea": "idTarea-2",
-        "contenido": "Mejora - Eticolor",
-        "usuariosAsignados": [
-          "AL"
-        ],
-        "fechaVencimiento": "2025-08-20",
-        "diasActivo": 6
+      "task-2": {
+        "id": "task-2",
+        "content": "Mejora - Eticolor",
+        "assignees": ["AL"],
+        "dueDate": "2025-08-20",
+        "activeDays": 6
       },
-      "idTarea-3": {
-        "idTarea": "idTarea-3",
-        "contenido": "006520 Evaluación scanner SUNLUX y NETUM",
-        "usuariosAsignados": [
-          "GV",
-          "RO"
-        ],
-        "fechaVencimiento": "2025-08-29",
-        "diasActivo": 11
+      "task-3": {
+        "id": "task-3",
+        "content": "006520 Evaluación scanner SUNLUX y NETUM",
+        "assignees": ["GV", "RO"],
+        "dueDate": "2025-08-29",
+        "activeDays": 11
       },
-      "idTarea-4": {
-        "idTarea": "idTarea-4",
-        "contenido": "007135 Actualizar logotipo Grupo Truper CIAT",
-        "usuariosAsignados": [
-          "AR",
-          "GV",
-          "AL"
-        ],
-        "fechaVencimiento": "2025-09-30",
-        "diasActivo": 43
+      "task-4": {
+        "id": "task-4",
+        "content": "007135 Actualizar logotipo Grupo Truper CIAT",
+        "assignees": ["AR", "GV", "AL"],
+        "dueDate": "2025-09-30",
+        "activeDays": 43
       }
     },
-    "columnas": {
-      "idColumna-1": {
-        "idColumna": "idColumna-1",
-        "titulo": "PENDIENTES",
-        "tareasIds": [
-          "idTarea-2",
-          "idTarea-1"
-        ]
+    "columns": {
+      "column-1": {
+        "id": "column-1",
+        "title": "PENDIENTES",
+        "taskIds": ["task-2", "task-1"]
       },
-      "idColumna-2": {
-        "idColumna": "idColumna-2",
-        "titulo": "EN PROCESO",
-        "tareasIds": [
-          "idTarea-4"
-        ]
+      "column-2": {
+        "id": "column-2",
+        "title": "EN PROCESO",
+        "taskIds": ["task-4"]
       },
-      "idColumna-3": {
-        "idColumna": "idColumna-3",
-        "titulo": "PRUEBAS QAS",
-        "tareasIds": [
-          "idTarea-3"
-        ]
+      "column-3": {
+        "id": "column-3",
+        "title": "PRUEBAS QAS",
+        "taskIds": ["task-3"]
       }
     },
-    "ordenColumnas": [
-      "idColumna-1",
-      "idColumna-2",
-      "idColumna-3"
-    ]
+    "columnOrder": ["column-1", "column-2", "column-3"]
   },
   "menu": [
     {
