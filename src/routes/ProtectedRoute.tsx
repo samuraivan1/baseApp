@@ -1,6 +1,7 @@
 // src/routes/ProtectedRoute.tsx
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/features/shell/state/authStore';
+import errorService from '@/shared/api/errorService';
 
 interface ProtectedRouteProps {
   permiso?: string; // si no se pasa, basta con estar logueado
@@ -32,12 +33,12 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (permiso !== undefined && !hasPermission(permiso)) {
-    // Log de diagnóstico no bloqueante
-    try {
-      console.warn('[Route Guard] Missing permission', { permiso, pathname: location.pathname });
-    } catch {
-      // noop
-    }
+    // Breadcrumb de diagnóstico no bloqueante
+    errorService.captureBreadcrumb({
+      message: 'Route blocked: missing permission',
+      category: 'routing',
+      data: { permiso, pathname: location.pathname },
+    });
     return <Navigate to="/unauthorized" replace />;
   }
 

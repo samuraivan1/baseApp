@@ -58,6 +58,11 @@ api.interceptors.response.use(
 
     if (!originalRequest || originalRequest._retry || status !== 401 || isAuthEndpoint) {
       if (status === 401 && !isAuthEndpoint) {
+        try {
+          const { normalizeError } = await import('@/shared/api/errorService');
+          const svc = (await import('@/shared/api/errorService')).default;
+          svc.logError(normalizeError(error, { where: 'auth.401.autoLogout', url }));
+        } catch { /* noop */ }
         getAuthStore().logout();
       }
       return Promise.reject(error);
@@ -76,11 +81,21 @@ api.interceptors.response.use(
         }
 
         getAuthStore().setToken(newAccessToken);
+        try {
+          const { normalizeError } = await import('@/shared/api/errorService');
+          const svc = (await import('@/shared/api/errorService')).default;
+          svc.logError(normalizeError({ message: 'Token refreshed' }, { where: 'auth.refresh.success' }));
+        } catch { /* noop */ }
         isRefreshing = false;
         flush(newAccessToken);
       } catch (e) {
         isRefreshing = false;
         flush(null);
+        try {
+          const { normalizeError } = await import('@/shared/api/errorService');
+          const svc = (await import('@/shared/api/errorService')).default;
+          svc.logError(normalizeError(e, { where: 'auth.refresh.failure' }));
+        } catch { /* noop */ }
         getAuthStore().logout();
         return Promise.reject(e);
       }
