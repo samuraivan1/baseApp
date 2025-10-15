@@ -3,10 +3,12 @@ import ResponsiveAppBar from '../ResponsiveAppBar';
 import './Header.scss';
 import { useAuthStore } from '@/features/shell/state/authStore';
 
-const Header: React.FC = () => {
-  const authReady = useAuthStore((s) => s.authReady);
-  const state = useAuthStore.getState() as { phase?: 'idle' | 'loading' | 'ready' | 'error'; authReady: boolean };
-  const phase = state.phase ?? (authReady ? 'ready' : 'idle');
+type HeaderProps = {
+  authReady: boolean;
+  phase: 'idle' | 'loading' | 'ready' | 'error';
+};
+
+const HeaderView: React.FC<HeaderProps> = ({ authReady, phase }) => {
   return (
     // La etiqueta <header> tiene la clase 'header' que controla su tamaño
     <header className="header">
@@ -24,4 +26,12 @@ const Header: React.FC = () => {
   );
 };
 
+const Header: React.FC = () => {
+  const authReady = useAuthStore((s) => s.authReady);
+  const state = useAuthStore.getState() as { phase?: 'idle' | 'loading' | 'ready' | 'error'; authReady: boolean };
+  const phase = state.phase ?? (authReady ? 'ready' : 'idle');
+  return <HeaderView authReady={authReady} phase={phase} />;
+};
+
 export default Header;
+export { HeaderView };

@@ -1,7 +1,6 @@
 import React from 'react';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { Task } from '../Task';
-import { usePermissionsCrud } from '@/features/security';
 import type { Column as ColumnType, Task as TaskType } from '@/features/kanban/types';
 import { toast } from 'react-toastify';
 import { columnMessages } from './Column.messages';
@@ -9,22 +8,20 @@ import { columnMessages } from './Column.messages';
 interface ColumnProps {
   column: ColumnType;
   tasks: TaskType[];
+  canCreateTask?: boolean;
 }
 
-const Column: React.FC<ColumnProps> = ({ column, tasks }) => {
-  const { list } = usePermissionsCrud();
-  const { data: permissions = [] } = list;
+const Column: React.FC<ColumnProps> = ({ column, tasks, canCreateTask }) => {
   const { setNodeRef } = useSortable({
     id: column.id,
     data: { type: 'Column', column },
   });
-  type Perm = { key?: string; permission_key?: string; name?: string };
-  const canCreateTask = Array.isArray(permissions) && (permissions as Perm[]).some((p) => p.key === 'task:kanban:create' || p.permission_key === 'task:kanban:create' || p.name === 'task:kanban:create');
+  const allowCreate = Boolean(canCreateTask);
 
   return (
     <div ref={setNodeRef} className="column">
       <div className="column__title">{column.title}</div>
-      {canCreateTask && (
+      {allowCreate && (
         <div
           className="column__add-task-button"
           onClick={() => toast.info(columnMessages.addTask)}

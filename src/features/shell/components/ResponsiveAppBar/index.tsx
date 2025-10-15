@@ -10,12 +10,15 @@ import { appBarMessages } from './ResponsiveAppBar.messages';
 import { NavMenuItem } from '@/shared/types/ui';
 import { useProfileMenu } from './hooks/useProfileMenu';
 
-const ResponsiveAppBar: React.FC = () => {
+type ResponsiveAppBarViewProps = {
+  menuItems: NavMenuItem[];
+  isLoadingMenu: boolean;
+};
+
+const ResponsiveAppBarView: React.FC<ResponsiveAppBarViewProps> = ({ menuItems, isLoadingMenu }) => {
   const { user } = useAuthStore();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setUserMenuOpen] = useState(false);
-
-  const { menuItems, isLoadingMenu } = useMainMenu();
   const { profileMenuItems, isLoadingProfile } = useProfileMenu();
 
   const dividerItem: NavMenuItem = { idMenu: 9999, titulo: 'divider' };
@@ -101,4 +104,10 @@ const ResponsiveAppBar: React.FC = () => {
   );
 };
 
+const ResponsiveAppBar: React.FC = () => {
+  const { menuItems, isLoadingMenu } = useMainMenu();
+  return <ResponsiveAppBarView menuItems={menuItems} isLoadingMenu={isLoadingMenu} />;
+};
+
 export default ResponsiveAppBar;
+export { ResponsiveAppBarView };

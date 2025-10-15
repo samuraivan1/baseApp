@@ -18,21 +18,21 @@ import './Kanban.scss';
 import type { Column as ColumnType, Task as TaskType, Board } from '@/features/kanban/types';
 import { kanbanMessages } from './Kanban.messages';
 import { useKanbanBoard } from './hooks/useKanbanBoard';
+import { usePermissionsCrud } from '@/features/security';
+import { findColumnOfTask } from '@/features/kanban/utils/findColumnOfTask';
 
 const Kanban: React.FC = () => {
   const { isLoading, isError, updateTablero } = useKanbanBoard();
   const { tasks, columns, columnOrder, setBoardState } = useBoardStore();
+  const { list } = usePermissionsCrud();
+  const { data: permissions = [] } = list;
   const [activeTask, setActiveTask] = useState<TaskType | null>(null);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
-  const findColumnOfTask = (taskId: string): ColumnType | undefined => {
-    const state = useBoardStore.getState();
-    const colId = Object.keys(state.columns).find((id) =>
-      Boolean(state.columns[id]?.taskIds?.includes(taskId))
-    );
-    return colId ? state.columns[colId] : undefined;
+  const getColumnOfTask = (taskId: string): ColumnType | undefined => {
+    return findColumnOfTask(useBoardStore.getState(), taskId);
   };
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -47,11 +47,11 @@ const Kanban: React.FC = () => {
     if (!over || active.id === over.id) return;
     const activeId = active.id as string;
     const overId = over.id as string;
-    const activeColumn = findColumnOfTask(activeId);
+    const activeColumn = getColumnOfTask(activeId);
     const overColumn =
       over.data.current?.type === 'Column'
         ? columns[overId]
-        : findColumnOfTask(overId);
+        : getColumnOfTask(overId);
 
     if (
       activeColumn &&
@@ -84,7 +84,7 @@ const Kanban: React.FC = () => {
     }
     const activeId = active.id as string;
     const overId = over.id as string;
-    const activeColumn = findColumnOfTask(activeId);
+    const activeColumn = getColumnOfTask(activeId);
 
     if (activeColumn && activeId !== overId) {
       const activeIndex = activeColumn.taskIds.indexOf(activeId);
@@ -114,6 +114,19 @@ const Kanban: React.FC = () => {
   if (isError)
     return <div className="loading-container">{kanbanMessages.loadError}</div>;
 
+  // Diagnóstico: estado vacío
+  if (import.meta.env.DEV) {
+    // eslint-disable-next-line no-console
+    console.debug('[Kanban][dev] columns', Object.keys(columns).length, 'order', columnOrder.length);
+  }
+  if (!columnOrder || columnOrder.length === 0) {
+    return (
+      <div className="loading-container" style={{ color: '#666' }}>
+        No hay columnas para mostrar.
+      </div>
+    );
+  }
+
   return (
     <DndContext
       sensors={sensors}
@@ -129,11 +142,13 @@ const Kanban: React.FC = () => {
           const columnTasks = column.taskIds
             .map((taskId) => tasks[taskId])
             .filter((t): t is TaskType => Boolean(t));
+          const canCreateTask = Array.isArray(permissions) && permissions.some((p: any) => p?.key === 'task:kanban:create' || p?.permission_key === 'task:kanban:create' || p?.name === 'task:kanban:create');
           return (
             <Column
               key={column.id}
               column={column}
               tasks={columnTasks}
+              canCreateTask={canCreateTask}
             />
           );
         })}

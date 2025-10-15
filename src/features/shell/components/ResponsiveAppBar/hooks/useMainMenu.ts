@@ -36,21 +36,17 @@ function hasItemPermission(hasPermission: (p: string) => boolean, item: NavMenuI
   return true;
 }
 
-export const useMainMenu = () => {
-  const { isLoggedIn, authReady, hasPermission } = useAuthStore((s) => ({
-    isLoggedIn: s.isLoggedIn,
-    authReady: s.authReady,
-    hasPermission: s.hasPermission,
-  }));
-  const {
-    data = [],
-    isLoading,
-    isError,
-    error,
-  } = useQuery<NavMenuItem[]>({
+export function useMainMenuBase(
+  options: {
+    enabled: boolean;
+    hasPermission: (perm: string) => boolean;
+  }
+) {
+  const { enabled, hasPermission } = options;
+  const { data = [], isLoading, isError, error } = useQuery<NavMenuItem[]>({
     queryKey: ['mainMenu'],
     queryFn: fetchMenu,
-    enabled: isLoggedIn && authReady,
+    enabled,
   });
 
   useEffect(() => {
@@ -62,7 +58,7 @@ export const useMainMenu = () => {
   }, [isError, error]);
 
   const menuItems = useMemo<NavMenuItem[]>(() => {
-    if (!authReady || !Array.isArray(data)) return [];
+    if (!enabled || !Array.isArray(data)) return [];
     // Normalize/validate menu to canonical UI shape (best-effort)
     const parse = z.array(MenuItemSchema).safeParse(data);
     const base: NavMenuItem[] = parse.success ? (parse.data as unknown as NavMenuItem[]) : data;
@@ -83,8 +79,17 @@ export const useMainMenu = () => {
         });
     };
     return filterTree(base);
-  }, [data, authReady, hasPermission]);
+  }, [data, enabled, hasPermission]);
 
   // Devuelve un objeto con nombres claros y solo los datos que el componente necesita
   return { menuItems, isLoadingMenu: isLoading };
+}
+
+export const useMainMenu = () => {
+  const { isLoggedIn, authReady, hasPermission } = useAuthStore((s) => ({
+    isLoggedIn: s.isLoggedIn,
+    authReady: s.authReady,
+    hasPermission: s.hasPermission,
+  }));
+  return useMainMenuBase({ enabled: isLoggedIn && authReady, hasPermission });
 };
