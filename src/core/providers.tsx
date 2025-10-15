@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Provider as ReduxProvider } from 'react-redux';
 import { queryClient } from '@/lib/queryClient';
 import ErrorBoundary from '@/shared/components/ErrorBoundary';
+import { commonDefaultMessages } from '@/i18n/commonMessages';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createContext, useContext } from 'react';
@@ -36,7 +37,7 @@ export function CoreProviders({ store, children }: CoreProvidersProps) {
     <ReduxProvider store={store}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <ErrorBoundary fallback={<div role="alert" style={{ padding: 16 }}>Ha ocurrido un error. Intenta recargar.</div>}>
+          <ErrorBoundary fallback={<div role="alert" style={{ padding: 16 }}>{commonDefaultMessages.unexpectedError}</div>}>
             {children}
           </ErrorBoundary>
           <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick pauseOnFocusLoss={false} />

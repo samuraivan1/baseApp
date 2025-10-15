@@ -80,12 +80,7 @@ const UsuariosPage: React.FC = () => {
       { key: 'second_name', label: usersMessages.segundoNombre, sortable: false },
       { key: 'last_name_p', label: usersMessages.form.apellidoPaterno, sortable: true },
       { key: 'last_name_m', label: usersMessages.form.apellidoMaterno, sortable: true },
-      {
-        key: 'is_active',
-        label: usersMessages.status,
-        sortable: true,
-        render: (u) => (u.is_active ? 'Activo' : 'Inactivo'),
-      },
+      { key: 'is_active', label: usersMessages.status, sortable: true, render: (u) => (u.is_active ? usersMessages.active : usersMessages.inactive) },
     ],
     []
   );
@@ -173,10 +168,10 @@ const UsuariosPage: React.FC = () => {
       u.username,
       u.email,
       u.rolId ?? '',
-      u.is_active ? 'activo' : 'inactivo',
+      u.is_active ? usersMessages.active : usersMessages.inactive,
     ]);
     const csv =
-      'idUsuario,nombre,apellidoPaterno,apellidoMaterno,nombreUsuario,correoElectronico,rolId,status\n' +
+      `${usersMessages.csvHeaders}\n` +
       rows
         .map((r) =>
           r.map((x) => `"${String(x).replace(/"/g, '""')}"`).join(',')

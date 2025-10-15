@@ -8,4 +8,7 @@ export const commandBarMessages = {
   addFilter: 'Añadir filtro',
   clearFilters: 'Limpiar filtros',
   removeFilter: 'Eliminar',
+  remove: 'Eliminar',
+  valueFor: 'Valor para',
+  ellipsis: '…',
 };

@@ -162,13 +162,13 @@ const CommandBar: React.FC<CommandBarProps> = ({
                   <input
                     type="text"
                     value={f.value}
-                    placeholder={`Valor para ${
-                      filterableColumns.find((c) => c.key === f.field)?.label || '...'
+                    placeholder={`${commandBarMessages.valueFor} ${
+                      filterableColumns.find((c) => c.key === f.field)?.label || commandBarMessages.ellipsis
                     }`}
                     onChange={(e) => updateFilter(f.id, f.field, e.target.value)}
                   />
                   <Button variant="danger" size="small" onClick={() => removeFilter(f.id)}>
-                    Eliminar
+                    {commandBarMessages.remove}
                   </Button>
                 </div>
               ))}
@@ -181,10 +181,10 @@ const CommandBar: React.FC<CommandBarProps> = ({
               onClick={addFilter}
               disabled={filterableColumns.every((c) => filters.some((f) => f.field === c.key))}
             >
-              Añadir Filtro
+              {commandBarMessages.addFilter}
             </Button>
             <Button variant="secondary" size="small" onClick={clearFilters} disabled={filters.length === 0}>
-              Limpiar filtros
+              {commandBarMessages.clearFilters}
             </Button>
           </div>
         </div>

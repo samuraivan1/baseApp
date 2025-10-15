@@ -122,7 +122,7 @@ const Kanban: React.FC = () => {
   if (!columnOrder || columnOrder.length === 0) {
     return (
       <div className="loading-container" style={{ color: '#666' }}>
-        No hay columnas para mostrar.
+        {kanbanMessages.emptyBoard}
       </div>
     );
   }

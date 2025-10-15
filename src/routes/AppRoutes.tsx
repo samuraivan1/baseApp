@@ -1,5 +1,6 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
+import { commonDefaultMessages } from '@/i18n/commonMessages';
 import { Home } from '@/features/home';
 import { Kanban } from '@/features/kanban';
 import { LoginPage } from '@/features/auth';
@@ -29,12 +30,12 @@ const AppRoutes = () => {
         <>
           <Route
             path={APP_ROUTES.DEV_MUTATION}
-            element={<Suspense fallback={<div>Cargando...</div>}><DevMutationPlayground /></Suspense>}
+            element={<Suspense fallback={<div>{commonDefaultMessages.loading}</div>}><DevMutationPlayground /></Suspense>}
           />
           {/* Ruta Dev Products removida: feature eliminada */}
           <Route
             path={APP_ROUTES.DEV_PROFILE}
-            element={<Suspense fallback={<div>Cargando...</div>}><DevProfile /></Suspense>}
+            element={<Suspense fallback={<div>{commonDefaultMessages.loading}</div>}><DevProfile /></Suspense>}
           />
         </>
       )}

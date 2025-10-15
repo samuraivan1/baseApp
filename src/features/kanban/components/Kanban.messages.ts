@@ -3,6 +3,7 @@ export const kanbanMessages = {
   saveError: 'No se pudo guardar el cambio en el tablero.',
   loadError: 'Error al cargar el tablero.',
   loading: 'Cargando tablero...',
+  emptyBoard: 'No hay columnas para mostrar.',
 };
 
 export const kanbanLogContexts = {

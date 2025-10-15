@@ -1,5 +1,6 @@
 import React, { useMemo, useState, CSSProperties } from 'react';
 import './EntityTable.scss';
+import { entityTableMessages } from './messages';
 import Pagination from '@/shared/components/common/Pagination';
 
 /** Columna genérica de la EntityTable */
@@ -142,7 +143,7 @@ function EntityTable<T extends object>({
                   className="action-column-header"
                   style={{ width: actionColumnWidth }}
                 >
-                  ACCIÓN
+                  {entityTableMessages.action}
                 </th>
               )}
             </tr>
@@ -174,7 +175,7 @@ function EntityTable<T extends object>({
                   colSpan={columns.length + (renderActions ? 1 : 0)}
                   style={{ textAlign: 'center', padding: '0.75rem' }}
                 >
-                  Sin datos.
+                  {entityTableMessages.empty}
                 </td>
               </tr>
             )}

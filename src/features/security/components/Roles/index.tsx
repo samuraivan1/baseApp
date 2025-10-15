@@ -45,8 +45,8 @@ const RolesPage: React.FC = () => {
 
   const filterableColumns: FilterableColumn[] = useMemo(
     () => [
-      { key: 'name', label: 'Rol' },
-      { key: 'description', label: 'Descripción' },
+      { key: 'name', label: rolesMessages.table.role },
+      { key: 'description', label: rolesMessages.table.description },
     ],
     []
   );

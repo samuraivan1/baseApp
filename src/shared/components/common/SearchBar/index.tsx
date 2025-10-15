@@ -1,5 +1,6 @@
 import React from 'react';
 import './SearchBar.scss';
+import { searchBarMessages } from './SearchBar.messages';
 
 export type SearchBarProps = {
   value: string;
@@ -22,7 +23,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ value, onChange, onSearch, placeh
         onKeyDown={(e) => { if (e.key === 'Enter') onSearch(); }}
       />
       <button className="search-bar__btn" type="button" onClick={onSearch}>
-        {label ?? 'Buscar'}
+        {label ?? searchBarMessages.search}
       </button>
     </div>
   );

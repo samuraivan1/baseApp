@@ -15,6 +15,7 @@ export type CommonMessages = {
   rowsPerPage: string;
   pageOf: string; // Use placeholders: Página {page} de {total}
   confirm: string;
+  unexpectedError: string;
 };
 
 // Message ids are stable keys for i18n extraction
@@ -35,6 +36,7 @@ export const commonMessageIds = {
   rowsPerPage: 'common.rowsPerPage',
   pageOf: 'common.pageOf',
   confirm: 'common.confirm',
+  unexpectedError: 'common.unexpectedError',
 } as const;
 
 // Default messages in Spanish (can be used as fallbacks)
@@ -55,4 +57,5 @@ export const commonDefaultMessages: CommonMessages = {
   rowsPerPage: 'Filas por página:',
   pageOf: 'Página {page} de {total}',
   confirm: 'Confirmar',
+  unexpectedError: 'Ha ocurrido un error. Intenta recargar.',
 };
