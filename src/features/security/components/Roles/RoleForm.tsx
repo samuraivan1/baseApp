@@ -7,7 +7,7 @@ import SectionHeader from '@/shared/components/common/SectionHeader';
 import { roleFormMessages as m } from './RoleForm.messages';
 import { CreateRoleRequestDTO } from '@/shared/types/security';
 import { apiCall } from '@/shared/api/apiCall';
-import { faUserShield } from '@fortawesome/free-solid-svg-icons';
+// Removed unused icon import
 // estilos de página centralizados en features/security/styles/index.scss
 import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
@@ -70,7 +70,7 @@ export default function RoleForm({
     <div className="orangealex-form oa-form--md oa-form--left">
       <SectionHeader
         title={initialValues ? (readOnly ? m.editTitle : m.editTitle) : m.newTitle}
-        icon={faUserShield}
+        icon={undefined}
         onBack={onClose}
       />
 

@@ -17,10 +17,8 @@
 .rp-item--assigned { background:#fff; }
 .rp-item__icon { width:28px; height:28px; display:flex; align-items:center; justify-content:center; color:#16a34a; font-weight:bold; }
 .rp-item__content { display:flex; gap:8px; align-items:center; min-width:0; }
-.rp-item__code { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 50%; }
-.rp-item__desc { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.rp-item__code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size:.85rem; }
-.rp-item__desc { opacity:.75; font-size:.85rem; }
+.rp-item__code { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 50%; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; font-size:.85rem; }
+.rp-item__desc { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; opacity:.75; font-size:.85rem; }
 .rp-item__btn { border:1px solid #fca5a5; background:#fee2e2; color:#b91c1c; cursor:pointer; width:28px; height:28px; border-radius:14px; display:flex; align-items:center; justify-content:center; }
 
 // Pagination (outside scroll)

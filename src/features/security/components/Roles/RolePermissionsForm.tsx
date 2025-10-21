@@ -10,7 +10,7 @@ import { getRolePermissionsList } from '@/features/security';
 import { addRolePermission } from '@/features/security/api/relationsService';
 import type { Permission, RolePermission, Role } from '@/shared/types/security';
 import { apiCall } from '@/shared/api/apiCall';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
+// Removed unused icon import
 import styles from './RolePermissionsForm.module.scss';
 import { useRolePermsStore } from './rolePermissions.store';
 

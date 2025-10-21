@@ -1,4 +1,4 @@
-import { useEntityCrud, type EntityService } from './useEntityCrud';
+import { useEntityCrud } from './useEntityCrud';
 import type { User, CreateUserRequestDTO, UpdateUserRequestDTO } from '@/shared/types/security';
 import { getUsers, createUser, updateUser, deleteUser } from '../userService';
 import { useSafeMutation } from '@/shared/hooks/useSafeMutation';

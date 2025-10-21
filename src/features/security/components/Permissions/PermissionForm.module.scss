@@ -1,7 +1,6 @@
-/* PermissionForm now adopts the same OrangeAlex form layout as RoleForm */
-.permission-form {}
+/* PermissionForm adopta el layout OrangeAlex; sin clase local */
 
-// Tooltip behavior moved from inline style
+// Tooltip: mantener regla global, usada por iconos compartidos
 :global(.oa-tooltip-icon:hover .oa-tooltip-bubble),
 :global(.oa-tooltip-icon:focus .oa-tooltip-bubble) {
   opacity: 1;

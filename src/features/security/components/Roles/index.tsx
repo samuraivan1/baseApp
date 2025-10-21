@@ -2,9 +2,7 @@ import React, { useMemo, useState } from 'react';
 import PageHeader from '@/shared/components/common/PageHeader';
 import CommandBar from '@/shared/components/common/CommandBar';
 import PermissionGate from '@/shared/components/PermissionGate';
-import {
-  EntityTableColumn,
-} from '@/shared/components/common/Entitytable';
+import { EntityTableColumn } from '@/shared/components/common/Entitytable';
 import PaginatedEntityTable from '@/shared/components/common/PaginatedEntityTable';
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import ListLoading from '@/shared/components/common/ListLoading';
@@ -16,7 +14,6 @@ import RoleForm from './RoleForm';
 import RolePermissionsForm from './RolePermissionsForm';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';
 
-import './Roles.scss';
 import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
 import { useAuthStore } from '@/features/shell/state/authStore';
@@ -27,7 +24,9 @@ const RolesPage: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>(
+    {}
+  );
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<Role | null>(null);
   const [isPermsOpen, setIsPermsOpen] = useState(false);
@@ -40,7 +39,11 @@ const RolesPage: React.FC = () => {
   const columns: EntityTableColumn<Role>[] = useMemo(
     () => [
       { key: 'name', label: rolesMessages.table.role, sortable: true },
-      { key: 'description', label: rolesMessages.table.description, sortable: true },
+      {
+        key: 'description',
+        label: rolesMessages.table.description,
+        sortable: true,
+      },
     ],
     []
   );
@@ -52,7 +55,10 @@ const RolesPage: React.FC = () => {
     ],
     []
   );
-  const allowedFilterKeys = useMemo(() => filterableColumns.map(c => c.key) as Array<keyof Role>, [filterableColumns]);
+  const allowedFilterKeys = useMemo(
+    () => filterableColumns.map((c) => c.key) as Array<keyof Role>,
+    [filterableColumns]
+  );
 
   const filteredData = useMemo(() => {
     let data: Role[] = Array.isArray(roles) ? roles : [];
@@ -68,7 +74,11 @@ const RolesPage: React.FC = () => {
       if (!value) return;
       if (!allowedFilterKeys.includes(key as keyof Role)) return;
       const vq = value.toLowerCase();
-      data = data.filter((row: Role) => String(row[key as keyof Role] ?? '').toLowerCase().includes(vq));
+      data = data.filter((row: Role) =>
+        String(row[key as keyof Role] ?? '')
+          .toLowerCase()
+          .includes(vq)
+      );
     });
     const map = new Map<number, Role>();
     for (const r of data) map.set(r.roleId, r);
@@ -91,12 +101,22 @@ const RolesPage: React.FC = () => {
 
   React.useEffect(() => {
     const handler = () => {
-      if (formReadOnly && useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE)) {
+      if (
+        formReadOnly &&
+        useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE)
+      ) {
         setFormReadOnly(false);
       }
     };
-    document.addEventListener('roleform:request-edit', handler as EventListener);
-    return () => document.removeEventListener('roleform:request-edit', handler as EventListener);
+    document.addEventListener(
+      'roleform:request-edit',
+      handler as EventListener
+    );
+    return () =>
+      document.removeEventListener(
+        'roleform:request-edit',
+        handler as EventListener
+      );
   }, [formReadOnly]);
 
   const handleSearch = () => setCurrentPage(1);
@@ -113,7 +133,11 @@ const RolesPage: React.FC = () => {
     setRowsPerPage(value);
     setCurrentPage(1);
   };
-  const handleOpenAdd = () => { setEditingRole(null); setIsFormOpen(true); setFormReadOnly(false); };
+  const handleOpenAdd = () => {
+    setEditingRole(null);
+    setIsFormOpen(true);
+    setFormReadOnly(false);
+  };
   const handleOpenEdit = (role: Role) => {
     setEditingRole(role);
     setIsFormOpen(true);
@@ -123,7 +147,11 @@ const RolesPage: React.FC = () => {
     setEditingRole(role);
     setIsPermsOpen(true);
   };
-  const handleOpenView = (role: Role) => { setEditingRole(role); setIsFormOpen(true); setFormReadOnly(true); };
+  const handleOpenView = (role: Role) => {
+    setEditingRole(role);
+    setIsFormOpen(true);
+    setFormReadOnly(true);
+  };
   const handleExportExcel = () => {
     const rows = filteredData.map((r) => [
       r.roleId,
@@ -156,7 +184,7 @@ const RolesPage: React.FC = () => {
         <PermissionGate perm={PERMISSIONS.SECURITY_ROLES_VIEW}>
           <PermissionGate
             perm={PERMISSIONS.SECURITY_ROLES_CREATE}
-            fallback={(
+            fallback={
               <CommandBar
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
@@ -173,7 +201,7 @@ const RolesPage: React.FC = () => {
                 filtersLabel={rolesMessages.filtersLabel}
                 excelLabel={rolesMessages.excelLabel}
               />
-            )}
+            }
           >
             <CommandBar
               searchTerm={searchTerm}
@@ -208,8 +236,12 @@ const RolesPage: React.FC = () => {
         {!isFormOpen && (
           <div className="fs-row-span-2 fs-table-container">
             {(() => {
-              const canEdit = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE);
-              const canDelete = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_DELETE);
+              const canEdit = useAuthStore
+                .getState()
+                .hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE);
+              const canDelete = useAuthStore
+                .getState()
+                .hasPermission(PERMISSIONS.SECURITY_ROLES_DELETE);
               const showActions = canEdit || canDelete;
               return (
                 <PaginatedEntityTable<Role>
@@ -219,19 +251,34 @@ const RolesPage: React.FC = () => {
                   autoFit
                   centered
                   onRowDoubleClick={(row) => {
-                    const canUpdate = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE);
-                    if (canUpdate) handleOpenEdit(row); else handleOpenView(row);
+                    const canUpdate = useAuthStore
+                      .getState()
+                      .hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE);
+                    if (canUpdate) handleOpenEdit(row);
+                    else handleOpenView(row);
                   }}
                   {...(showActions
                     ? {
                         renderActions: (role: Role) => (
                           <>
                             {canEdit && (
-                              <TableActionsCell onEdit={() => handleOpenEdit(role)} editLabel={rolesMessages.update} />
+                              <TableActionsCell
+                                onEdit={() => handleOpenEdit(role)}
+                                editLabel={rolesMessages.update}
+                              />
                             )}
-                            <TableActionsCell onCustomAction={() => handleOpenPermissions(role)} customLabel={'Permisos'} customIcon="key" />
+                            <TableActionsCell
+                              onCustomAction={() => handleOpenPermissions(role)}
+                              customLabel={'Permisos'}
+                              customIcon="key"
+                            />
                             {canDelete && (
-                              <TableActionsCell onDelete={() => { setDeletingId(role.roleId); }} deleteLabel={rolesMessages.delete} />
+                              <TableActionsCell
+                                onDelete={() => {
+                                  setDeletingId(role.roleId);
+                                }}
+                                deleteLabel={rolesMessages.delete}
+                              />
                             )}
                           </>
                         ),
@@ -258,16 +305,26 @@ const RolesPage: React.FC = () => {
             onClose={() => setIsFormOpen(false)}
             initialValues={editingRole || undefined}
             readOnly={formReadOnly}
-            hasEditPermission={useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE)}
+            hasEditPermission={useAuthStore
+              .getState()
+              .hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE)}
             onSubmit={async (values) => {
               if (formReadOnly) {
-                if (useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE)) {
+                if (
+                  useAuthStore
+                    .getState()
+                    .hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE)
+                ) {
                   setFormReadOnly(false);
                 }
                 return;
               }
-              const canCreate = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_CREATE);
-              const canUpdate = useAuthStore.getState().hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE);
+              const canCreate = useAuthStore
+                .getState()
+                .hasPermission(PERMISSIONS.SECURITY_ROLES_CREATE);
+              const canUpdate = useAuthStore
+                .getState()
+                .hasPermission(PERMISSIONS.SECURITY_ROLES_UPDATE);
               const dto = {
                 name: String(values.name || ''),
                 description: values.description ?? null,
@@ -276,16 +333,17 @@ const RolesPage: React.FC = () => {
               if (editingRole) {
                 if (!canUpdate) return;
                 const res = await apiCall(
-                  () => update.mutateAsync({ id: editingRole.roleId, input: dto }),
+                  () =>
+                    update.mutateAsync({ id: editingRole.roleId, input: dto }),
                   { where: 'security.roles.update', toastOnError: true }
                 );
                 if (res.ok) setIsFormOpen(false);
               } else {
                 if (!canCreate) return;
-                const res = await apiCall(
-                  () => create.mutateAsync(dto),
-                  { where: 'security.roles.create', toastOnError: true }
-                );
+                const res = await apiCall(() => create.mutateAsync(dto), {
+                  where: 'security.roles.create',
+                  toastOnError: true,
+                });
                 if (res.ok) setIsFormOpen(false);
               }
             }}
@@ -294,13 +352,19 @@ const RolesPage: React.FC = () => {
       )}
       {isPermsOpen && editingRole && (
         <div className="segu-roles__embedded-form">
-          <RolePermissionsForm role={editingRole} onClose={() => setIsPermsOpen(false)} />
+          <RolePermissionsForm
+            role={editingRole}
+            onClose={() => setIsPermsOpen(false)}
+          />
         </div>
       )}
       <ConfirmDialog
         open={deletingId != null}
         title={rolesMessages.deleteTitle ?? 'Eliminar rol'}
-        message={rolesMessages.deleteMessage ?? '¿Deseas eliminar este rol? Esta acción no se puede deshacer.'}
+        message={
+          rolesMessages.deleteMessage ??
+          '¿Deseas eliminar este rol? Esta acción no se puede deshacer.'
+        }
         confirmLabel={rolesMessages.delete}
         cancelLabel={rolesMessages.cancelLabel ?? 'Cancelar'}
         danger
@@ -308,10 +372,10 @@ const RolesPage: React.FC = () => {
         onConfirm={async () => {
           if (deletingId == null) return;
           const { apiCall } = await import('@/shared/api/apiCall');
-          const res = await apiCall(
-            () => remove.mutateAsync(deletingId),
-            { where: 'security.roles.delete', toastOnError: true }
-          );
+          const res = await apiCall(() => remove.mutateAsync(deletingId), {
+            where: 'security.roles.delete',
+            toastOnError: true,
+          });
           if (res.ok) setDeletingId(null);
           return res;
         }}

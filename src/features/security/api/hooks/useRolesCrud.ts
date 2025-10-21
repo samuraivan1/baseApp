@@ -1,4 +1,4 @@
-import { useEntityCrud, type EntityService } from './useEntityCrud';
+import { useEntityCrud } from './useEntityCrud';
 import { useSafeMutation } from '@/shared/hooks/useSafeMutation';
 import { rolesKeys } from '@/features/security/api/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';

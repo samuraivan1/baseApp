@@ -1,4 +1,4 @@
-import { useEntityCrud, type EntityService } from './useEntityCrud';
+import { useEntityCrud } from './useEntityCrud';
 import type { UserRole } from '@/shared/types/security';
 import { getUserRoles, addUserRole, removeUserRole } from '@/features/security/api/relationsService';
 

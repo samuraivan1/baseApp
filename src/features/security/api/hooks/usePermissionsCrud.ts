@@ -1,4 +1,4 @@
-import { useEntityCrud, type EntityService } from './useEntityCrud';
+import { useEntityCrud } from './useEntityCrud';
 import type { Permission } from '@/shared/types/security';
 import { getPermissions, createPermission, updatePermission, deletePermission } from '../permissionService';
 import type { CreatePermissionRequestDTO, UpdatePermissionRequestDTO } from '@/features/security/types/dto';

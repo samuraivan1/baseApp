@@ -24,3 +24,11 @@
 - Ejecutar ESLint y TypeScript.
 - Ejecutar tests existentes.
 - Build de Vite.
+
+## Progreso por lotes
+- Lote 1 (features/security UI): Completado
+  - Eliminados SCSS no importados (Permissions.scss, Roles.scss, RolePermissionsForm.scss)
+  - Podados módulos SCSS usados (.module.scss)
+  - Limpieza de imports no usados en RoleForm.tsx y RolePermissionsForm.tsx
+- Lote 2 (features/security hooks/servicios/tipos): En progreso
+  - Sin cambios destructivos; siguiente paso: podar imports no usados en hooks/servicios/tipos
