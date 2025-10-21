@@ -21,7 +21,4 @@ export const userRolesKeys = {
   detail: (id: number) => ['user_roles', id] as const,
 };
 
-export const rolePermissionsKeys = {
-  all: ['role_permissions'] as const,
-  detail: (id: number) => ['role_permissions', id] as const,
-};
+// rolePermissionsKeys eliminado por no tener usos referenciados

@@ -3,12 +3,4 @@ import type { CreateRoleRequestDTO, UpdateRoleRequestDTO } from '@/features/secu
 
 // Transformadores entre valores del formulario y DTOs de API para Roles
 
-export const toCreateRoleDto = (payload: Record<string, unknown>): CreateRoleRequestDTO => ({
-  name: String(payload.name || ''),
-  description: (payload.description ?? null) as string | null,
-});
-
-export const toUpdateRoleDto = (payload: Record<string, unknown>): UpdateRoleRequestDTO => ({
-  name: String(payload.name || ''),
-  description: (payload.description ?? null) as string | null,
-});
+// Eliminado: helpers de DTO no usados (toCreateRoleDto, toUpdateRoleDto)
