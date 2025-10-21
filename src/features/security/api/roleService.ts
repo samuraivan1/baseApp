@@ -1,7 +1,7 @@
 // src/services/roleService.ts
 import api from '@/shared/api/apiClient';
 import { handleApiError } from '@/shared/api/errorService';
-import { Role, CreateRoleRequestDTO, UpdateRoleRequestDTO } from '@/shared/types/security';
+import { Role, CreateRoleRequestDTO, UpdateRoleRequestDTO, RolePermission } from '@/shared/types/security';
 import { type RoleResponseDTO, mapRoleFromDto } from '@/features/security/types/dto';
 
 export async function getRoles(): Promise<Role[]> {

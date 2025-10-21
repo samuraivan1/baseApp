@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { DndContext, DragEndEvent, useDroppable, useDraggable, useSensors, useSensor, MouseSensor, TouchSensor, KeyboardSensor } from '@dnd-kit/core';
 // removed unused SortableContext
 import SectionHeader from '@/shared/components/common/SectionHeader';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 import ListLoading from '@/shared/components/common/ListLoading';
 import FormActions from '@/shared/components/common/FormActions';
 import { usePermissionsCrud } from '@/features/security';

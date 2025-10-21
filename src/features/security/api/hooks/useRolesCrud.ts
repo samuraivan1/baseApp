@@ -1,4 +1,5 @@
 import { useEntityCrud } from './useEntityCrud';
+import type { EntityService } from './useEntityCrud';
 import { useSafeMutation } from '@/shared/hooks/useSafeMutation';
 import { rolesKeys } from '@/features/security/api/queryKeys';
 import { useQueryClient } from '@tanstack/react-query';
@@ -11,8 +12,8 @@ export function useRolesCrud() {
   const crudService: EntityService<Role, CreateRoleRequestDTO> = {
     list: service.getRoles,
     create: service.createRole,
-    update: (id, input) => service.updateRole(Number(id), input),
-    remove: (id) => service.deleteRole(Number(id)),
+    update: (id: number | string, input: CreateRoleRequestDTO) => service.updateRole(Number(id), input),
+    remove: (id: number | string) => service.deleteRole(Number(id)),
   };
   const crud = useEntityCrud<Role, CreateRoleRequestDTO>('roles', crudService);
   const create = useSafeMutation<Role, CreateRoleRequestDTO>(service.createRole, {

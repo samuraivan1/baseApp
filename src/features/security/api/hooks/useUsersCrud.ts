@@ -1,4 +1,5 @@
 import { useEntityCrud } from './useEntityCrud';
+import type { EntityService } from './useEntityCrud';
 import type { User, CreateUserRequestDTO, UpdateUserRequestDTO } from '@/shared/types/security';
 import { getUsers, createUser, updateUser, deleteUser } from '../userService';
 import { useSafeMutation } from '@/shared/hooks/useSafeMutation';
@@ -11,8 +12,8 @@ export function useUsersCrud() {
   const service: EntityService<User, UserInput> = {
     list: getUsers,
     create: (input: UserInput) => createUser(input as CreateUserRequestDTO),
-    update: (id, input: UserInput) => updateUser(Number(id), input as UpdateUserRequestDTO),
-    remove: (id) => deleteUser(Number(id)),
+    update: (id: number | string, input: UserInput) => updateUser(Number(id), input as UpdateUserRequestDTO),
+    remove: (id: number | string) => deleteUser(Number(id)),
   };
   const crud = useEntityCrud<User, UserInput>('users', service);
   const qc = useQueryClient();

@@ -1,4 +1,5 @@
 import { useEntityCrud } from './useEntityCrud';
+import type { EntityService } from './useEntityCrud';
 import type { UserRole } from '@/shared/types/security';
 import { getUserRoles, addUserRole, removeUserRole } from '@/features/security/api/relationsService';
 
@@ -12,7 +13,7 @@ export function useUserRolesCrud() {
       Promise.reject<UserRole>(
         new Error('Updating user_role not supported; remove then create')
       ),
-    remove: (id) => removeUserRole(Number(id)),
+    remove: (id: number | string) => removeUserRole(Number(id)),
   };
   return useEntityCrud<UserRole, UserRoleInput>('user_roles', service);
 }

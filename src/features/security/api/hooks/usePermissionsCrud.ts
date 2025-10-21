@@ -1,4 +1,5 @@
 import { useEntityCrud } from './useEntityCrud';
+import type { EntityService } from './useEntityCrud';
 import type { Permission } from '@/shared/types/security';
 import { getPermissions, createPermission, updatePermission, deletePermission } from '../permissionService';
 import type { CreatePermissionRequestDTO, UpdatePermissionRequestDTO } from '@/features/security/types/dto';
@@ -13,9 +14,9 @@ type UpdateInput = UpdatePermissionRequestDTO;
 export function usePermissionsCrud() {
   const service: EntityService<Permission, CreateInput> = {
     list: getPermissions,
-    create: (input) => createPermission(input),
-    update: (id, input: CreateInput | UpdateInput) => updatePermission(Number(id), input as UpdateInput),
-    remove: (id) => deletePermission(Number(id)),
+    create: (input: CreateInput) => createPermission(input),
+    update: (id: number | string, input: CreateInput | UpdateInput) => updatePermission(Number(id), input as UpdateInput),
+    remove: (id: number | string) => deletePermission(Number(id)),
   };
   const crud = useEntityCrud<Permission, CreateInput>('permissions', service);
   const qc = useQueryClient();
