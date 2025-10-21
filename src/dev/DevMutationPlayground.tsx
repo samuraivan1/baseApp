@@ -1,5 +1,5 @@
 import { useSafeMutation } from '@/shared/hooks/useSafeMutation';
-import { showToastSuccess } from '@/shared/utils/showToast';
+import { showToastSuccess, showToast } from '@/shared/utils/showToast';
 
 export default function DevMutationPlayground() {
   const fail422 = useSafeMutation(async () => {
@@ -15,7 +15,9 @@ export default function DevMutationPlayground() {
   });
 
   const ok = useSafeMutation(async () => {
+    // Ambas formas válidas; mantenemos named export y objeto
     showToastSuccess('Operación exitosa');
+    showToast.success('Operación exitosa');
     return true;
   });
 

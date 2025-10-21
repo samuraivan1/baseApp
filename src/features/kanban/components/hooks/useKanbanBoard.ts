@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-toastify';
-import { mapAppErrorMessage } from '@/shared/utils/errorI18n';
+// removed unused imports
 import errorService, { normalizeError } from '@/shared/api/errorService';
 import { fetchBoard, updateBoard } from '@/features/kanban';
 import { apiCall } from '@/shared/api/apiCall';

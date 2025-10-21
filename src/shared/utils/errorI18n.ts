@@ -4,7 +4,7 @@ import type { AppError } from '@/shared/api/errorService';
 
 type MapOpts = { where?: string };
 
-export function mapAppErrorMessage(err: unknown, opts: MapOpts = {}): string {
+export function mapAppErrorMessage(err: unknown, _opts: MapOpts = {}): string {
   if (axios.isAxiosError(err)) {
     const status = err.response?.status;
     if (status === 401) return errorMessages.unauthorized;

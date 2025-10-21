@@ -4,8 +4,12 @@ import { commonDefaultMessages } from '@/i18n/commonMessages';
 import { Home } from '@/features/home';
 import { Kanban } from '@/features/kanban';
 import { LoginPage } from '@/features/auth';
-import { Seguridad, UsuariosPage, RolesPage, PermissionsPage } from '@/features/security';
-import PermissionsV2Page from '@/features/security/components/PermissionsV2';
+import {
+  Seguridad,
+  UsuariosPage,
+  RolesPage,
+  PermissionsPage,
+} from '@/features/security';
 import { Unauthorized } from '@/features/shell';
 import { FormLayoutDemo } from '@/features/demo';
 import ProtectedRoute from './ProtectedRoute';
@@ -26,12 +30,20 @@ const AppRoutes = () => {
         <>
           <Route
             path={APP_ROUTES.DEV_MUTATION}
-            element={<Suspense fallback={<div>{commonDefaultMessages.loading}</div>}><DevMutationPlayground /></Suspense>}
+            element={
+              <Suspense fallback={<div>{commonDefaultMessages.loading}</div>}>
+                <DevMutationPlayground />
+              </Suspense>
+            }
           />
           {/* Ruta Dev Products removida: feature eliminada */}
           <Route
             path={APP_ROUTES.DEV_PROFILE}
-            element={<Suspense fallback={<div>{commonDefaultMessages.loading}</div>}><DevProfile /></Suspense>}
+            element={
+              <Suspense fallback={<div>{commonDefaultMessages.loading}</div>}>
+                <DevProfile />
+              </Suspense>
+            }
           />
         </>
       )}
@@ -46,45 +58,82 @@ const AppRoutes = () => {
       {/* Rutas protegidas */}
       <Route
         path={APP_ROUTES.HOME}
-        element={<ProtectedRoute permiso={PERMISSIONS.HOME_DASHBOARD_VIEW}><Home /></ProtectedRoute>}
+        element={
+          <ProtectedRoute permiso={PERMISSIONS.HOME_DASHBOARD_VIEW}>
+            <Home />
+          </ProtectedRoute>
+        }
       />
       <Route
         path={APP_ROUTES.KANBAN}
-        element={<ProtectedRoute permiso={PERMISSIONS.KANBAN_BOARD_VIEW}><Kanban /></ProtectedRoute>}
+        element={
+          <ProtectedRoute permiso={PERMISSIONS.KANBAN_BOARD_VIEW}>
+            <Kanban />
+          </ProtectedRoute>
+        }
       />
       <Route
         path={APP_ROUTES.FORMS_DEMO}
-        element={<ProtectedRoute><FormLayoutDemo /></ProtectedRoute>}
+        element={
+          <ProtectedRoute>
+            <FormLayoutDemo />
+          </ProtectedRoute>
+        }
       />
 
       {/* Seguridad */}
       <Route
         path={APP_ROUTES.SECURITY}
-        element={<ProtectedRoute permiso={PERMISSIONS.SECURITY_OVERVIEW_VIEW}><Seguridad /></ProtectedRoute>}
+        element={
+          <ProtectedRoute permiso={PERMISSIONS.SECURITY_OVERVIEW_VIEW}>
+            <Seguridad />
+          </ProtectedRoute>
+        }
       >
-        <Route index element={<Navigate to={APP_ROUTES.SECURITY_USERS} replace />} />
         <Route
-          path='usuarios'
-          element={<ProtectedRoute permiso={PERMISSIONS.SECURITY_USERS_VIEW}><UsuariosPage /></ProtectedRoute>}
+          index
+          element={<Navigate to={APP_ROUTES.SECURITY_USERS} replace />}
         />
         <Route
-          path='roles'
-          element={<ProtectedRoute permiso={PERMISSIONS.SECURITY_ROLES_VIEW}><RolesPage /></ProtectedRoute>}
+          path="usuarios"
+          element={
+            <ProtectedRoute permiso={PERMISSIONS.SECURITY_USERS_VIEW}>
+              <UsuariosPage />
+            </ProtectedRoute>
+          }
         />
         <Route
-          path='permisos'
-          element={<ProtectedRoute permiso={PERMISSIONS.SECURITY_PERMISSIONS_VIEW}><PermissionsPage /></ProtectedRoute>}
+          path="roles"
+          element={
+            <ProtectedRoute permiso={PERMISSIONS.SECURITY_ROLES_VIEW}>
+              <RolesPage />
+            </ProtectedRoute>
+          }
         />
         <Route
-          path='permisos2'
-          element={<ProtectedRoute permiso={PERMISSIONS.SECURITY_PERMISSIONS_VIEW}><PermissionsV2Page /></ProtectedRoute>}
+          path="permisos"
+          element={
+            <ProtectedRoute permiso={PERMISSIONS.SECURITY_PERMISSIONS_VIEW}>
+              <PermissionsPage />
+            </ProtectedRoute>
+          }
         />
+        ß{' '}
       </Route>
 
       {/* Redirecciones y placeholders */}
-      <Route path={APP_ROUTES.ROOT} element={<Navigate to={APP_ROUTES.HOME} replace />} />
-      <Route path={APP_ROUTES.REGISTER} element={<h2>Página de Registro (futuro)</h2>} />
-      <Route path={APP_ROUTES.FORGOT_PASSWORD} element={<h2>Recuperar Contraseña (futuro)</h2>} />
+      <Route
+        path={APP_ROUTES.ROOT}
+        element={<Navigate to={APP_ROUTES.HOME} replace />}
+      />
+      <Route
+        path={APP_ROUTES.REGISTER}
+        element={<h2>Página de Registro (futuro)</h2>}
+      />
+      <Route
+        path={APP_ROUTES.FORGOT_PASSWORD}
+        element={<h2>Recuperar Contraseña (futuro)</h2>}
+      />
     </Routes>
   );
 };

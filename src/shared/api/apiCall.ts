@@ -19,7 +19,8 @@ export async function apiCall<T>(fn: () => Promise<T>, opts: ApiCallOpts = {}): 
       const msg = mapAppErrorMessage(normalized);
       toast.error(msg);
     }
-    return err<T, AppError>(normalized);
+    // Asegurar compatibilidad de tipos: mapear null a undefined en code
+    const normFixed = { ...normalized, code: normalized.code ?? undefined } as const;
+    return err<T, AppError>(normFixed as unknown as AppError);
   }
 }
-

@@ -2,7 +2,7 @@
 import { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { apiCall } from '@/shared/api/apiCall';
-import { appBarLogContexts, appBarMessages } from '@/features/shell/components/ResponsiveAppBar/ResponsiveAppBar.messages';
+import { appBarLogContexts } from '@/features/shell/components/ResponsiveAppBar/ResponsiveAppBar.messages';
 import { fetchMenu } from '@/features/shell';
 import type { NavMenuItem } from '@/features/shell/types';
 import logger from '@/shared/api/logger';

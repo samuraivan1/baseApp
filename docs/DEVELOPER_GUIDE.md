@@ -22,6 +22,11 @@ Este documento consolida el estándar de programación del proyecto: arquitectur
 
 Además, consulta `docs/CODING_RULES.md` para reglas obligatorias (tipado estricto, React Query v5, imports y supresiones TS).
 
+## Reglas de Hooks de React (obligatorio)
+- Nunca llames Hooks (`useState`, `useEffect`, `useMemo`, etc.) de forma condicional ni después de un early return.
+- Los Hooks deben ejecutarse en el mismo orden en cada render.
+- Evita patrones como `if (!open) return null;` antes de declarar Hooks. En su lugar, coloca la condición en el JSX del `return` y deja los Hooks siempre en el tope del componente.
+
 ## Estilos
 - SCSS modular por componente; globales mínimos (`_variables.scss`, `_mixins.scss`, `_base.scss`, `index.scss`).
 - Evita estilos globales invasivos; usa utilidades opt‑in y clases locales.

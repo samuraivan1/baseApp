@@ -85,3 +85,12 @@
 
 /* Páginas Seguridad: base consistente */
 /* Estilos de páginas movidos a sus componentes locales (Roles/Users/Permissions) */
+.row-flash {
+  animation: rowFlash 2.2s ease;
+}
+@keyframes rowFlash {
+  0% { outline: 2px solid rgba(14,165,233,.0); background-color: rgba(14,165,233,.08); }
+  20% { outline: 2px solid rgba(14,165,233,.6); background-color: rgba(14,165,233,.14); }
+  80% { outline: 2px solid rgba(14,165,233,.2); background-color: rgba(14,165,233,.06); }
+  100% { outline: 0 solid transparent; background-color: transparent; }
+}

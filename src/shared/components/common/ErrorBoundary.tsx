@@ -16,7 +16,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
   static getDerivedStateFromError() {
     return { hasError: true };
   }
-  componentDidCatch(error: unknown) {
+  componentDidCatch(_error: unknown) {
     // Optionally log via errorService if desired
     // import('@/shared/api/errorService').then(({ default: svc, normalizeError }) => svc.logError(normalizeError(error)));
   }
@@ -49,4 +49,3 @@ export class ErrorBoundary extends React.Component<Props, State> {
 }
 
 export default ErrorBoundary;
-

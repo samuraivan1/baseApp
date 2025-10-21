@@ -21,7 +21,7 @@ async function getMockDerivedPermissions(
   );
   try {
     console.log('[Auth] derived roles (ids):', userRoleLinks.map(r => Number(r.role_id)));
-  } catch (_err) {
+  } catch {
     // Ignorar errores de consola en entornos que no expongan console
   }
   const roleIds = userRoleLinks.map((r) => Number(r.role_id));
@@ -80,7 +80,7 @@ export async function silentRefresh(): Promise<boolean> {
       try {
         const username = 'username' in (user as object) ? (user as { username?: string }).username : undefined;
         console.log('[Auth] session user:', { id: user.user_id, username });
-  } catch (_err) {
+  } catch {
         // Ignorar errores de log en navegadores sin consola
       }
       const derivedPermissions = (await getMockDerivedPermissions(
@@ -88,7 +88,7 @@ export async function silentRefresh(): Promise<boolean> {
       ).catch(() => undefined)) || [];
       try {
         console.log('[Auth] derived permissions:', derivedPermissions.map(p => p.permission_string));
-  } catch (_err) {
+  } catch {
         // Ignorar errores de log en navegadores sin consola
       }
       // Construir un UserSession mínimo para cumplir la firma del store
@@ -101,7 +101,7 @@ export async function silentRefresh(): Promise<boolean> {
       getAuthStore().setUser(sessionUser);
       try {
         console.log('[Auth] set user permissions in store:', sessionUser.permissions?.map(p => p.permission_string));
-  } catch (_err) {
+      } catch {
         // Ignorar errores de log en navegadores sin consola
       }
     }

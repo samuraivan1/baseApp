@@ -14,3 +14,8 @@ export function showToastInfo(message: string, opts?: ToastOptions) {
   toast.info(message, opts);
 }
 
+export const showToast = {
+  success: showToastSuccess,
+  error: showToastError,
+  info: showToastInfo,
+};

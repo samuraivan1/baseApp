@@ -142,7 +142,7 @@ const Kanban: React.FC = () => {
           const columnTasks = column.taskIds
             .map((taskId) => tasks[taskId])
             .filter((t): t is TaskType => Boolean(t));
-          const canCreateTask = Array.isArray(permissions) && permissions.some((p: any) => p?.key === 'task:kanban:create' || p?.permission_key === 'task:kanban:create' || p?.name === 'task:kanban:create');
+          const canCreateTask = Array.isArray(permissions) && (permissions as Array<{ key?: string; permission_key?: string; name?: string }>).some((p) => p?.key === 'task:kanban:create' || p?.permission_key === 'task:kanban:create' || p?.name === 'task:kanban:create');
           return (
             <Column
               key={column.id}

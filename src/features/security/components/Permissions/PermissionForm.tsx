@@ -1,172 +1,260 @@
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import SectionHeader from '@/shared/components/common/SectionHeader';
-// removed unused Button import
-import FormActions from '@/shared/components/common/FormActions';
-import { permissionFormMessages as m } from './PermissionForm.messages';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
-import '@/shared/components/common/forms/orangealex-form.scss';
 import FormInput from '@/shared/components/common/forms/inputs/FormInput';
-// import FormSelect from '@/shared/components/common/forms/inputs/FormSelect';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
-import LoadingOverlay from '@/shared/components/ui/LoadingOverlay';
-import { commonDefaultMessages } from '@/i18n/commonMessages';
-import { withApiCall } from '@/shared/api/withApiCall';
+import FormActions from '@/shared/components/common/FormActions';
+// Styles are now modular per component
+import styles from './PermissionForm.module.scss';
+import { permissionsMessages } from '../Permissions/Permissions.messages';
+import {
+  permissionSchema,
+  type PermissionFormValues,
+} from '../Permissions/permission.schema';
 
-export type PermissionFormValues = {
-  permission_string: string;
-  resource: string;
-  action: string;
-  scope: string;
-  description: string;
-};
+// Tipado derivado desde Zod (permission.schema.ts)
 
 type PermissionFormProps = {
   open: boolean;
-  onClose: () => void;
-  initialValues?: Partial<PermissionFormValues> | null;
-  onSubmit: (values: PermissionFormValues) => void;
   readOnly?: boolean;
   hasEditPermission?: boolean;
+  initialValues?: Partial<PermissionFormValues>;
+  onClose: () => void;
+  onSubmit: (values: PermissionFormValues) => void | Promise<void>;
 };
 
-export default function PermissionForm({
+// Formulario embebido, enfocado en lectura; sin any y usando componentes compartidos.
+const PermissionForm: React.FC<PermissionFormProps> = ({
   open,
-  onClose,
+  readOnly = true,
+  hasEditPermission = false,
   initialValues,
+  onClose,
   onSubmit,
-  readOnly = false,
-  hasEditPermission = true,
-}: PermissionFormProps) {
+}) => {
   const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-    watch,
+    handleSubmit: rhfSubmit,
     setValue,
+    control,
+    watch,
+    formState: { errors },
   } = useForm<PermissionFormValues>({
+    resolver: zodResolver(permissionSchema),
+    mode: 'onBlur',
     defaultValues: {
-      permission_string: initialValues?.permission_string ?? '',
-      resource: (initialValues?.resource as string) ?? '',
-      action: (initialValues?.action as string) ?? '',
-      scope: (initialValues?.scope as string) ?? '',
-      description: (initialValues?.description as string) ?? '',
+      permission_string: String(initialValues?.permission_string ?? ''),
+      resource: String(initialValues?.resource ?? ''),
+      action: String(initialValues?.action ?? ''),
+      scope: String(initialValues?.scope ?? ''),
+      description: String(initialValues?.description ?? ''),
     },
   });
 
-  useEffect(() => {
-    reset({
-      permission_string: initialValues?.permission_string ?? '',
-      resource: (initialValues?.resource as string) ?? '',
-      action: (initialValues?.action as string) ?? '',
-      scope: (initialValues?.scope as string) ?? '',
-      description: (initialValues?.description as string) ?? '',
-    });
-  }, [initialValues, reset]);
+  React.useEffect(() => {
+    setValue(
+      'permission_string',
+      String(initialValues?.permission_string ?? '')
+    );
+    setValue('resource', String(initialValues?.resource ?? ''));
+    setValue('action', String(initialValues?.action ?? ''));
+    setValue('scope', String(initialValues?.scope ?? ''));
+    setValue('description', String(initialValues?.description ?? ''));
+  }, [initialValues, setValue]);
 
-  // Auto-construir clave a partir de resource:action:scope (minúsculas)
-  const resource = watch('resource');
-  const action = watch('action');
-  const scope = watch('scope');
-  useEffect(() => {
-    const r = String(resource || '').toLowerCase();
-    const a = String(action || '').toLowerCase();
-    const s = String(scope || '').toLowerCase();
-    const key = r && a && s ? `${r}:${a}:${s}` : '';
+  const disabled = readOnly;
+  const isCreate = !initialValues || !initialValues.permission_string;
+
+  // Autogenera la clave en alta concatenando recurso.acción.ámbito
+  const wRes = watch('resource');
+  const wAct = watch('action');
+  const wScp = watch('scope');
+  React.useEffect(() => {
+    if (!isCreate) return;
+    const key = [wRes, wAct, wScp]
+      .map((s) => String(s ?? '').trim())
+      .filter(Boolean)
+      .join('.');
     setValue('permission_string', key, {
       shouldValidate: true,
       shouldDirty: true,
     });
-  }, [resource, action, scope, setValue]);
+  }, [wRes, wAct, wScp, isCreate, setValue]);
 
-  if (!open) return null;
+  const handleChange = (key: keyof PermissionFormValues, val: string) => {
+    if (key === 'resource' || key === 'action' || key === 'scope') {
+      const normalized = val
+        .toLowerCase()
+        .replace(/[^a-z0-9_]/g, '')
+        .slice(0, 15);
+      setValue(key, normalized, { shouldValidate: true, shouldDirty: true });
+      return;
+    }
+    setValue(key, val, { shouldValidate: true, shouldDirty: true });
+  };
+
+  // Validación delegada a Zod por zodResolver
 
   const onValid = async (data: PermissionFormValues) => {
-    if (readOnly || !hasEditPermission) return;
-    await withApiCall(
-      () => Promise.resolve(onSubmit(data)),
-      { where: 'security.permissions.form.submit' }
-    );
+    if (readOnly) return;
+    const next: PermissionFormValues = {
+      permission_string: String(data.permission_string || '').trim(),
+      resource: String(data.resource || '').trim(),
+      action: String(data.action || '').trim(),
+      scope: String(data.scope || '').trim(),
+      description: String(data.description || '').trim(),
+    };
+    await onSubmit(next);
   };
 
   return (
-    <div className="orangealex-form oa-form--md oa-form--left">
-      <SectionHeader
-        title={initialValues ? (readOnly ? m.editTitle : m.editTitle) : m.newTitle}
-        icon={faKey}
-        onBack={onClose}
-      />
-      <form onSubmit={handleSubmit(onValid)} className="orangealex-form__body">
-        <LoadingOverlay
-          open={isSubmitting}
-          message={commonDefaultMessages.saving}
-        />
-        <div className="orangealex-form__grid">
-          {/* Recurso, Acción, Ámbito (snake_case minúsculas, requerido) */}
-          <FormInput
-            label={m.fields.resource}
-            {...register('resource', {
-              required: m.errors.permissionStringRequired,
-              pattern: { value: /^[a-z0-9_]+$/, message: m.errors.onlyLowerNumUnderscore },
-              maxLength: { value: 40, message: m.errors.max40 },
-            })}
-            disabled={readOnly}
-            helperText={resource ? m.hints.onlyLowerNumUnderscore : undefined}
-            error={errors.resource?.message}
+    <div className={styles['permission-form']}>
+      {open ? (
+        <>
+          <SectionHeader
+            title={permissionsMessages.form.title}
+            icon={undefined}
+            onBack={onClose}
           />
-          <FormInput
-            label={m.fields.action}
-            {...register('action', {
-              required: m.errors.permissionStringRequired,
-              pattern: { value: /^[a-z0-9_]+$/, message: m.errors.onlyLowerNumUnderscore },
-              maxLength: { value: 40, message: m.errors.max40 },
-            })}
-            disabled={readOnly}
-            helperText={action ? m.hints.onlyLowerNumUnderscore : undefined}
-            error={errors.action?.message}
-          />
-          <FormInput
-            label={m.fields.scope}
-            {...register('scope', {
-              required: m.errors.permissionStringRequired,
-              pattern: { value: /^[a-z0-9_]+$/, message: m.errors.onlyLowerNumUnderscore },
-              maxLength: { value: 40, message: m.errors.max40 },
-            })}
-            disabled={readOnly}
-            helperText={scope ? m.hints.onlyLowerNumUnderscore : undefined}
-            error={errors.scope?.message}
-          />
+          <form onSubmit={rhfSubmit(onValid)} className={styles['permission-form__body']} noValidate>
+            <div className={styles['permission-form__grid']}>
+              {/* Fila 1: Recurso, Acción, Ámbito */}
+              <Controller
+                control={control}
+                name="resource"
+                render={({ field }) => (
+                  <FormInput
+                    label={permissionsMessages.form.resource}
+                    infoTooltip={permissionsMessages.hints?.onlyLowerNumUnderscoreMax15}
+                    id="resource"
+                    name="resource"
+                    value={field.value}
+                    onChange={(e) => handleChange('resource', e.target.value)}
+                    placeholder={permissionsMessages.form.resourcePlaceholder}
+                    autoComplete="off"
+                    error={errors.resource?.message}
+                    disabled={disabled}
+                    required
+                    aria-invalid={!!errors.resource}
+                    aria-describedby={errors.resource ? 'resource-error' : undefined}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="action"
+                render={({ field }) => (
+                  <FormInput
+                    label={permissionsMessages.form.action}
+                    infoTooltip={permissionsMessages.hints?.onlyLowerNumUnderscoreMax15}
+                    tooltipPlacement="top"
+                    id="action"
+                    name="action"
+                    value={field.value}
+                    onChange={(e) => handleChange('action', e.target.value)}
+                    placeholder={permissionsMessages.form.actionPlaceholder}
+                    autoComplete="off"
+                    error={errors.action?.message}
+                    disabled={disabled}
+                    required
+                    aria-invalid={!!errors.action}
+                    aria-describedby={errors.action ? 'action-error' : undefined}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="scope"
+                render={({ field }) => (
+                  <FormInput
+                    label={permissionsMessages.form.scope}
+                    infoTooltip={permissionsMessages.hints?.onlyLowerNumUnderscoreMax15}
+                    tooltipPlacement="top"
+                    id="scope"
+                    name="scope"
+                    value={field.value}
+                    onChange={(e) => handleChange('scope', e.target.value)}
+                    placeholder={permissionsMessages.form.scopePlaceholder}
+                    autoComplete="off"
+                    error={errors.scope?.message}
+                    disabled={disabled}
+                    required
+                    aria-invalid={!!errors.scope}
+                    aria-describedby={errors.scope ? 'scope-error' : undefined}
+                  />
+                )}
+              />
 
-          {/* Clave generada automáticamente (solo lectura) */}
-          <FormInput
-            wrapperClassName="form-field--full form-field--readonly"
-            label={m.fields.permissionString}
-            {...register('permission_string', {
-              required: m.errors.permissionStringRequired,
-              pattern: {
-                value: /^[a-z0-9_]+:[a-z0-9_]+:[a-z0-9_]+$/,
-                message: m.errors.permissionStringFormat,
-              },
-              maxLength: { value: 80, message: m.errors.max80 },
-            })}
-            readOnly
-            helperText={watch('permission_string') ? m.hints.autoGenerated : undefined}
-            error={errors.permission_string?.message}
-          />
-          <FormTextarea
-            wrapperClassName="form-field--full"
-            label={m.fields.description}
-            {...register('description', { required: m.errors.descriptionRequired, maxLength: { value: 255, message: m.errors.max255 } })}
-            disabled={readOnly}
-            error={errors.description?.message}
-          />
-        </div>
+              {/* Fila 2: Cadena del permiso (readonly) */}
+              <Controller
+                control={control}
+                name="permission_string"
+                render={({ field }) => (
+                  <FormInput
+                    wrapperClassName="form-field--full form-field--readonly"
+                    label={permissionsMessages.form.key}
+                    infoTooltip={permissionsMessages.hints?.autoGeneratedKey || 'Se genera automáticamente'}
+                    tooltipPlacement="top"
+                    id="permission_string"
+                    name="permission_string"
+                    value={field.value}
+                    onChange={(e) => handleChange('permission_string', e.target.value)}
+                    placeholder={permissionsMessages.form.keyPlaceholder}
+                    readOnly
+                    disabled
+                    required
+                    aria-invalid={!!errors.permission_string}
+                    aria-describedby={errors.permission_string ? 'permission_string-error' : undefined}
+                  />
+                )}
+              />
 
-        <div className="orangealex-form__footer">
-          <FormActions onCancel={onClose} onAccept={() => {}} isAccepting={isSubmitting} />
-        </div>
-      </form>
+              {/* Fila 3: Descripción */}
+              <Controller
+                control={control}
+                name="description"
+                render={({ field }) => (
+                  <FormTextarea
+                    wrapperClassName="form-field--full"
+                    id="description"
+                    name="description"
+                    label={permissionsMessages.form.description}
+                    value={field.value}
+                    onChange={(e) => handleChange('description', e.target.value)}
+                    placeholder={permissionsMessages.form.descriptionPlaceholder}
+                    autoComplete="off"
+                    disabled={disabled}
+                    rows={4}
+                    required
+                    aria-invalid={!!errors.description}
+                    aria-describedby={errors.description ? 'description-error' : undefined}
+                  />
+                )}
+              />
+            </div>
+
+            <div className={styles['permission-form__footer']}>
+              <FormActions
+                onCancel={onClose}
+                onAccept={rhfSubmit(onValid)}
+                auxAction={
+                  hasEditPermission && readOnly
+                    ? {
+                        label: permissionsMessages.requestEdit,
+                        onClick: () =>
+                          document.dispatchEvent(
+                            new CustomEvent('permissionform:request-edit')
+                          ),
+                      }
+                    : undefined
+                }
+              />
+            </div>
+          </form>
+        </>
+      ) : null}
     </div>
   );
-}
+};
+
+export default PermissionForm;

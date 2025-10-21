@@ -106,3 +106,7 @@ silentRefresh mapea derivedPermissions a Permission[] completos.
 Build y typecheck pasan en local.
 
 Para lineamientos completos y checklist oficial, ver `CONTRIBUTING.md`.
+- Reglas de Hooks de React (obligatorio)
+  - Nunca llames Hooks (`useState`, `useEffect`, `useMemo`, etc.) de forma condicional ni después de un early return.
+  - Los Hooks deben ejecutarse en el mismo orden en cada render.
+  - Evita patrones como `if (!open) return null;` antes de declarar Hooks. Coloca la condición en el JSX del `return` y mantén los Hooks al inicio del componente.

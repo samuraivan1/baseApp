@@ -229,7 +229,7 @@ const RolesPage: React.FC = () => {
                             {canEdit && (
                               <TableActionsCell onEdit={() => handleOpenEdit(role)} editLabel={rolesMessages.update} />
                             )}
-                            <TableActionsCell onCustomAction={() => handleOpenPermissions(role)} customLabel={rolesMessages.permissions ?? 'Permisos'} customIcon="key" />
+                            <TableActionsCell onCustomAction={() => handleOpenPermissions(role)} customLabel={'Permisos'} customIcon="key" />
                             {canDelete && (
                               <TableActionsCell onDelete={() => { setDeletingId(role.role_id); }} deleteLabel={rolesMessages.delete} />
                             )}
@@ -307,11 +307,12 @@ const RolesPage: React.FC = () => {
         onCancel={() => setDeletingId(null)}
         onConfirm={async () => {
           if (deletingId == null) return;
-          const { withApiCall } = await import('@/shared/api/withApiCall');
-          const res = await withApiCall(
+          const { apiCall } = await import('@/shared/api/apiCall');
+          const res = await apiCall(
             () => remove.mutateAsync(deletingId),
-            { where: 'security.roles.delete', onOk: () => setDeletingId(null) }
+            { where: 'security.roles.delete', toastOnError: true }
           );
+          if (res.ok) setDeletingId(null);
           return res;
         }}
       />

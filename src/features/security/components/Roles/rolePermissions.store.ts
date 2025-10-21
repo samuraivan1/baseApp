@@ -32,7 +32,9 @@ export const useRolePermsStore = create<State & Actions>((set) => ({
     set((s) => {
       const arr = [...s.assignedIds];
       const [m] = arr.splice(from, 1);
-      arr.splice(to, 0, m);
+      if (typeof m === 'undefined') return { assignedIds: s.assignedIds } as unknown as State & Actions;
+      const toNum: number = Number.isFinite(to) ? Math.max(0, to) : 0;
+      arr.splice(toNum, 0, m);
       return { assignedIds: arr } as Partial<State> as State & Actions;
     }),
   assignMany: (ids) => set((s) => ({ assignedIds: [...s.assignedIds, ...ids.filter((i) => !s.assignedIds.includes(i))], availableIds: s.availableIds.filter((id) => !ids.includes(id)) })),

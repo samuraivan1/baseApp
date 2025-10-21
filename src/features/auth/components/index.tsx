@@ -98,7 +98,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
     try {
       const { finalizeLogin } = await import('@/shared/auth/bootstrapAuth');
       await finalizeLogin();
-    } catch (e) {
+    } catch {
       // Ignorar errores de depuración; el login ya validó
     }
   }

@@ -181,6 +181,9 @@ useAuthStore
 - Formularios nuevos deben usar **React Hook Form + Zod**.
 - Validaciones tipadas con `zodResolver`.
 - Esquemas documentados en `types/` o dentro de la feature.
+- Estándar de integración: usar `Controller`/`useController` de RHF para conectar los componentes de formulario del sistema (`FormInput`, `FormTextarea`, `FormSelect`, etc.). Evitar `watch + setValue` como mecanismo principal de control; puede usarse solo para normalizaciones puntuales.
+- Accesibilidad: propagar `aria-invalid` y `aria-describedby` hacia los inputs, asociando los mensajes de error del schema.
+- Envío: declarar `onSubmit` en el `<form>` con `handleSubmit(onValid)` para habilitar envío por teclado.
 
 ---
 

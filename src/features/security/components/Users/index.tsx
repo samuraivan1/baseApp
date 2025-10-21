@@ -306,13 +306,13 @@ const UsuariosPage: React.FC = () => {
                 if (!hasCreatePermission) return;
                 const dto = toCreateUserDto(values);
                 const { password_hash, ...rest } = dto;
-                const { withApiCall } = await import('@/shared/api/withApiCall');
-                const createRes = await withApiCall(
+                const { apiCall } = await import('@/shared/api/apiCall');
+                const createRes = await apiCall(
                   () => create.mutateAsync({
                     ...rest,
                     ...(password_hash != null ? { password_hash } : {}),
                   }),
-                  { where: 'security.users.create' }
+                  { where: 'security.users.create', toastOnError: true }
                 );
                 const created = createRes.ok ? createRes.value : undefined;
                 if (values.rolId != null) {
@@ -325,8 +325,8 @@ const UsuariosPage: React.FC = () => {
                 if (!hasUpdatePermission) return;
                 const dto = toUpdateUserDto(values);
                 const { password_hash: ph, ...restUpdate } = dto as { password_hash?: string | null };
-                const { withApiCall } = await import('@/shared/api/withApiCall');
-                await withApiCall(
+                const { apiCall } = await import('@/shared/api/apiCall');
+                await apiCall(
                   () => update.mutateAsync({
                     id: editing.user_id,
                     input: ({
@@ -334,7 +334,7 @@ const UsuariosPage: React.FC = () => {
                       ...(ph != null ? { password_hash: ph } : {}),
                     } as UserInput),
                   }),
-                  { where: 'security.users.update' }
+                  { where: 'security.users.update', toastOnError: true }
                 );
               }
               setIsFormOpen(false);
@@ -355,11 +355,12 @@ const UsuariosPage: React.FC = () => {
         onCancel={() => setConfirmOpen(false)}
         onConfirm={async () => {
           if (deletingId == null) return;
-          const { withApiCall } = await import('@/shared/api/withApiCall');
-          const res = await withApiCall(
+          const { apiCall } = await import('@/shared/api/apiCall');
+          const res = await apiCall(
             () => remove.mutateAsync(deletingId),
-            { where: 'security.users.delete', onOk: () => { setDeletingId(null); setConfirmOpen(false); queryClient.invalidateQueries({ queryKey: usersKeys.all }); } }
+            { where: 'security.users.delete', toastOnError: true }
           );
+          if (res.ok) { setDeletingId(null); setConfirmOpen(false); queryClient.invalidateQueries({ queryKey: usersKeys.all }); }
           return res;
         }}
       />

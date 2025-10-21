@@ -9,6 +9,7 @@ type FormActionsProps = {
   acceptText?: string;
   cancelText?: string;
   isAccepting?: boolean; // Para mostrar estado de carga
+  auxAction?: { label: string; onClick: () => void };
 };
 
 const FormActions: React.FC<FormActionsProps> = ({
@@ -17,12 +18,18 @@ const FormActions: React.FC<FormActionsProps> = ({
   acceptText = formActionsMessages.save,
   cancelText = formActionsMessages.cancel,
   isAccepting = false,
+  auxAction,
 }) => {
   return (
     <div className="form-actions">
       <Button variant="secondary" onClick={onCancel} disabled={isAccepting}>
         {cancelText}
       </Button>
+      {auxAction ? (
+        <Button variant="ghost" onClick={auxAction.onClick} disabled={isAccepting}>
+          {auxAction.label}
+        </Button>
+      ) : null}
       <Button
         type="submit" // Ojo, este es submit para que funcione con el form
         variant="primary"

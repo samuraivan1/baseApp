@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 // dnd-kit: flexible, accesible, y ya usado en Kanban.
 import { DndContext, DragEndEvent, useDroppable, useDraggable, useSensors, useSensor, MouseSensor, TouchSensor, KeyboardSensor } from '@dnd-kit/core';
-import { SortableContext } from '@dnd-kit/sortable';
+// removed unused SortableContext
 import SectionHeader from '@/shared/components/common/SectionHeader';
 import ListLoading from '@/shared/components/common/ListLoading';
 import FormActions from '@/shared/components/common/FormActions';
 import { usePermissionsCrud } from '@/features/security';
 import { getRolePermissionsList } from '@/features/security';
-import { addRolePermission, removeRolePermission } from '@/features/security/api/relationsService';
+import { addRolePermission } from '@/features/security/api/relationsService';
 import type { Permission, RolePermission, Role } from '@/shared/types/security';
-import { withApiCall } from '@/shared/api/withApiCall';
+import { apiCall } from '@/shared/api/apiCall';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import styles from './RolePermissionsForm.module.scss';
 import { useRolePermsStore } from './rolePermissions.store';
@@ -26,7 +26,7 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
   const reset = useRolePermsStore((s) => s.reset);
   const assign = useRolePermsStore((s) => s.assign);
   const unassign = useRolePermsStore((s) => s.unassign);
-  const reorderAssigned = useRolePermsStore((s) => s.reorderAssigned);
+  // removed unused reorderAssigned
   const assignMany = useRolePermsStore((s) => s.assignMany);
   const unassignMany = useRolePermsStore((s) => s.unassignMany);
   const [loading, setLoading] = useState(true);
@@ -49,9 +49,9 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
     return () => {
       mount = false;
     };
-  }, [role.role_id]);
+  }, [role.role_id, reset, permsQuery.data]);
 
-  const allPermissions = (permsQuery.data ?? []) as Permission[];
+  const allPermissions = useMemo(() => (permsQuery.data ?? []) as Permission[], [permsQuery.data]);
   const available = useMemo(() => {
     const byId = new Set(availableIds);
     return allPermissions.filter((p) => byId.has(Number(p.permission_id)));
@@ -97,7 +97,7 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
     const toRemove = [...currentIds].filter((id) => !nextIds.has(id));
 
     // Apply add/remove via API
-    await withApiCall(async () => {
+    await apiCall(async () => {
       for (const pid of toAdd) {
         await addRolePermission(role.role_id, pid);
       }
@@ -107,7 +107,7 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
         await api.delete(`/role_permissions/${role.role_id}/${pid}`);
       }
       return Promise.resolve();
-    }, { where: 'security.role_permissions.persist' });
+    }, { where: 'security.role_permissions.persist', toastOnError: true });
     onClose();
   };
 

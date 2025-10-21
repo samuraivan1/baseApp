@@ -97,14 +97,6 @@
           "ruta": "/seguridad/permisos",
           "permisoId": 330,
           "permission_string": "security.permissions.view"
-        },
-        {
-          "idMenu": 34,
-          "titulo": "Permisos 2",
-          "iconKey": "Key",
-          "ruta": "/seguridad/permisos2",
-          "permisoId": 330,
-          "permission_string": "security.permissions.view"
         }
       ]
     }

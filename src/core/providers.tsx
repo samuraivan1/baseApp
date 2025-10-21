@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Provider as ReduxProvider } from 'react-redux';
 import { queryClient } from '@/lib/queryClient';
 import ErrorBoundary from '@/shared/components/common/ErrorBoundary';
-import { commonDefaultMessages } from '@/i18n/commonMessages';
+// removed unused import commonDefaultMessages
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createContext, useContext } from 'react';
@@ -34,20 +34,20 @@ type CoreProvidersProps = {
 
 export function CoreProviders({ store, children }: CoreProvidersProps) {
   React.useEffect(() => {
-    const onWindowError = (event: ErrorEvent) => {
+    // Use typeof import to align with real module types
+    type ErrorServiceMod = typeof import('@/shared/api/errorService');
+    const onWindowError = async (event: ErrorEvent) => {
       try {
-        const { normalizeError } = require('@/shared/api/errorService');
-        const svc = require('@/shared/api/errorService').default;
-        const norm = normalizeError(event.error || event.message || event);
-        svc.logError(norm);
+        const mod: ErrorServiceMod = await import('@/shared/api/errorService');
+        const norm = mod.normalizeError(event.error || event.message || event);
+        mod.default.logError(norm);
       } catch { /* noop */ }
     };
-    const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+    const onUnhandledRejection = async (event: PromiseRejectionEvent) => {
       try {
-        const { normalizeError } = require('@/shared/api/errorService');
-        const svc = require('@/shared/api/errorService').default;
-        const norm = normalizeError(event.reason);
-        svc.logError(norm);
+        const mod: ErrorServiceMod = await import('@/shared/api/errorService');
+        const norm = mod.normalizeError(event.reason);
+        mod.default.logError(norm);
       } catch { /* noop */ }
     };
     window.addEventListener('error', onWindowError);
