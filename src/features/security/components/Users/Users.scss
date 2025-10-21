@@ -5,3 +5,11 @@
   box-sizing: border-box;
   padding: var(--spacing-md);
 }
+
+.segu-users__embedded-form {
+  max-width: 640px;
+  /* align to top-left: no auto-centering */
+  margin: var(--spacing-md) 0 0 0;
+  width: 100%;
+  padding: var(--spacing-md);
+}

@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 import { login as apiLogin } from '@/shared/api/authService';
 import { AuthStoreType } from './store.types';
 import { SESSION_STORAGE_KEYS } from '@/constants/sessionConstants';
-import type { UserSession } from '@/features/security/types';
+import type { IUserSession as UserSession } from '@/features/security/types/models';
 
 export const useAuthStore = create<AuthStoreType>()(
   persist(
@@ -87,8 +87,8 @@ export const useAuthStore = create<AuthStoreType>()(
         const u = get().user;
         if (!u) return false;
         return (
-          u.permissions?.some(
-            (p) => p.permission_string === permissionString
+          u.permissions?.some((p: Partial<{ permissionKey?: string; permission_string?: string }>) =>
+            p.permissionKey === permissionString || p.permission_string === permissionString
           ) ?? false
         );
       },

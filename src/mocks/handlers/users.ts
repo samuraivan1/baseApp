@@ -3,10 +3,10 @@ import { db, nextId, persistDb } from '../data/db';
 import { requireAuth, ensurePermission } from '../utils/auth';
 import { requireCsrfOnMutation } from '../utils/csrf';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
-import type { User } from '@/features/security/types';
+import type { UserResponseDTO, CreateUserRequestDTO, UpdateUserRequestDTO } from '@/features/security/types/dto';
 
-function getUsersTable(): User[] {
-  return db.users as User[];
+function getUsersTable(): UserResponseDTO[] {
+  return db.users as UserResponseDTO[];
 }
 
 const BASE = '/api/users';
@@ -47,9 +47,9 @@ export const usersHandlers = [
       PERMISSIONS.SECURITY_USERS_CREATE
     ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
-    const body = (await request.json()) as Partial<User>;
+    const body = (await request.json()) as CreateUserRequestDTO;
     const user_id = nextId('users');
-    const row: User = {
+    const row: UserResponseDTO = {
       user_id,
       username: body.username ?? `user${user_id}`,
       password_hash: 'mock_hash',
@@ -77,7 +77,7 @@ export const usersHandlers = [
     ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     const id = Number(params.id);
-    const body = (await request.json()) as Partial<User>;
+    const body = (await request.json()) as UpdateUserRequestDTO;
     const idx = getUsersTable().findIndex((u) => Number(u.user_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
     const users = getUsersTable();
@@ -87,7 +87,7 @@ export const usersHandlers = [
       ...body,
       username: String((body.username ?? current.username) ?? ''),
       user_id: id,
-    } as User;
+    } as UserResponseDTO;
     persistDb();
     return HttpResponse.json(users[idx], { status: 200 });
   }),
@@ -103,7 +103,7 @@ export const usersHandlers = [
   ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     const id = Number(params.id);
-    const body = (await request.json()) as Partial<User>;
+    const body = (await request.json()) as UpdateUserRequestDTO;
     const idx = getUsersTable().findIndex((u) => Number(u.user_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
     const users = getUsersTable();
@@ -113,7 +113,7 @@ export const usersHandlers = [
       ...body,
       username: String((body.username ?? current.username) ?? ''),
       user_id: id,
-    } as User;
+    } as UserResponseDTO;
     persistDb();
     return HttpResponse.json(users[idx], { status: 200 });
   }),

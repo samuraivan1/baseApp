@@ -21,9 +21,10 @@ export function useEnsureAllPermsForUserRole(targetUsernames: string[] = ['iamen
 
   useEffect(() => {
     if (!users.length || !relations.length || !perms.length) return;
-    const target = users.find(u => targetIds.includes(u.user_id) || targetUsernames.includes(u.username));
+    type MaybeLegacyUser = { userId?: number; user_id?: number; username: string };
+    const target = (users as MaybeLegacyUser[]).find(u => targetIds.includes(u.userId ?? u.user_id ?? -1) || targetUsernames.includes(u.username));
     if (!target) return;
-    const rel = relations.find(r => r.user_id === target.user_id);
+    const rel = relations.find(r => r.user_id === ((target.userId ?? target.user_id) as number));
     const roleId = rel?.role_id;
     if (!roleId) return;
 
@@ -31,7 +32,8 @@ export function useEnsureAllPermsForUserRole(targetUsernames: string[] = ['iamen
       const existingRes = await apiCall(() => getRolePermissionsForRole(roleId), { where: 'security.role_permissions.list', toastOnError: true });
       if (!existingRes.ok) return;
       const existingSet = new Set(existingRes.value.map(e => e.permission_id));
-      const toAssign = perms.map(p => p.permission_id).filter(id => !existingSet.has(id));
+      type MaybeLegacyPerm = { permissionId?: number; permission_id?: number };
+      const toAssign = (perms as MaybeLegacyPerm[]).map(p => p.permissionId ?? p.permission_id ?? -1).filter((id: number) => !existingSet.has(id));
       if (toAssign.length > 0) {
         await apiCall(() => assignPermissionsToRole(roleId, toAssign), { where: 'security.role_permissions.assign', toastOnError: true });
       }

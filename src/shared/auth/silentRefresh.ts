@@ -1,8 +1,10 @@
 import apiClient from '@/shared/api/apiClient';
 import { getAuthStore } from '@/features/shell';
 import { getSession } from '@/shared/api/authService';
-import type { User, Permission, UserSession } from '@/features/security/types';
-import type { Role } from '@/features/security/types/models';
+import type { IPermission as Permission, IUserSession as UserSession } from '@/features/security/types/models';
+import type { IRole as Role } from '@/features/security/types/models';
+import type { UserResponseDTO } from '@/features/security/types/dto';
+import { mapUserFromDto } from '@/features/security/types/dto';
 
 /**
  * Deriva los permisos de un usuario a partir de la base de datos mock.
@@ -36,15 +38,13 @@ async function getMockDerivedPermissions(
   );
 
   return permissions.map((p) => ({
-    permission_id: Number(p.permission_id),
-    permission_string: String(p.permission_string),
-    resource: '',
-    action: '',
-    scope: '',
-    description: '',
-    created_at: undefined,
-    updated_at: undefined,
-  } satisfies Permission));
+    permissionId: Number(p.permission_id),
+    permissionKey: String(p.permission_string),
+    resource: null,
+    action: null,
+    scope: null,
+    description: null,
+  } as unknown as Permission));
 }
 
 /**
@@ -75,19 +75,20 @@ export async function silentRefresh(): Promise<boolean> {
 
     const session = await getSession().catch(() => null);
     if (session?.user) {
-      const user = session.user as unknown as User;
+      const userDto = session.user as unknown as UserResponseDTO;
+      const user = mapUserFromDto(userDto);
       // Debug: imprimir permisos derivados por usuario para soporte
       try {
         const username = 'username' in (user as object) ? (user as { username?: string }).username : undefined;
-        console.log('[Auth] session user:', { id: user.user_id, username });
+        console.log('[Auth] session user:', { id: user.userId, username });
   } catch {
         // Ignorar errores de log en navegadores sin consola
       }
       const derivedPermissions = (await getMockDerivedPermissions(
-        user.user_id
+        user.userId
       ).catch(() => undefined)) || [];
       try {
-        console.log('[Auth] derived permissions:', derivedPermissions.map(p => p.permission_string));
+        console.log('[Auth] derived permissions:', derivedPermissions.map(p => (p as Partial<{ permissionKey: string; permission_string: string }>).permissionKey ?? (p as Partial<{ permissionKey: string; permission_string: string }>).permission_string));
   } catch {
         // Ignorar errores de log en navegadores sin consola
       }
@@ -96,11 +97,11 @@ export async function silentRefresh(): Promise<boolean> {
         ...(user as unknown as UserSession),
         permissions: derivedPermissions,
         roles: ((session as { roles?: Role[] } | null)?.roles ?? []) as Role[],
-        full_name: (user.first_name ?? '') + ' ' + (user.last_name_p ?? ''),
+        fullName: (user.firstName ?? '') + ' ' + (user.lastNameP ?? ''),
       };
       getAuthStore().setUser(sessionUser);
       try {
-        console.log('[Auth] set user permissions in store:', sessionUser.permissions?.map(p => p.permission_string));
+        console.log('[Auth] set user permissions in store:', sessionUser.permissions?.map(p => (p as Partial<{ permissionKey: string; permission_string: string }>).permissionKey ?? (p as Partial<{ permissionKey: string; permission_string: string }>).permission_string));
       } catch {
         // Ignorar errores de log en navegadores sin consola
       }

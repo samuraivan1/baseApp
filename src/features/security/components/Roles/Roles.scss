@@ -7,5 +7,9 @@
 }
 
 .segu-roles__embedded-form {
-  /* Placeholder for any specific role page child layout */
+  max-width: 640px;
+  /* align to top-left: no auto-centering */
+  margin: var(--spacing-md) 0 0 0;
+  width: 100%;
+  padding: var(--spacing-md);
 }

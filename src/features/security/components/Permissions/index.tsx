@@ -8,12 +8,12 @@ import type { FilterableColumn } from '@/shared/components/common/CommandBar/typ
 import { permissionsMessages } from './Permissions.messages';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
-import type { Permission } from '@/features/security/types';
+import type { IPermission as Permission } from '@/features/security/types/models';
 import { usePermissionsCrud } from '@/features/security';
 import { showToast } from '@/shared/utils/showToast';
 import type { PermissionFormValues } from './permission.schema';
 import { exportCsv } from '@/shared/utils/exportCsv';
-import type { PermissionDTO } from '@/features/security/api/permissions.dto';
+// Use centralized types: Permission (model) and DTOs from feature types
 import ListLoading from '@/shared/components/common/ListLoading';
 import PermissionForm from '../Permissions/PermissionForm';
 import { useAuthStore } from '@/features/shell/state/authStore';
@@ -49,7 +49,7 @@ const PermissionsPage: React.FC = () => {
   const columns: EntityTableColumn<Permission>[] = useMemo(
     () => [
       {
-        key: 'permission_string',
+        key: 'permissionKey',
         label: permissionsMessages.table.key,
         sortable: true,
       },
@@ -71,7 +71,7 @@ const PermissionsPage: React.FC = () => {
 
   const filterableColumns: FilterableColumn[] = useMemo(
     () => [
-      { key: 'permission_string', label: permissionsMessages.table.key },
+      { key: 'permissionKey', label: permissionsMessages.table.key },
       { key: 'resource', label: permissionsMessages.table.resource },
       { key: 'action', label: permissionsMessages.table.action },
       { key: 'scope', label: permissionsMessages.table.scope },
@@ -89,7 +89,7 @@ const PermissionsPage: React.FC = () => {
     if (q) {
       data = data.filter(
         (p) =>
-          p.permission_string.toLowerCase().includes(q) ||
+          p.permissionKey.toLowerCase().includes(q) ||
           (p.action ?? '').toLowerCase().includes(q) ||
           (p.resource ?? '').toLowerCase().includes(q) ||
           (p.description ?? '').toLowerCase().includes(q)
@@ -107,7 +107,7 @@ const PermissionsPage: React.FC = () => {
     });
     // Dedupe por id
     const map = new Map<number, Permission>();
-    for (const r of data) map.set(r.permission_id, r);
+    for (const r of data) map.set(r.permissionId, r);
     return Array.from(map.values());
   }, [permissions, searchTerm, activeFilters, allowedFilterKeys]);
 
@@ -155,7 +155,7 @@ const PermissionsPage: React.FC = () => {
 
   const handleExportCSV = React.useCallback(() => {
     const rows = filteredData.map((p) => [
-      p.permission_string,
+      p.permissionKey,
       p.resource ?? '',
       p.action ?? '',
       p.scope ?? '',
@@ -239,10 +239,10 @@ const PermissionsPage: React.FC = () => {
             containerClassName="loading-container loading-container--fullscreen"
           >
             <div className="fs-row-span-2 fs-table-container">
-              <PaginatedEntityTable
+              <PaginatedEntityTable<Permission>
                 columns={columns}
                 data={currentTableData}
-                keyField="permission_id"
+                keyField={"permissionId"}
                 autoFit
                 centered
                 onRowDoubleClick={(row) => {
@@ -278,7 +278,7 @@ const PermissionsPage: React.FC = () => {
                       {canDelete && (
                         <TableActionsCell
                           onDelete={() => {
-                            setDeletingId(row.permission_id);
+                            setDeletingId(row.permissionId);
                             setConfirmOpen(true);
                           }}
                           deleteLabel={commonDefaultMessages.delete}
@@ -304,6 +304,9 @@ const PermissionsPage: React.FC = () => {
         </PermissionGate>
       )}
       {isFormOpen && (
+        <div className="segu-permissions__embedded-form">
+          <div className="segu-permissions__card">
+        <div className="permissions-form__inner permissions-form__rows">
         <PermissionForm
           open={isFormOpen}
           readOnly={formReadOnly}
@@ -313,21 +316,21 @@ const PermissionsPage: React.FC = () => {
           initialValues={
             editing
               ? {
-                  permission_string: editing.permission_string,
+                  permission_string: editing.permissionKey,
                   resource: editing.resource ?? '',
                   action: editing.action ?? '',
                   scope: editing.scope ?? '',
                   description: editing.description ?? '',
                 }
               : undefined
-          }
-          onClose={() => {
-            setIsFormOpen(false);
-            setEditing(null);
-            setFormReadOnly(true);
-          }}
-          onSubmit={async (values: PermissionFormValues) => {
-            const dtoTyped: PermissionDTO = {
+            }
+            onClose={() => {
+              setIsFormOpen(false);
+              setEditing(null);
+              setFormReadOnly(true);
+            }}
+            onSubmit={async (values: PermissionFormValues) => {
+            const dtoTyped = {
               permission_string: String(values.permission_string || ''),
               resource: values.resource ? values.resource : null,
               action: values.action ? values.action : null,
@@ -343,7 +346,7 @@ const PermissionsPage: React.FC = () => {
               const res = await apiCall(
                 () =>
                   updateMut.mutateAsync({
-                    id: editing.permission_id,
+                    id: editing.permissionId,
                     input: dtoTyped,
                   }),
                 { where: 'security.permissions.update', toastOnError: true }
@@ -352,7 +355,7 @@ const PermissionsPage: React.FC = () => {
                 showToast.success(permissionsMessages.updateSuccess);
                 setIsFormOpen(false);
                 setEditing(null);
-                setJustUpdatedId(editing.permission_id);
+                setJustUpdatedId(editing.permissionId);
                 setFormReadOnly(true);
               }
             } else {
@@ -369,12 +372,15 @@ const PermissionsPage: React.FC = () => {
                 setIsFormOpen(false);
                 setFormReadOnly(true);
                 const created = res.value as Permission | undefined;
-                if (created && created.permission_id)
-                  setJustUpdatedId(created.permission_id);
+                if (created && created.permissionId)
+                  setJustUpdatedId(created.permissionId);
               }
             }
           }}
         />
+        </div>
+          </div>
+        </div>
       )}
 
       <ConfirmDialog

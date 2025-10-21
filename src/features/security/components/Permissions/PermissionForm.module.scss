@@ -1,32 +1,8 @@
-.permission-form {
-  // OrangeAlex Design System sizing
-  padding: 0.75rem 1rem;
-
-  &__body {
-    display: block;
-  }
-
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-
-    // full-width fields
-    :global(.form-field--full) {
-      grid-column: 1 / -1;
-    }
-  }
-
-  &__footer {
-    margin-top: 12px;
-    display: flex;
-    justify-content: flex-end;
-  }
-}
+/* PermissionForm now adopts the same OrangeAlex form layout as RoleForm */
+.permission-form {}
 
 // Tooltip behavior moved from inline style
 :global(.oa-tooltip-icon:hover .oa-tooltip-bubble),
 :global(.oa-tooltip-icon:focus .oa-tooltip-bubble) {
   opacity: 1;
 }
-

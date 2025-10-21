@@ -5,7 +5,7 @@ import FormActions from '@/shared/components/common/FormActions';
 import SectionHeader from '@/shared/components/common/SectionHeader';
 // removed unused Button import
 import { roleFormMessages as m } from './RoleForm.messages';
-import { CreateRoleDTO } from '@/shared/types/security';
+import { CreateRoleRequestDTO } from '@/shared/types/security';
 import { apiCall } from '@/shared/api/apiCall';
 import { faUserShield } from '@fortawesome/free-solid-svg-icons';
 // estilos de página centralizados en features/security/styles/index.scss
@@ -24,7 +24,7 @@ interface RoleFormProps {
   open: boolean;
   onClose: () => void;
   initialValues?: Partial<RoleFormValues>;
-  onSubmit: (values: CreateRoleDTO) => void;
+  onSubmit: (values: CreateRoleRequestDTO) => void;
   readOnly?: boolean;
   hasEditPermission?: boolean;
 }
@@ -79,7 +79,7 @@ export default function RoleForm({
         onSubmit={handleSubmit(async (v) => {
           if (readOnly || !hasEditPermission) return;
           await apiCall(
-            () => Promise.resolve(onSubmit(v as CreateRoleDTO)),
+            () => Promise.resolve(onSubmit(v as CreateRoleRequestDTO)),
             { where: 'security.roles.form.submit', toastOnError: true }
           );
         })}

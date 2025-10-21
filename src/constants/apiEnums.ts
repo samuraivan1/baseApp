@@ -1,35 +1,26 @@
-// FOLIO STATUS
-export const FOLIO_STATUS = {
-  IN_PROCESS: '0',
-  AUTHORIZED: '1',
-  ERROR: '2',
-  DELETED: '3',
-  PENDING: '99',
-};
+// Enums centralizados disponibles en '@/shared/types/enums' si se requieren.
 
-// ESTATUS DE MOVS DISPERSADOS
-export const STATUS_DISPERSION = {
-  ANULADO: 'AN',
-  DISPERSION_CANCEL: 'CA',
-  PENDIENTE_CANCEL: 'CP',
-  DISPERSION_ERROR: 'DE',
-  PENDIENTE_DISPERSION: 'PD',
-  DISPERSADO: 'PR',
-  TOTALMENTE_DISPERSADO: 'TD',
-};
+export enum EDispersionStatus {
+  Anulado = 'AN',
+  DispersionCancel = 'CA',
+  PendienteCancel = 'CP',
+  DispersionError = 'DE',
+  PendienteDispersion = 'PD',
+  Dispersado = 'PR',
+  TotalmenteDispersado = 'TD',
+}
 
-export const STATUS_TRANSACTIONS = {
-  ENVIADO: 'ENV',
-};
+export enum ETransactionStatus {
+  Enviado = 'ENV',
+}
 
-// POLICY_VALIDATION_CONSTANTS
 export const POLICY_VALIDATION_CONSTANTS = {
   primaryToken: '|@|',
   secondaryToken: '|$|',
-  lengthValidation: 'Longitud inv\u00E1lida',
-  validationError: 'Error de configuraci\u00f3n',
-};
+  lengthValidation: 'Longitud inválida',
+  validationError: 'Error de configuración',
+} as const;
 
-//variables para la pantalla Usuarios
-export const USER_KEY_ROL_ID = 'rolID';
-export const PROMOTORIA_ROL_ID = '1002';
+// Variables para la pantalla Usuarios
+export const USER_KEY_ROL_ID = 'rolID' as const;
+export const PROMOTORIA_ROL_ID = '1002' as const;

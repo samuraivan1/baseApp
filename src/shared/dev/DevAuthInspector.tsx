@@ -24,7 +24,9 @@ export default function DevAuthInspector() {
     try {
       const { db } = await import('@/mocks/data/db');
       const { PERMISSIONS } = await import('@/features/security/constants/permissions');
-      const uid = Number(user?.user_id);
+      type MaybeLegacyUser = { userId?: number; user_id?: number };
+      const u = user as unknown as MaybeLegacyUser | null;
+      const uid = Number(u?.userId ?? u?.user_id);
       const roles = (db.user_roles as Array<{ user_id: number; role_id: number }>)
         .filter((ur) => Number(ur.user_id) === uid)
         .map((ur) => Number(ur.role_id));

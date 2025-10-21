@@ -1,12 +1,12 @@
 // src/store/store.types.ts
 import type { Board } from '@/features/kanban/types';
-import type { UserSession } from '@/features/security/types';
+import type { IUserSession } from '@/features/security/types/models';
 
 // --- Auth Store ---
 export interface AuthState {
   isLoggedIn: boolean;
   authReady: boolean;
-  user: UserSession | null;
+  user: IUserSession | null;
   accessToken: string | null;
   refreshToken: string | null;
 }
@@ -16,14 +16,14 @@ export interface AuthActions {
   login: (
     username: string,
     password: string
-  ) => Promise<UserSession>;
+  ) => Promise<IUserSession>;
   logout: () => void;
   setToken: (accessToken: string, refreshToken?: string | null) => void;
   getToken: () => string | null;
   getRefreshToken: () => string | null;
   hasPermission: (permissionString: string) => boolean;
   setLoggedIn: (flag: boolean) => void;
-  setUser: (user: UserSession | null) => void;
+  setUser: (user: IUserSession | null) => void;
   setAuthReady: (flag: boolean) => void;
 }
 

@@ -112,7 +112,7 @@ const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
     <div className="user-menu">
       <div className="user-menu__header">
         <span className="user-menu__name">
-          {(userProp ?? userStore)?.full_name}
+          {(userProp?.full_name ?? null) || ((userStore as Partial<{ full_name: string }>).full_name) || (`${(userStore as Partial<{ firstName?: string }>).firstName ?? ''} ${(userStore as Partial<{ lastNameP?: string }>).lastNameP ?? ''}`)}
         </span>
         <span className="user-menu__email">
           {(userProp ?? userStore)?.email}

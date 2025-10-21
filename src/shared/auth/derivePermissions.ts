@@ -1,4 +1,4 @@
-import type { Permission } from '@/features/security/types';
+import type { IPermission as Permission } from '@/features/security/types/models';
 
 type MockDb = {
   user_roles: Array<{ user_id: number; role_id: number }>;
@@ -22,14 +22,12 @@ export function derivePermissions(userId: number, db: MockDb | null | undefined)
     .map(
       (p) =>
         ({
-          permission_id: Number(p.permission_id),
-          permission_string: String(p.permission_string),
+          permissionId: Number(p.permission_id),
+          permissionKey: String(p.permission_string),
           resource: '',
           action: '',
           scope: '',
           description: '',
-          created_at: undefined,
-          updated_at: undefined,
         } as Permission)
     );
   return permissions;

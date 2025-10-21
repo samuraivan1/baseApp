@@ -5,3 +5,56 @@
   box-sizing: border-box;
   padding: var(--spacing-md);
 }
+
+.segu-permissions__embedded-form {
+  /* ancho fijo para replicar Roles/Usuarios y evitar expansión visual */
+  width: 640px;
+  max-width: 640px;
+  /* alineado arriba-izquierda */
+  margin-top: var(--spacing-md);
+  margin-left: 0;
+  padding: var(--spacing-md);
+}
+
+.segu-permissions__card {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+
+/* Make form fields not stretch visually too wide inside the compact card */
+.segu-permissions__card .form-section,
+.segu-permissions__card form {
+  max-width: 100%;
+}
+
+/* grid compacto para fila superior del form (Recurso/Acción/Ámbito) */
+.permissions-form__rows {
+  display: grid;
+  grid-auto-rows: min-content;
+  row-gap: 12px;
+}
+
+.permissions-form__rows .permissions-form__row--top,
+.permissions-form__rows > .form-row--top {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 12px; /* solicitado */
+}
+
+/* fallback: si no hay filas, forzar los primeros 3 grupos del form a grid 3-cols */
+.permissions-form__rows form > *:nth-child(-n+3) {
+  display: inline-block;
+  width: calc((100% - 24px) / 3); /* 12px gap entre 3 cols -> 24 total */
+  margin-right: 12px;
+}
+.permissions-form__rows form > *:nth-child(3) { margin-right: 0; }
+
+/* asegurar que inputs no desborden el bloque de 640px */
+.segu-permissions__card input,
+.segu-permissions__card textarea,
+.segu-permissions__card select {
+  max-width: 100%;
+}

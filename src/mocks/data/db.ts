@@ -1,12 +1,7 @@
 // Centralized seed lives here to avoid root-level db.json
 import seed from '../db.json';
-import type {
-  Permission,
-  Role,
-  RolePermission,
-  User,
-  UserRole,
-} from '@/features/security/types';
+import type { PermissionResponseDTO as Permission, RoleResponseDTO as Role, UserResponseDTO as User } from '@/features/security/types/dto';
+import type { IRolePermission as RolePermission, IUserRole as UserRole } from '@/features/security/types/relations';
 
 type SeedShape = typeof seed;
 type DbShape = Omit<

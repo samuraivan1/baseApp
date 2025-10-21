@@ -51,7 +51,7 @@ const Home: React.FC = () => {
       <div className="home-overlay"></div>
       <div className="home-content">
         <h1>
-          {homeMessages.welcome} {user?.first_name || homeMessages.defaultUser}
+          {homeMessages.welcome} {user?.firstName || homeMessages.defaultUser}
         </h1>
         <p>{homeMessages.tagline}</p>
         <Link to="/kanban" className="home-button">
@@ -76,15 +76,15 @@ const Home: React.FC = () => {
             <div style={{ fontSize: 12, lineHeight: 1.6 }}>
               <div><strong>isLoggedIn:</strong> {String(isLoggedIn)}</div>
               <div><strong>authReady:</strong> {String(authReady)}</div>
-              <div><strong>user_id:</strong> {user?.user_id ?? '—'}</div>
+              <div><strong>userId:</strong> {user?.userId ?? '—'}</div>
               <div><strong>username:</strong> {'username' in (user as object || {}) ? (user as { username?: string }).username ?? '—' : '—'}</div>
-              <div><strong>full_name:</strong> {user?.full_name ?? '—'}</div>
+              <div><strong>fullName:</strong> {user?.fullName ?? '—'}</div>
               <div><strong>email:</strong> {user?.email ?? '—'}</div>
-              <div><strong>roles (ids):</strong> {(user?.roles as Array<{ role_id: number }> | undefined)?.map(r => r.role_id).join(', ') ?? '—'}</div>
+              <div><strong>roles (ids):</strong> {user?.roles?.map(r => r.roleId).join(', ') ?? '—'}</div>
               <div><strong>permissions:</strong></div>
               <ul style={{ maxHeight: 160, overflow: 'auto', marginTop: 4 }}>
                 {(user?.permissions ?? []).map((p, i) => (
-                  <li key={i}><code>{p.permission_string}</code></li>
+                  <li key={i}><code>{p.permissionKey}</code></li>
                 ))}
               </ul>
             </div>

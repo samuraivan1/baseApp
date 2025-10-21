@@ -10,7 +10,7 @@ export type PaginationConfig = {
   onRowsPerPageChange: (n: number) => void;
 };
 
-export type PaginatedEntityTableProps<T extends Record<string, unknown>> = {
+export type PaginatedEntityTableProps<T extends object> = {
   columns: ReadonlyArray<EntityTableColumn<T>>;
   data: ReadonlyArray<T>;
   keyField: keyof T & string;
@@ -22,7 +22,7 @@ export type PaginatedEntityTableProps<T extends Record<string, unknown>> = {
   centered?: boolean;
 };
 
-const PaginatedEntityTable = <T extends Record<string, unknown>>({
+const PaginatedEntityTable = <T extends object>({
   columns,
   data,
   keyField,

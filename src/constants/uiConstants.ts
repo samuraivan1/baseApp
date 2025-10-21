@@ -89,8 +89,8 @@ export const ACCENTS_MAP = {
 };
 
 //variables para la pantalla Usuarios
-export const USER_KEY_ROL_ID = 'rolID';
-export const PROMOTORIA_ROL_ID = '1002';
+export const USER_KEY_ROL_ID = 'rolID' as const;
+export const PROMOTORIA_ROL_ID = '1002' as const;
 // ... (y las demás constantes de roles)
 
 export const AVISO_PRIVACIDAD = 'https://www.truper.com/aviso-de-privacidad';

@@ -18,8 +18,8 @@ import ConfirmDialog from '@/shared/components/ui/ConfirmDialog';
 import UserForm from './UserForm';
 import { usersMessages } from './Users.messages';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
-import type { User } from '@/features/security/types/models';
-import type { UserRole } from '@/features/security/types/relations';
+import type { IUser as User } from '@/features/security/types/models';
+import type { IUserRole as UserRole } from '@/features/security/types/relations';
 import type { FilterableColumn } from '@/shared/components/common/CommandBar/types';
 import TableActionsCell from '@/shared/components/common/TableActionsCell';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
@@ -59,8 +59,14 @@ const UsuariosPage: React.FC = () => {
 
     return usersRaw.map((user: User) => ({
       ...(user as unknown as Record<string, unknown>),
-      is_active: Boolean((user as unknown as { is_active?: boolean | number })?.is_active),
-      rolId: roleByUserId.get(user.user_id),
+      is_active: Boolean((user as unknown as { is_active?: boolean | number })?.is_active ?? user.isActive),
+      mfa_enabled: Boolean((user as unknown as { mfa_enabled?: boolean | number })?.mfa_enabled ?? user.mfaEnabled),
+      user_id: (user as unknown as { user_id?: number })?.user_id ?? user.userId,
+      first_name: (user as unknown as { first_name?: string })?.first_name ?? user.firstName,
+      second_name: (user as unknown as { second_name?: string | null })?.second_name ?? (user as unknown as { secondName?: string | null }).secondName ?? null,
+      last_name_p: (user as unknown as { last_name_p?: string })?.last_name_p ?? user.lastNameP,
+      last_name_m: (user as unknown as { last_name_m?: string | null })?.last_name_m ?? (user as unknown as { lastNameM?: string | null }).lastNameM ?? null,
+      rolId: roleByUserId.get((user as unknown as { user_id?: number })?.user_id ?? user.userId),
     })) as unknown as UserWithRole[];
   }, [usersRaw, userRoles]);
 
@@ -252,7 +258,7 @@ const UsuariosPage: React.FC = () => {
                   {hasDeletePermission && (
                     <TableActionsCell
                       onDelete={() => {
-                        setDeletingId(u.user_id);
+                        setDeletingId((u as unknown as { user_id?: number })?.user_id ?? (u as unknown as { userId?: number }).userId ?? null);
                         setConfirmOpen(true);
                       }}
                       deleteLabel={usersMessages.delete}
@@ -290,6 +296,12 @@ const UsuariosPage: React.FC = () => {
                           .mfa_enabled === true)
                         ? true
                         : false,
+                    // Normalize domain -> form snake_case fields for the form
+                    user_id: (editing as unknown as { user_id?: number })?.user_id ?? (editing as unknown as { userId?: number }).userId ?? 0,
+                    first_name: (editing as unknown as { first_name?: string })?.first_name ?? (editing as unknown as { firstName?: string }).firstName,
+                    second_name: (editing as unknown as { second_name?: string | null })?.second_name ?? (editing as unknown as { secondName?: string | null }).secondName ?? null,
+                    last_name_p: (editing as unknown as { last_name_p?: string })?.last_name_p ?? (editing as unknown as { lastNameP?: string }).lastNameP,
+                    last_name_m: (editing as unknown as { last_name_m?: string | null })?.last_name_m ?? (editing as unknown as { lastNameM?: string | null }).lastNameM ?? null,
                   }
                 : undefined
             }
@@ -318,7 +330,8 @@ const UsuariosPage: React.FC = () => {
                 if (values.rolId != null) {
                   if (created) {
                     const { apiCall } = await import('@/shared/api/apiCall');
-                    await apiCall(() => addUserRole(created.user_id, Number(values.rolId)), { where: 'security.user_roles.assign', toastOnError: true });
+                    const createdId: number = (created as Partial<{ userId: number; user_id: number }>).userId ?? (created as Partial<{ userId: number; user_id: number }>).user_id ?? 0;
+                    await apiCall(() => addUserRole(createdId, Number(values.rolId)), { where: 'security.user_roles.assign', toastOnError: true });
                   }
                 }
               } else {
@@ -328,7 +341,7 @@ const UsuariosPage: React.FC = () => {
                 const { apiCall } = await import('@/shared/api/apiCall');
                 await apiCall(
                   () => update.mutateAsync({
-                    id: editing.user_id,
+                    id: (editing as unknown as { user_id?: number })?.user_id ?? (editing as unknown as { userId?: number }).userId ?? 0,
                     input: ({
                       ...restUpdate,
                       ...(ph != null ? { password_hash: ph } : {}),

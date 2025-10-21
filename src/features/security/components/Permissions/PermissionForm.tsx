@@ -6,7 +6,7 @@ import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
 import FormActions from '@/shared/components/common/FormActions';
 // Styles are now modular per component
-import styles from './PermissionForm.module.scss';
+// styles consolidated into OrangeAlex form layout
 import { permissionsMessages } from '../Permissions/Permissions.messages';
 import {
   permissionSchema,
@@ -108,7 +108,7 @@ const PermissionForm: React.FC<PermissionFormProps> = ({
   };
 
   return (
-    <div className={styles['permission-form']}>
+    <div className="orangealex-form oa-form--md oa-form--left">
       {open ? (
         <>
           <SectionHeader
@@ -116,8 +116,8 @@ const PermissionForm: React.FC<PermissionFormProps> = ({
             icon={undefined}
             onBack={onClose}
           />
-          <form onSubmit={rhfSubmit(onValid)} className={styles['permission-form__body']} noValidate>
-            <div className={styles['permission-form__grid']}>
+          <form onSubmit={rhfSubmit(onValid)} className="orangealex-form__body" noValidate>
+            <div className="orangealex-form__grid">
               {/* Fila 1: Recurso, Acción, Ámbito */}
               <Controller
                 control={control}
@@ -233,7 +233,7 @@ const PermissionForm: React.FC<PermissionFormProps> = ({
               />
             </div>
 
-            <div className={styles['permission-form__footer']}>
+            <div className="orangealex-form__footer">
               <FormActions
                 onCancel={onClose}
                 onAccept={rhfSubmit(onValid)}

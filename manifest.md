@@ -47,6 +47,12 @@ Cada feature debe ser autocontenida: su lógica de API, hooks, componentes y tip
 - Rutas de la app: `src/constants/routes.ts` (`APP_ROUTES`).
 - Permisos RBAC: `src/features/security/constants/permissions.ts` (`PERMISSIONS`).
 - Mock DB / RBAC de desarrollo: `src/mocks/data/db.ts`.
+- Tipos centralizados por feature en `src/features/<feature>/types/`:
+  - `models.ts` (modelos de dominio)
+  - `dto.ts` (DTOs: Create/Update separados del modelo)
+  - `relations.ts` (tablas pivote)
+  - `schemas*.ts` (Zod para contratos y validación)
+  - Export público: `index.ts` (no duplicar DTOs fuera de este paquete)
 
 Toda verificación de permisos y rutas debe depender de estas constantes.
 
@@ -345,7 +351,7 @@ TypeScript
 No usar any. Si no hay tipo, definir interfaces mínimas o usar genéricos con Record<string, unknown>.
 No bloques vacíos. En catch o bloques vacíos, añade un comentario // ignore o // no-op.
 Evita casts de DTOs. Usa los mappers toCreateUserDto / toUpdateUserDto en lugar de castear.
-No exportar/usar tipos de auth desde rutas ambiguas; usar siempre features/security/types.
+No exportar/usar tipos de auth desde rutas ambiguas; usar siempre `features/security/types` y `I*`.
 React
 No importar React por defecto en componentes con JSX moderno. Solo importa lo que uses (useState, useEffect, etc.).
 SectionHeader: no usar la prop right. Si se necesita botón secundario, renderizarlo fuera del header.

@@ -1,7 +1,7 @@
 /**
  * Transformadores entre UI (UserFormValues/UserView) y DTO de API.
  */
-import type { User } from '@/shared/types/security';
+import type { CreateUserRequestDTO, UpdateUserRequestDTO } from '@/shared/types/security';
 
 const toString = (value: unknown, fallback = ''): string =>
   typeof value === 'string' ? value : fallback;
@@ -15,13 +15,9 @@ const toNumberFlag = (value: unknown, defaultValue: 0 | 1 = 0): 0 | 1 => {
   return defaultValue;
 };
 
-export type CreateUserDto = Omit<User,
-  'user_id' | 'created_by' | 'updated_by' | 'deleted_at' | 'password_hash'> & { password_hash?: string | null };
-
-export type UpdateUserDto = Partial<CreateUserDto>;
-
-export const toCreateUserDto = (payload: Record<string, unknown>): CreateUserDto => {
-  const dto: CreateUserDto = {
+// TODO: refine type - revisar coerciones y zod schemas
+export const toCreateUserDto = (payload: Record<string, unknown>): CreateUserRequestDTO => {
+  const dto: CreateUserRequestDTO = {
     username: toString(payload.nombreUsuario),
     email: toString(payload.correoElectronico),
     first_name: toString(payload.nombre),
@@ -47,7 +43,7 @@ export const toCreateUserDto = (payload: Record<string, unknown>): CreateUserDto
   return dto;
 };
 
-export const toUpdateUserDto = (payload: Record<string, unknown>): UpdateUserDto => ({
+export const toUpdateUserDto = (payload: Record<string, unknown>): UpdateUserRequestDTO => ({
   username: toString(payload.nombreUsuario),
   email: toString(payload.correoElectronico),
   first_name: toString(payload.nombre),

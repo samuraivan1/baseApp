@@ -1,31 +1,32 @@
 // src/services/roleService.ts
 import api from '@/shared/api/apiClient';
 import { handleApiError } from '@/shared/api/errorService';
-import { Role, CreateRoleDTO, UpdateRoleDTO, RolePermission } from '@/shared/types/security';
+import { Role, RolePermission, CreateRoleRequestDTO, UpdateRoleRequestDTO } from '@/shared/types/security';
+import { type RoleResponseDTO, mapRoleFromDto } from '@/features/security/types/dto';
 
 export async function getRoles(): Promise<Role[]> {
   try {
-    const { data } = await api.get<Role[]>('/roles');
-    return data;
+    const { data } = await api.get<RoleResponseDTO[]>('/roles');
+    return data.map(mapRoleFromDto);
   } catch (error) {
     throw handleApiError(error);
   }
 }
-export async function createRole(input: CreateRoleDTO): Promise<Role> {
+export async function createRole(input: CreateRoleRequestDTO): Promise<Role> {
   try {
-    const { data } = await api.post<Role>('/roles', input);
-    return data;
+    const { data } = await api.post<RoleResponseDTO>('/roles', input);
+    return mapRoleFromDto(data);
   } catch (error) {
     throw handleApiError(error);
   }
 }
 export async function updateRole(
   id: number,
-  input: UpdateRoleDTO
+  input: UpdateRoleRequestDTO
 ): Promise<Role> {
   try {
-    const { data } = await api.put<Role>(`/roles/${id}`, input);
-    return data;
+    const { data } = await api.put<RoleResponseDTO>(`/roles/${id}`, input);
+    return mapRoleFromDto(data);
   } catch (error) {
     throw handleApiError(error);
   }

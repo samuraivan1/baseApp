@@ -3,10 +3,10 @@ import { db, nextId, persistDb } from '../data/db';
 import { requireAuth, ensurePermission } from '../utils/auth';
 import { requireCsrfOnMutation } from '../utils/csrf';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
-import type { Role } from '@/features/security/types';
+import type { RoleResponseDTO, CreateRoleRequestDTO, UpdateRoleRequestDTO } from '@/features/security/types/dto';
 
-function getRolesTable(): Role[] {
-  return db.roles as Role[];
+function getRolesTable(): RoleResponseDTO[] {
+  return db.roles as RoleResponseDTO[];
 }
 
 const BASE = '/api/roles';
@@ -48,9 +48,9 @@ export const rolesHandlers = [
       PERMISSIONS.SECURITY_ROLES_CREATE
     ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
-    const body = (await request.json()) as Partial<Role>;
+    const body = (await request.json()) as CreateRoleRequestDTO;
     const role_id = nextId('roles');
-    const row: Role = {
+    const row: RoleResponseDTO = {
       role_id,
       name: body.name ?? `Role ${role_id}`,
       description: body.description ?? '',
@@ -73,11 +73,11 @@ export const rolesHandlers = [
     ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     const id = Number(params.id);
-    const body = (await request.json()) as Partial<Role>;
+    const body = (await request.json()) as UpdateRoleRequestDTO;
     const roles = getRolesTable();
     const idx = roles.findIndex((item) => Number(item.role_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
-    roles[idx] = { ...roles[idx], ...body, role_id: id } as Role;
+    roles[idx] = { ...roles[idx], ...body, role_id: id } as RoleResponseDTO;
     persistDb();
     return HttpResponse.json(roles[idx], { status: 200 });
   }),
@@ -93,7 +93,7 @@ export const rolesHandlers = [
     ) : new HttpResponse(null, { status: 401 });
     if (denied) return denied;
     const id = Number(params.id);
-    const body = (await request.json()) as Partial<Role>;
+    const body = (await request.json()) as UpdateRoleRequestDTO;
     const roles = getRolesTable();
     const idx = roles.findIndex((item) => Number(item.role_id) === id);
     if (idx === -1) return new HttpResponse(null, { status: 404 });
@@ -101,7 +101,7 @@ export const rolesHandlers = [
       ...roles[idx],
       ...body,
       role_id: id,
-    } as Role;
+    } as RoleResponseDTO;
     persistDb();
     return HttpResponse.json(roles[idx], { status: 200 });
   }),

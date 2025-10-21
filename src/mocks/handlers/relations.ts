@@ -3,7 +3,7 @@ import { db, persistDb } from '../data/db';
 import { requireAuth, ensurePermission } from '../utils/auth';
 import { requireCsrfOnMutation } from '../utils/csrf';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
-import type { UserRole, RolePermission } from '@/features/security/types';
+import type { IUserRole as UserRole, IRolePermission as RolePermission } from '@/features/security/types/relations';
 
 function getUserRolesTable(): UserRole[] {
   return db.user_roles as UserRole[];

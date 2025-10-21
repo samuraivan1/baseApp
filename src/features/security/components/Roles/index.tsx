@@ -71,7 +71,7 @@ const RolesPage: React.FC = () => {
       data = data.filter((row: Role) => String(row[key as keyof Role] ?? '').toLowerCase().includes(vq));
     });
     const map = new Map<number, Role>();
-    for (const r of data) map.set(r.role_id, r);
+    for (const r of data) map.set(r.roleId, r);
     return Array.from(map.values());
   }, [roles, searchTerm, activeFilters, allowedFilterKeys]);
 
@@ -126,7 +126,7 @@ const RolesPage: React.FC = () => {
   const handleOpenView = (role: Role) => { setEditingRole(role); setIsFormOpen(true); setFormReadOnly(true); };
   const handleExportExcel = () => {
     const rows = filteredData.map((r) => [
-      r.role_id,
+      r.roleId,
       r.name,
       r.description ?? '',
     ]);
@@ -215,7 +215,7 @@ const RolesPage: React.FC = () => {
                 <PaginatedEntityTable<Role>
                   columns={columns}
                   data={currentTableData}
-                  keyField="role_id"
+                  keyField="roleId"
                   autoFit
                   centered
                   onRowDoubleClick={(row) => {
@@ -231,7 +231,7 @@ const RolesPage: React.FC = () => {
                             )}
                             <TableActionsCell onCustomAction={() => handleOpenPermissions(role)} customLabel={'Permisos'} customIcon="key" />
                             {canDelete && (
-                              <TableActionsCell onDelete={() => { setDeletingId(role.role_id); }} deleteLabel={rolesMessages.delete} />
+                              <TableActionsCell onDelete={() => { setDeletingId(role.roleId); }} deleteLabel={rolesMessages.delete} />
                             )}
                           </>
                         ),
@@ -276,7 +276,7 @@ const RolesPage: React.FC = () => {
               if (editingRole) {
                 if (!canUpdate) return;
                 const res = await apiCall(
-                  () => update.mutateAsync({ id: editingRole.role_id, input: dto }),
+                  () => update.mutateAsync({ id: editingRole.roleId, input: dto }),
                   { where: 'security.roles.update', toastOnError: true }
                 );
                 if (res.ok) setIsFormOpen(false);

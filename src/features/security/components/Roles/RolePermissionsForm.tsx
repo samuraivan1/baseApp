@@ -37,10 +37,10 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
     (async () => {
       try {
         const rows = await getRolePermissionsList();
-        const forRole = rows.filter((r) => Number(r.role_id) === Number(role.role_id));
+        const forRole = rows.filter((r) => Number(r.role_id) === Number(role.roleId));
         if (!mount) return;
         const currentAssigned = forRole.map((r) => Number(r.permission_id));
-        const allIds = (permsQuery.data ?? []).map((p: Permission) => Number(p.permission_id));
+        const allIds = (permsQuery.data ?? []).map((p: Permission) => Number(p.permissionId));
         reset(allIds.filter((id) => !currentAssigned.includes(id)), currentAssigned);
       } finally {
         if (mount) setLoading(false);
@@ -49,14 +49,14 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
     return () => {
       mount = false;
     };
-  }, [role.role_id, reset, permsQuery.data]);
+  }, [role.roleId, reset, permsQuery.data]);
 
   const allPermissions = useMemo(() => (permsQuery.data ?? []) as Permission[], [permsQuery.data]);
   const available = useMemo(() => {
     const byId = new Set(availableIds);
-    return allPermissions.filter((p) => byId.has(Number(p.permission_id)));
+    return allPermissions.filter((p) => byId.has(Number(p.permissionId)));
   }, [allPermissions, availableIds]);
-  const selected = useMemo(() => assigned.map((id) => allPermissions.find((p) => Number(p.permission_id) === Number(id))).filter(Boolean) as Permission[], [assigned, allPermissions]);
+  const selected = useMemo(() => assigned.map((id) => allPermissions.find((p) => Number(p.permissionId) === Number(id))).filter(Boolean) as Permission[], [assigned, allPermissions]);
 
   // Drag from available -> selected or reorder inside selected
   // Droppable zones
@@ -89,7 +89,7 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
   const persistChanges = async () => {
     // Fetch current relations and compute diff
     const current: RolePermission[] = await getRolePermissionsList();
-    const currentForRole = current.filter((r) => r.role_id === role.role_id);
+    const currentForRole = current.filter((r) => r.role_id === role.roleId);
     const currentIds = new Set(currentForRole.map((r) => Number(r.permission_id)));
     const nextIds = new Set(assigned);
 
@@ -99,12 +99,13 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
     // Apply add/remove via API
     await apiCall(async () => {
       for (const pid of toAdd) {
-        await addRolePermission(role.role_id, pid);
+        await addRolePermission(role.roleId, pid);
       }
       for (const pid of toRemove) {
         // Our mock delete expects compound path; expose a helper id here as `${role}-${perm}` is not supported, so call legacy compound route via apiClient directly
-        const { default: api } = await import('@/shared/api/apiClient');
-        await api.delete(`/role_permissions/${role.role_id}/${pid}`);
+        // use static import to avoid dynamic import warnings
+        const api = (await import('@/shared/api/apiClient')).default;
+        await api.delete(`/role_permissions/${role.roleId}/${pid}`);
       }
       return Promise.resolve();
     }, { where: 'security.role_permissions.persist', toastOnError: true });
@@ -132,19 +133,19 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
 
   // Draggable item component (stable ref per item)
   function DraggablePermItem({ p, kind }: { p: Permission; kind: 'available' | 'assigned' }) {
-    const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: String(p.permission_id) });
+    const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: String(p.permissionId) });
     if (kind === 'available') {
       return (
-        <li ref={setNodeRef} {...attributes} {...listeners} className={`${styles['rp-item']} ${styles['rp-item--available']} ${isDragging ? styles['rp-item--dragging'] : ''}`} onDoubleClick={() => handleAvailableDblClick(Number(p.permission_id))}>
+        <li ref={setNodeRef} {...attributes} {...listeners} className={`${styles['rp-item']} ${styles['rp-item--available']} ${isDragging ? styles['rp-item--dragging'] : ''}`} onDoubleClick={() => handleAvailableDblClick(Number(p.permissionId))}>
           <span className={styles['rp-item__icon']} aria-hidden>+</span>
-          <div className={styles['rp-item__content']}><span className={styles['rp-item__code']}>{p.permission_string}</span><span className={styles['rp-item__desc']}>{p.description ?? ''}</span></div>
+          <div className={styles['rp-item__content']}><span className={styles['rp-item__code']}>{p.permissionKey}</span><span className={styles['rp-item__desc']}>{p.description ?? ''}</span></div>
         </li>
       );
     }
     return (
-      <li ref={setNodeRef} {...attributes} {...listeners} className={`${styles['rp-item']} ${styles['rp-item--assigned']} ${isDragging ? styles['rp-item--dragging'] : ''}`} onDoubleClick={() => handleAssignedDblClick(Number(p.permission_id))}>
-        <button type="button" className={styles['rp-item__btn']} onClick={() => handleRemove(Number(p.permission_id))} aria-label="Quitar">✕</button>
-        <div className={styles['rp-item__content']}><span className={styles['rp-item__code']}>{p.permission_string}</span><span className={styles['rp-item__desc']}>{p.description ?? ''}</span></div>
+      <li ref={setNodeRef} {...attributes} {...listeners} className={`${styles['rp-item']} ${styles['rp-item--assigned']} ${isDragging ? styles['rp-item--dragging'] : ''}`} onDoubleClick={() => handleAssignedDblClick(Number(p.permissionId))}>
+        <button type="button" className={styles['rp-item__btn']} onClick={() => handleRemove(Number(p.permissionId))} aria-label="Quitar">✕</button>
+        <div className={styles['rp-item__content']}><span className={styles['rp-item__code']}>{p.permissionKey}</span><span className={styles['rp-item__desc']}>{p.description ?? ''}</span></div>
       </li>
     );
   }
@@ -158,13 +159,13 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
             <h4 className={styles.rolePerms__title}>Disponibles ({available.length})</h4>
             <div className={styles.rolePerms__titlebar}>
               <span />
-              <button className={styles['rp-pagination__btn']} style={{ background: '#e6f7ec', borderColor: '#16a34a', color: '#166534' }} onClick={() => assignMany(available.map(p => Number(p.permission_id)))} disabled={!available.length}>Asignar todos</button>
+              <button className={styles['rp-pagination__btn']} style={{ background: '#e6f7ec', borderColor: '#16a34a', color: '#166534' }} onClick={() => assignMany(available.map(p => Number(p.permissionId)))} disabled={!available.length}>Asignar todos</button>
             </div>
             <DndContext sensors={sensors} onDragEnd={onDragEnd}>
               <AvailZone>
                 <ul className={`${styles['rp-list']}`}>
                   {pagedAvailable.map((p) => (
-                    <DraggablePermItem key={p.permission_id} p={p} kind="available" />
+                    <DraggablePermItem key={p.permissionId} p={p} kind="available" />
                   ))}
                 </ul>
               </AvailZone>
@@ -186,7 +187,7 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
                 <AssignZone>
                   <ul className={`${styles['rp-list']} ${styles['rp-list--assigned']}`}>
                     {pagedSelected.map((p) => (
-                      <DraggablePermItem key={p.permission_id} p={p} kind="assigned" />
+                      <DraggablePermItem key={p.permissionId} p={p} kind="assigned" />
                     ))}
                   </ul>
                 </AssignZone>
