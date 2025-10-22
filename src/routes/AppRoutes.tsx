@@ -11,7 +11,6 @@ import {
   PermissionsPage,
 } from '@/features/security';
 import { Unauthorized } from '@/features/shell';
-import { FormLayoutDemo } from '@/features/demo';
 import ProtectedRoute from './ProtectedRoute';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
 import { images } from '@/assets/images';
@@ -36,7 +35,7 @@ const AppRoutes = () => {
               </Suspense>
             }
           />
-          {/* Ruta Dev Products removida: feature eliminada */}
+
           <Route
             path={APP_ROUTES.DEV_PROFILE}
             element={
@@ -69,14 +68,6 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute permiso={PERMISSIONS.KANBAN_BOARD_VIEW}>
             <Kanban />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path={APP_ROUTES.FORMS_DEMO}
-        element={
-          <ProtectedRoute>
-            <FormLayoutDemo />
           </ProtectedRoute>
         }
       />

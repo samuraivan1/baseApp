@@ -1,0 +1,174 @@
+[
+  {
+    "ruleId": "naming.components.pascalcase",
+    "category": "naming",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/routes/AppRoutes.tsx",
+      "src/shared/components/common/ErrorBoundary.tsx"
+    ]
+  },
+  {
+    "ruleId": "hooks.prefix.use",
+    "category": "naming",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/shared/hooks/useSafeMutation.ts",
+      "src/core/providers.tsx"
+    ]
+  },
+  {
+    "ruleId": "scss.tokens.css-variables",
+    "category": "styles",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/styles/_bridge.scss",
+      "src/core/tokens.ts"
+    ]
+  },
+  {
+    "ruleId": "data.query.keys.centralized",
+    "category": "architecture",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/constants/queryKeys.ts",
+      "docs/01_Estandares/Estilo_Codigo_TSX.md"
+    ]
+  },
+  {
+    "ruleId": "routing.protected.rbac",
+    "category": "security",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/routes/ProtectedRoute.tsx",
+      "src/features/security/constants/permissions.ts"
+    ]
+  },
+  {
+    "ruleId": "api.error.handling.centralized",
+    "category": "architecture",
+    "source": "from_md",
+    "validated": false,
+    "appearsIn": [
+      "docs/ERROR_HANDLING.md"
+    ]
+  },
+  {
+    "ruleId": "fsd.manifest.architecture",
+    "category": "architecture",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "manifest.md",
+      "src/routes/AppRoutes.tsx"
+    ]
+  },
+  {
+    "ruleId": "msw.mocks.documented",
+    "category": "qa",
+    "source": "from_md",
+    "validated": false,
+    "appearsIn": [
+      "docs/API_MOCKS.md"
+    ]
+  },
+  {
+    "ruleId": "fsd.structure.manifest",
+    "category": "architecture",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/manifest.md",
+      "src/routes/AppRoutes.tsx"
+    ]
+  },
+  {
+    "ruleId": "naming.scss.bem",
+    "category": "styles",
+    "source": "from_md",
+    "validated": false,
+    "appearsIn": [
+      "prompt_operativo_baseApp.md",
+      "docs/manifest.md"
+    ]
+  },
+  {
+    "ruleId": "quality.eslint.prettier.commitlint",
+    "category": "qa",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "manifest.md",
+      "CONTRIBUTING.md",
+      ".eslintrc.cjs",
+      "commitlint.config.js"
+    ]
+  },
+  {
+    "ruleId": "permissions.constant.sourceoftruth",
+    "category": "security",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/CODING_RULES.md",
+      "src/features/security/constants/permissions.ts"
+    ]
+  },
+  {
+    "ruleId": "auth.bootstrap.authready",
+    "category": "security",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/shared/auth/bootstrapAuth.ts",
+      "src/routes/ProtectedRoute.tsx"
+    ]
+  },
+  {
+    "ruleId": "auth.silent.refresh.on.init",
+    "category": "security",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/index.tsx",
+      "src/shared/auth/silentRefresh.ts"
+    ]
+  },
+  {
+    "ruleId": "architecture.core.barrel.exports",
+    "category": "architecture",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/core/index.ts",
+      "src/lib/queryClient.ts",
+      "src/shared/api/apiClient.ts"
+    ]
+  },
+  {
+    "ruleId": "imports.alias.at",
+    "category": "rules",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/routes/AppRoutes.tsx",
+      "src/core/providers.tsx",
+      "src/features/security/styles/index.scss"
+    ]
+  },
+  {
+    "ruleId": "styles.shared.fs-table",
+    "category": "styles",
+    "source": "from_code",
+    "validated": true,
+    "appearsIn": [
+      "src/features/security/styles/index.scss",
+      "src/shared/styles/fs-table.scss"
+    ]
+  }
+]

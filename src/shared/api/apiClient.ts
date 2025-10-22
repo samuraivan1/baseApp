@@ -82,9 +82,8 @@ api.interceptors.response.use(
 
         getAuthStore().setToken(newAccessToken);
         try {
-          const { normalizeError } = await import('@/shared/api/errorService');
           const svc = (await import('@/shared/api/errorService')).default;
-          svc.logError(normalizeError({ message: 'Token refreshed' }, { where: 'auth.refresh.success' }));
+          svc.captureBreadcrumb?.({ message: 'Token refreshed', category: 'auth', data: { where: 'auth.refresh.success' } });
         } catch { /* noop */ }
         isRefreshing = false;
         flush(newAccessToken);

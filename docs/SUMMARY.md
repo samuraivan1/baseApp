@@ -1,0 +1,25 @@
+# Índice de Documentación
+
+- 00 Global
+  - 00_Global_README.md
+  - ../manifest.md
+- 01 Estandares
+  - 01_Estandares/Arquitectura_FSD.md
+  - 01_Estandares/Estilo_Codigo_TSX.md
+  - 01_Estandares/SCSS_Guia_Modular.md
+  - 01_Estandares/RBAC_Permisos.md
+  - 01_Estandares/Auth_Sesion.md
+  - 01_Estandares/UI_Global_Design_System.md
+  - 01_Estandares/Tokens_y_Tipografia.md
+  - 01_Estandares/QA_y_Testing.md
+  - 01_Estandares/Integraciones_SAP.md
+- 02 Auditorias
+  - 02_Auditorias/audit_frontend.md
+  - 02_Auditorias/audit_backend.md
+  - 02_Auditorias/audit_scss.md
+  - 02_Auditorias/audit_global.md
+- 03 Prompts
+  - 03_Prompts/prompt_operativo.md
+  - 03_Prompts/prompt_entendimiento.md
+- 04 Logs
+  - 04_Logs/log_historico_estandares.md

@@ -9,7 +9,6 @@ export const APP_ROUTES = {
   SECURITY_ROLES: '/seguridad/roles',
   SECURITY_PERMISSIONS: '/seguridad/permisos',
   DEV_MUTATION: '/dev/mutation',
-  // DEV_PRODUCTS removed (feature products deleted)
   DEV_PROFILE: '/dev/profile',
   REGISTER: '/register',
   FORGOT_PASSWORD: '/forgot-password',
