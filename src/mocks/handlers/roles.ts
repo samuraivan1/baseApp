@@ -82,29 +82,7 @@ export const rolesHandlers = [
     return HttpResponse.json(roles[idx], { status: 200 });
   }),
 
-  http.patch(`${BASE}/:id`, async ({ params, request }) => {
-    const csrf = requireCsrfOnMutation(request);
-    if (csrf) return csrf;
-    const auth = requireAuth(request);
-    if (auth instanceof HttpResponse) return auth;
-    const denied = auth.user ? ensurePermission(
-      auth.user.user_id,
-      PERMISSIONS.SECURITY_ROLES_UPDATE
-    ) : new HttpResponse(null, { status: 401 });
-    if (denied) return denied;
-    const id = Number(params.id);
-    const body = (await request.json()) as UpdateRoleRequestDTO;
-    const roles = getRolesTable();
-    const idx = roles.findIndex((item) => Number(item.role_id) === id);
-    if (idx === -1) return new HttpResponse(null, { status: 404 });
-    roles[idx] = {
-      ...roles[idx],
-      ...body,
-      role_id: id,
-    } as RoleResponseDTO;
-    persistDb();
-    return HttpResponse.json(roles[idx], { status: 200 });
-  }),
+  // Removed PATCH handler: updates unified via PUT
 
   http.delete(`${BASE}/:id`, ({ params, request }) => {
     const csrf = requireCsrfOnMutation(request);

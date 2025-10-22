@@ -1,0 +1,151 @@
+[
+  {
+    "path": "src/shared/components/common/SearchBar/index.tsx",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/shared/components/common/SafeImg/index.tsx",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/shared/components/common/SafeLink/index.tsx",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/shared/components/common/DetailDrawer/index.tsx",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/shared/components/common/SafeHtml/index.tsx",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/shared/components/common/PageHeader/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/dev/Profile.tsx(2,24): error TS2307: Cannot find module '@/shared/components/common/PageHeader' or its corresponding type declarations.\nsrc/features/security/components/Permissions/index.tsx(2,24): error TS2307: Cannot find module '@/shared/components/common/PageHeader' or its corresponding type declarations.\nsrc/features/security/components/Roles/index.tsx(2,24): error TS2307: Cannot find module '@/shared/components/common/PageHeader' or its corresponding type declarations.\nsrc/features/security/components/Users/index.tsx(12,24): error TS2307: Cannot find module '@/shared/components/common/PageHeader' or its corresponding type declarations.\nsrc/shared/index.ts(6,15): error TS2307: Cannot find module './components/common/PageHeader' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/components/common/CommandBar/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/security/components/Permissions/index.tsx(3,24): error TS2307: Cannot find module '@/shared/components/common/CommandBar' or its corresponding type declarations.\nsrc/features/security/components/Roles/index.tsx(3,24): error TS2307: Cannot find module '@/shared/components/common/CommandBar' or its corresponding type declarations.\nsrc/features/security/components/Users/index.tsx(13,24): error TS2307: Cannot find module '@/shared/components/common/CommandBar' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/components/common/Entitytable/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/security/components/Permissions/index.tsx(6,40): error TS2307: Cannot find module '@/shared/components/common/Entitytable' or its corresponding type declarations.\nsrc/features/security/components/Roles/index.tsx(5,35): error TS2307: Cannot find module '@/shared/components/common/Entitytable' or its corresponding type declarations.\nsrc/features/security/components/Users/index.tsx(15,40): error TS2307: Cannot find module '@/shared/components/common/Entitytable' or its corresponding type declarations.\nsrc/features/security/components/Users/index.tsx(89,81): error TS7006: Parameter 'u' implicitly has an 'any' type.\nsrc/shared/components/common/PaginatedEntityTable/index.tsx(2,48): error TS2307: Cannot find module '@/shared/components/common/Entitytable' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/components/common/ListLoading/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/security/components/Permissions/index.tsx(17,25): error TS2307: Cannot find module '@/shared/components/common/ListLoading' or its corresponding type declarations.\nsrc/features/security/components/Roles/index.tsx(8,25): error TS2307: Cannot find module '@/shared/components/common/ListLoading' or its corresponding type declarations.\nsrc/features/security/components/Roles/RolePermissionsForm.tsx(7,25): error TS2307: Cannot find module '@/shared/components/common/ListLoading' or its corresponding type declarations.\nsrc/features/security/components/Users/index.tsx(26,25): error TS2307: Cannot find module '@/shared/components/common/ListLoading' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/components/ui/LoadingOverlay/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/security/components/Roles/RoleForm.tsx(14,28): error TS2307: Cannot find module '@/shared/components/ui/LoadingOverlay' or its corresponding type declarations.\nsrc/features/security/components/Users/UserForm.tsx(15,28): error TS2307: Cannot find module '@/shared/components/ui/LoadingOverlay' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/components/ui/Input/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/demo/components/FormLayoutDemo.tsx(3,19): error TS2307: Cannot find module '@/shared/components/ui/Input' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/components/ui/Textarea/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/demo/components/FormLayoutDemo.tsx(4,22): error TS2307: Cannot find module '@/shared/components/ui/Textarea' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/components/ui/ConfirmDialog/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/security/components/Permissions/index.tsx(21,27): error TS2307: Cannot find module '@/shared/components/ui/ConfirmDialog' or its corresponding type declarations.\nsrc/features/security/components/Roles/index.tsx(17,27): error TS2307: Cannot find module '@/shared/components/ui/ConfirmDialog' or its corresponding type declarations.\nsrc/features/security/components/Users/index.tsx(17,27): error TS2307: Cannot find module '@/shared/components/ui/ConfirmDialog' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/hooks/useApiError.ts",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/features/security/api/hooks/useUserRolesCrud.ts",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/security/components/Users/index.tsx(5,3): error TS2724: '\"@/features/security\"' has no exported member named 'useUserRolesCrud'. Did you mean 'useUsersCrud'?\nsrc/features/security/index.ts(33,15): error TS2307: Cannot find module './api/hooks/useUserRolesCrud' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/utils/exportCsv.ts",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/security/components/Permissions/index.tsx(15,27): error TS2307: Cannot find module '@/shared/utils/exportCsv' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/utils/errorI18n.ts",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/shared/api/apiCall.ts(3,36): error TS2307: Cannot find module '@/shared/utils/errorI18n' or its corresponding type declarations.\nsrc/shared/utils/showToast.ts(2,36): error TS2307: Cannot find module '@/shared/utils/errorI18n' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/utils/dateUtils.ts",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/kanban/components/components/Task/index.tsx(4,43): error TS2307: Cannot find module '@/shared/utils/dateUtils' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/features/kanban/components/Kanban.scss",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/features/security/components/Roles/RolePermissionsForm.module.scss",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/features/security/components/Permissions/PermissionForm.module.scss",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/shared/components/common/SectionHeader/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/security/components/Permissions/PermissionForm.tsx(4,27): error TS2307: Cannot find module '@/shared/components/common/SectionHeader' or its corresponding type declarations.\nsrc/features/security/components/Roles/RoleForm.tsx(5,27): error TS2307: Cannot find module '@/shared/components/common/SectionHeader' or its corresponding type declarations.\nsrc/features/security/components/Roles/RolePermissionsForm.tsx(5,27): error TS2307: Cannot find module '@/shared/components/common/SectionHeader' or its corresponding type declarations.\nsrc/features/security/components/Users/UserForm.tsx(10,27): error TS2307: Cannot find module '@/shared/components/common/SectionHeader' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/components/common/TableActionsCell/index.tsx",
+    "action": "restored",
+    "tsc": "failed",
+    "log": "src/features/security/components/Permissions/index.tsx(20,30): error TS2307: Cannot find module '@/shared/components/common/TableActionsCell' or its corresponding type declarations.\nsrc/features/security/components/Roles/index.tsx(7,30): error TS2307: Cannot find module '@/shared/components/common/TableActionsCell' or its corresponding type declarations.\nsrc/features/security/components/Users/index.tsx(24,30): error TS2307: Cannot find module '@/shared/components/common/TableActionsCell' or its corresponding type declarations.\n"
+  },
+  {
+    "path": "src/shared/components/common/Entitytable/EntityTable.scss",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/shared/components/common/CommandBar/CommandBar.scss",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/shared/components/common/PageHeader/PageHeader.scss",
+    "action": "kept-removed",
+    "tsc": "ok"
+  },
+  {
+    "path": "src/shared/components/common/SectionHeader/section-header.scss",
+    "action": "kept-removed",
+    "tsc": "ok"
+  }
+]

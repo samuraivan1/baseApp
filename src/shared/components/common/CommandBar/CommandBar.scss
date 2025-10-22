@@ -126,8 +126,16 @@
 
 /* Inline Dynamic Filter rows */
 .command-bar__dynamic-filters {
-  .df-rows { display: flex; flex-direction: column; gap: var(--spacing-sm); }
-  .df-row { display: flex; align-items: center; gap: var(--spacing-sm); }
+  .df-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  .df-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
   .df-row select {
     @include mix.input-compact();
     width: 150px;
@@ -138,5 +146,10 @@
     width: 200px;
     height: var(--control-height-sm); // igual a los botones
   }
-  .df-actions { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-sm); }
+  .df-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+  }
+  gap: 0.5rem;
 }

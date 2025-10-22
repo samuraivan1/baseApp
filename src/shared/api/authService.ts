@@ -24,8 +24,12 @@ export async function login(
   const { data } = await api.post<LoginResponse>('/auth/login', credentials);
   return data;
 }
-export async function refreshToken(refresh_token: string): Promise<{ access_token: string; refresh_token: string }> {
-  const { data } = await api.post<{ access_token: string; refresh_token: string }>('/auth/refresh', { refresh_token });
+// Refresh de sesión compatible con backends tipo Spring Security
+// - Si el backend usa cookie HttpOnly para refresh: llamar sin body
+// - Si requiere body, pasar opcionalmente { refresh_token }
+export async function refresh(refresh_token?: string): Promise<RefreshResponse> {
+  const body = refresh_token ? { refresh_token } : {};
+  const { data } = await api.post<RefreshResponse>('/auth/refresh', body as unknown as null);
   return data;
 }
 

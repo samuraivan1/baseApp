@@ -33,7 +33,8 @@
     "lint": "eslint src --ext .ts,.tsx",
     "test": "vitest || exit 0",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "cleanup:unused": "ts-node scripts/cleanup-unused.ts"
   },
   "browserslist": {
     "production": [

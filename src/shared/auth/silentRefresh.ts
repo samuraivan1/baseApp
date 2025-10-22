@@ -1,6 +1,6 @@
-import apiClient from '@/shared/api/apiClient';
+// apiClient no requerido aquí tras unificar refresh vía authService
 import { getAuthStore } from '@/features/shell';
-import { getSession } from '@/shared/api/authService';
+import { getSession, refresh } from '@/shared/api/authService';
 import type { IPermission as Permission, IUserSession as UserSession } from '@/features/security/types/models';
 import type { IRole as Role } from '@/features/security/types/models';
 import type { UserResponseDTO } from '@/features/security/types/dto';
@@ -63,8 +63,7 @@ export async function silentRefresh(): Promise<boolean> {
       return false;
     }
 
-    const res = await apiClient.post('/auth/refresh', null);
-    const accessToken = (res.data as { access_token: string })?.access_token;
+    const { access_token: accessToken } = await refresh();
 
     if (!accessToken) {
       throw new Error('No access_token in refresh response');

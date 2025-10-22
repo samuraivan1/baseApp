@@ -92,31 +92,7 @@ export const usersHandlers = [
     return HttpResponse.json(users[idx], { status: 200 });
   }),
 
-  http.patch(`${BASE}/:id`, async ({ params, request }) => {
-    const csrf = requireCsrfOnMutation(request);
-    if (csrf) return csrf;
-    const auth = requireAuth(request);
-    if (auth instanceof HttpResponse) return auth;
-  const denied = auth.user ? ensurePermission(
-    auth.user.user_id,
-    PERMISSIONS.SECURITY_USERS_UPDATE
-  ) : new HttpResponse(null, { status: 401 });
-    if (denied) return denied;
-    const id = Number(params.id);
-    const body = (await request.json()) as UpdateUserRequestDTO;
-    const idx = getUsersTable().findIndex((u) => Number(u.user_id) === id);
-    if (idx === -1) return new HttpResponse(null, { status: 404 });
-    const users = getUsersTable();
-    const current = users[idx]!; // idx validated above
-    users[idx] = {
-      ...current,
-      ...body,
-      username: String((body.username ?? current.username) ?? ''),
-      user_id: id,
-    } as UserResponseDTO;
-    persistDb();
-    return HttpResponse.json(users[idx], { status: 200 });
-  }),
+  // Removed PATCH handler: unify updates via PUT in current CRUD
 
   http.delete(`${BASE}/:id`, ({ params, request }) => {
     const csrf = requireCsrfOnMutation(request);

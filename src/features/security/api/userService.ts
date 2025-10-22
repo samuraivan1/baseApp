@@ -42,7 +42,7 @@ export async function updateUserFlags(
   if (typeof input.mfa_enabled === 'boolean') patch.mfa_enabled = input.mfa_enabled ? 1 : 0;
 
   try {
-    const { data } = await api.patch<UserResponseDTO>(`/users/${id}`, patch);
+    const { data } = await api.put<UserResponseDTO>(`/users/${id}`, patch);
     return mapUserFromDto(data);
   } catch (error) {
     throw handleApiError(error);
@@ -54,7 +54,7 @@ export async function updateUser(
   input: UpdateUserRequestDTO
 ): Promise<User> {
   try {
-    const { data } = await api.patch<UserResponseDTO>(`/users/${id}`, input);
+    const { data } = await api.put<UserResponseDTO>(`/users/${id}`, input);
     return mapUserFromDto(data);
   } catch (error) {
     throw handleApiError(error);
