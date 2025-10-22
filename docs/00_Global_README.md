@@ -58,7 +58,7 @@ Auditorías clave
 - Ejecutar auditoría rápida de reglas: `npm run audit:rules`
 
 ## Normativa base
-- Manifesto del proyecto: ver `manifest.md` (raíz) como fuente normativa principal.
+- Manifesto del proyecto: ver `docs/01_Estandares/Manifesto.md` como fuente normativa principal.
 - Guías complementarias: `docs/DEVELOPER_GUIDE.md`, `docs/CODING_RULES.md`, `docs/API_CONSUMPTION_RULES.md`, `docs/ERROR_HANDLING.md`, `docs/API_MOCKS.md`.
 
 ## Flujo de sesión y RBAC

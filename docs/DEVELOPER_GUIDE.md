@@ -8,6 +8,46 @@ Este documento consolida el estándar de programación del proyecto: arquitectur
 - Solo se permiten imports externos desde los barrels públicos del feature.
 - Mantén `shared/` mínimo; si algo es específico de un feature, ubícalo allí.
 
+### Estándar para la Creación de Componentes (FSD)
+
+Para mantener la modularidad y el cumplimiento de FSD, todo nuevo componente debe crearse siguiendo una estructura de directorios específica. No se deben crear archivos de componente (`.tsx`) de forma aislada.
+
+**Proceso Obligatorio:**
+
+1.  **Crear una Carpeta:** El componente debe vivir dentro de una carpeta con su nombre en `PascalCase`.
+    *   Ejemplo: `src/features/security/components/RolesTable/`
+
+2.  **Crear Archivos Esenciales:** Dentro de esta carpeta, se deben crear como mínimo tres archivos:
+    *   **`index.ts` (o `index.tsx`):** El archivo "barrel" que exporta el componente.
+    *   **`RolesTable.tsx`:** El archivo con la lógica y JSX del componente.
+    *   **`RolesTable.scss`:** El archivo de estilos modular y específico para el componente.
+
+**Estructura de Ejemplo:**
+
+```
+/RolesTable
+├── index.ts
+├── RolesTable.tsx
+└── RolesTable.scss
+```
+
+**Contenido de Ejemplo:**
+
+*   **`index.ts`:**
+    ```ts
+    export * from './RolesTable';
+    ```
+*   **`RolesTable.tsx`:**
+    ```tsx
+    import './RolesTable.scss';
+
+    export const RolesTable = () => {
+      return <div className="roles-table">{/* ... */}</div>;
+    };
+    ```
+
+Este patrón asegura que cada componente sea un módulo autocontenido y su superficie de API (lo que se exporta) esté claramente definida.
+
 ## Reglas de Imports
 - ESLint `import/no-internal-modules` activo para evitar deep imports.
 - Si necesitas un símbolo externamente, re‑expórtalo en el `index.ts` del feature.

@@ -27,6 +27,6 @@ Gracias por contribuir. Este documento resume el flujo de trabajo y enlaza a la 
 - Auditoría global: `docs/02_Auditorias/audit_global.md`
 - Registro de reglas: `docs/rules_registry.json`
 - Prompts operativos: `docs/03_Prompts/prompt_operativo.md`
-- Prompts de auditoría: `AUDIT_PROMPTS.md`
+- Prompts de auditoría: `docs/03_Prompts/prompt_auditoria_baseApp.md`
 
 ¿Dudas? Abre un issue con etiqueta `question`.

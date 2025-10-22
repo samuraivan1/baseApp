@@ -7,7 +7,7 @@ reason: "Movido desde raíz a /docs/03_Prompts/"
 
 # Prompt Auditor (Tipado y DTOs)
 
-- Aplica las reglas de `TYPES_STANDARD.md`.
+- Aplica las reglas de `docs/01_Estandares/Tipos_y_Contratos.md`.
 - Verifica prefijos `I<Name>` para interfaces y sufijo `DTO`.
 - Evita `any`/`unknown`; marca con `// TODO: refine type` si no hay alternativa inmediata.
 - Separa `models.ts`, `relations.ts`, `dto.ts` y `schemas`.

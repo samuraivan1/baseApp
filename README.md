@@ -8,7 +8,7 @@ Este repositorio centraliza sus reglas y guías en la carpeta `docs/`.
 - Reglas de Codificación: docs/CODING_RULES.md
 - Guía de Desarrolladores: docs/DEVELOPER_GUIDE.md
 - Manejo de Errores: docs/ERROR_HANDLING.md
-- Manifiesto de Arquitectura: docs/manifest.md
+- Manifiesto de Arquitectura: docs/01_Estandares/Manifesto.md
 
 Sugerencias
 - Toda documentación nueva debe ubicarse en `docs/` y enlazarse desde este README.

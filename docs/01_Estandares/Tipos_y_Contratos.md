@@ -2,7 +2,6 @@
 status: archived
 reason: "Movido desde raíz a /docs/01_Estandares/"
 ---
-<!-- Contenido original de TYPES_STANDARD.md a continuación -->
 
 # Estándar de Tipos y DTOs (baseApp)
 

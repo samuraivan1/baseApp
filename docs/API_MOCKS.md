@@ -119,15 +119,6 @@ Kanban (Board)
   - 200 OK: `Board`
   - curl: `curl -X PUT http://localhost:5173/api/board -H 'Content-Type: application/json' -H 'Authorization: Bearer <token>' -d '{"columns":[...]}'`
 
-Productos (demo en dev handler)
-- GET `/api/products`
-- POST `/api/products`
-- PUT `/api/products/:id`
-- DELETE `/api/products/:id`
-- POST `/api/dev/products/reset`
-- POST `/api/dev/products/seed`
-  - curl ej: `curl http://localhost:5173/api/products -H 'Authorization: Bearer <token>'`
-
 Genéricos (fallback CRUD)
 - GET `/api/:collection`
 - GET `/api/:collection/:id`
@@ -148,4 +139,3 @@ Desarrollo (forzar errores)
 Observaciones
 - Todos los endpoints bajo `/api` están protegidos por el mock de auth (salvo dev/config en algunos casos). Loguéate antes de probar.
 - El cliente del front (`apiClient`) agrega automáticamente `Authorization: Bearer <token>` y `X-CSRF-Token` según corresponda tras login/refresh.
-

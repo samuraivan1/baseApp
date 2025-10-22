@@ -21,5 +21,5 @@ source: from_md
 - Enums compartidos: `src/shared/types/enums.ts`.
 - Genéricos base: `src/shared/types/api.ts`.
 
-Consulta `docs/01_Estandares/Tipos_y_Contratos.md` y `AUDIT_PROMPTS.md` antes de abrir PR.
+Consulta `docs/01_Estandares/Tipos_y_Contratos.md` y `docs/03_Prompts/prompt_auditoria_baseApp.md` antes de abrir PR.
 
