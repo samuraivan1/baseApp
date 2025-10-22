@@ -7,9 +7,11 @@ import { tableroHandlers as boardHandlers } from './handlers/tablero';
 import { authHandlers } from './handlers/auth';
 import { devHandlers } from './handlers/dev';
 import { genericHandlers } from './handlers/generic';
+import { configHandlers } from './handlers/config';
 import { http } from 'msw';
 
 export const handlers = [
+  ...configHandlers,
   ...authHandlers,
   ...devHandlers,
   ...usersHandlers,

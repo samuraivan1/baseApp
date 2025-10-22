@@ -1,5 +1,4 @@
-import apiClient from '@/shared/api/apiClient';
-import { getSession } from '@/shared/api/authService';
+import { getSession, refresh } from '@/shared/api/authService';
 import { getAuthStore, useAuthStore } from '@/features/shell/state/authStore';
 import { derivePermissions } from '@/shared/auth/derivePermissions';
 import { mapUserFromDto, type UserResponseDTO } from '@/features/security/types/dto';
@@ -13,8 +12,8 @@ export async function bootstrapAuth(): Promise<void> {
   const store = getAuthStore();
   useAuthStore.setState({ authReady: false });
   try {
-    const res = await apiClient.post('/auth/refresh', null).catch(() => null);
-    const accessToken = (res?.data as { access_token: string } | null)?.access_token ?? null;
+    const refreshRes = await refresh().catch(() => null);
+    const accessToken = refreshRes?.access_token ?? null;
     if (!accessToken) {
       // No hay sesión; app lista sin usuario
       useAuthStore.setState({ isLoggedIn: false, user: null, authReady: true });

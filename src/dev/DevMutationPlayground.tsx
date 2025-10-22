@@ -1,18 +1,11 @@
 import { useSafeMutation } from '@/shared/hooks/useSafeMutation';
 import { showToastSuccess, showToast } from '@/shared/utils/showToast';
+import { force401, force403, force404, force422, backendDown } from '@/dev/api/devService';
 
 export default function DevMutationPlayground() {
-  const fail422 = useSafeMutation(async () => {
-    // Simula 422 Validation Failed
-    const res = await fetch('/api/dev/force-422', { method: 'POST' });
-    if (!res.ok) throw { response: { status: 422, data: { message: 'Invalid payload' } } };
-    return res.json();
-  });
+  const fail422 = useSafeMutation(async () => force422());
 
-  const failNet = useSafeMutation(async () => {
-    // Simula caída de red/host
-    await fetch('http://127.0.0.1:5999/down');
-  });
+  const failNet = useSafeMutation(async () => backendDown());
 
   const ok = useSafeMutation(async () => {
     // Ambas formas válidas; mantenemos named export y objeto
@@ -21,18 +14,9 @@ export default function DevMutationPlayground() {
     return true;
   });
 
-  const force401 = useSafeMutation(async () => {
-    await fetch('/api/dev/force-401');
-    throw { response: { status: 401 } };
-  });
-  const force403 = useSafeMutation(async () => {
-    await fetch('/api/dev/force-403');
-    throw { response: { status: 403 } };
-  });
-  const force404 = useSafeMutation(async () => {
-    await fetch('/api/dev/force-404');
-    throw { response: { status: 404 } };
-  });
+  const force401Mut = useSafeMutation(async () => force401());
+  const force403Mut = useSafeMutation(async () => force403());
+  const force404Mut = useSafeMutation(async () => force404());
 
   return (
     <div style={{ padding: 24 }}>
@@ -42,9 +26,9 @@ export default function DevMutationPlayground() {
         <button onClick={() => fail422.mutate(undefined)}>Forzar 422</button>
         <button onClick={() => failNet.mutate(undefined)}>Forzar red caída</button>
         <button onClick={() => ok.mutate(undefined)}>Éxito</button>
-        <button onClick={() => force401.mutate(undefined)}>Forzar 401</button>
-        <button onClick={() => force403.mutate(undefined)}>Forzar 403</button>
-        <button onClick={() => force404.mutate(undefined)}>Forzar 404</button>
+        <button onClick={() => force401Mut.mutate(undefined)}>Forzar 401</button>
+        <button onClick={() => force403Mut.mutate(undefined)}>Forzar 403</button>
+        <button onClick={() => force404Mut.mutate(undefined)}>Forzar 404</button>
       </div>
     </div>
   );

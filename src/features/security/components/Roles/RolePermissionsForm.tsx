@@ -8,7 +8,7 @@ import ListLoading from '@/shared/components/common/ListLoading';
 import FormActions from '@/shared/components/common/FormActions';
 import { usePermissionsCrud } from '@/features/security';
 import { getRolePermissionsList } from '@/features/security';
-import { addRolePermission } from '@/features/security/api/relationsService';
+import { addRolePermission, removeRolePermissionByPair } from '@/features/security/api/relationsService';
 import type { Permission, RolePermission, Role } from '@/shared/types/security';
 import { apiCall } from '@/shared/api/apiCall';
 // Removed unused icon import
@@ -103,10 +103,7 @@ export default function RolePermissionsForm({ role, onClose }: Props) {
         await addRolePermission(role.roleId, pid);
       }
       for (const pid of toRemove) {
-        // Our mock delete expects compound path; expose a helper id here as `${role}-${perm}` is not supported, so call legacy compound route via apiClient directly
-        // use static import to avoid dynamic import warnings
-        const api = (await import('@/shared/api/apiClient')).default;
-        await api.delete(`/role_permissions/${role.roleId}/${pid}`);
+        await removeRolePermissionByPair(role.roleId, pid);
       }
       return Promise.resolve();
     }, { where: 'security.role_permissions.persist', toastOnError: true });

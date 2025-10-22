@@ -10,43 +10,43 @@
     gap: 10px;
   }
 
+  // Icono del título: círculo con color primario DS
   &__icon {
-    @include mix.icon-badge();
+    // Tamaño del contenedor circular
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    // Colorimetría alineada al DS (naranja)
+    background: var(--color-primary-10, #fde4d1);
+    color: var(--color-primary, #ff7a00);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    // Ajusta el icono interno
+    svg { width: 18px; height: 18px; }
   }
 
   &__title {
     margin: 0 0 0.75rem 0;
     font-weight: 700;
     color: #333;
+    display: inline-flex;
+    align-items: center;
   }
 
-  &__divider {
-    border: none;
-    @include mix.divider-primary();
-  }
-  &__divider-bg {
-    border: none;
-    height: 4px;
-    background: #e0e0e0;
-    margin: 0 0 0.25rem 0;
-  }
-  &__header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  &__icon {
-    color: #ff7a00;
-  }
+  // Barras divisor (gris de fondo + primaria por encima)
   &__divider-bg {
     border: none;
     height: 4px;
     background: #eee;
+    margin: 0 0 0.25rem 0;
   }
   &__divider {
     border: none;
     height: 4px;
-    background: #ff7a00;
+    background: var(--color-primary, #ff7a00);
     margin-top: -4px;
   }
 }

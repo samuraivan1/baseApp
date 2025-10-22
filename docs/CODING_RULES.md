@@ -45,3 +45,21 @@ Estas reglas son obligatorias. Documentan errores recurrentes que NO debemos per
 ## Entorno
 - Usa `import.meta.env.DEV` para lógica exclusiva de desarrollo en app.
 - Nota en mocks: `src/mocks/data/db.ts` utiliza un helper `isDev()` con guards para compatibilidad en tests; esta excepción aplica solo en mocks.
+
+## Llamadas a API (Estándar)
+
+- Cliente único: usar solo `src/shared/api/apiClient.ts` (Axios con base `/api`, auth/CSRF y refresh 401).
+- Servicios (capa de datos):
+  - Toda llamada HTTP vive en servicios `*/api/*Service.ts`.
+  - Manejar errores con `try/catch` y `throw handleApiError(error)`.
+  - Mapear DTO → dominio en esta capa (no en componentes).
+- UI/Hooks:
+  - Prohibido `fetch`, `axios` o `apiClient` directamente en componentes.
+  - Envolver llamadas de servicio con `apiCall(() => service.fn(), { where, toastOnError })` o usar `useSafeMutation`.
+- MSW:
+  - Handlers bajo `/api` únicamente; evitar alias sin prefijo.
+- Configuración:
+  - `loadConfig()` intenta endpoint `/config` y hace fallback a `/config.json` y variables.
+  - Consumir vía `getConfig()`; no leer `import.meta.env` en componentes.
+- Excepciones:
+  - Código de bootstrap o utilidades de dev deben justificar cualquier desviación y preferir usar servicios dedicados.

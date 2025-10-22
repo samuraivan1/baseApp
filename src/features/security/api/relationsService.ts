@@ -32,6 +32,16 @@ export async function removeRolePermission(id: number) {
   }
 }
 
+// Some backends (or mocks) use a compound route to delete a relation
+// Provide an explicit helper for that contract as well
+export async function removeRolePermissionByPair(role_id: number, permission_id: number) {
+  try {
+    await api.delete(`/role_permissions/${role_id}/${permission_id}`);
+  } catch (error) {
+    throw handleApiError(error);
+  }
+}
+
 export async function getUserRoles(): Promise<UserRole[]> {
   try {
     const { data } = await api.get<UserRole[]>('/user_roles');

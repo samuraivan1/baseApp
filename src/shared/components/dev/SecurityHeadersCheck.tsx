@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import api from '@/shared/api/apiClient';
+import { handleApiError } from '@/shared/api/errorService';
 
 const expected = [
   'content-security-policy',
@@ -11,16 +13,18 @@ const SecurityHeadersCheck: React.FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(window.location.origin + '/', { method: 'GET', credentials: 'include' });
+        const res = await api.get(window.location.origin + '/', { withCredentials: true });
         expected.forEach((h) => {
-          const v = res.headers.get(h);
+          // Axios normaliza headers en minúsculas
+          const headers = (res.headers || {}) as Record<string, string>;
+          const v = headers[h] ?? null;
           if (!v) {
             // eslint-disable-next-line no-console
             console.warn(`[SECURITY][headers] Falta cabecera: ${h}`);
           }
         });
-      } catch {
-        // noop
+      } catch (error) {
+        handleApiError(error);
       }
     })();
   }, []);
@@ -28,4 +32,3 @@ const SecurityHeadersCheck: React.FC = () => {
 };
 
 export default SecurityHeadersCheck;
-
