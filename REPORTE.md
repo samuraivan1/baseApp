@@ -1,6 +1,7 @@
 # REPORTE de Tipos – baseApp
 
 ## Inventario preliminar
+
 (archivo|linea|declaracion)
 
 src/routes/ProtectedRoute.tsx|5|interface ProtectedRouteProps {
@@ -8,7 +9,7 @@ src/i18n/types.ts|1|export type CommonMessages = {
 src/i18n/types.ts|19|export type ScreenActions = {
 src/i18n/types.ts|29|export type ScreenMessages = {
 src/i18n/commonMessages.ts|1|export type CommonMessages = {
-src/dev/exposeAuth.ts|5|  interface Window {
+src/dev/exposeAuth.ts|5| interface Window {
 src/core/providers.tsx|12|type Theme = {
 src/core/providers.tsx|27|type CoreStore = EnhancedStore;
 src/core/providers.tsx|29|type CoreProvidersProps = {
@@ -49,7 +50,7 @@ src/shared/components/common/CommandBar/types.ts|1|export interface FilterableCo
 src/mocks/utils/auth.ts|11|export type AuthedUser = { user: { user_id: number; username?: string; correo?: string } | undefined; token: string };
 src/features/products/api/hooks/useProductsCrud.ts|1|import { useEntityCrud, type EntityService } from '@/features/security/api/hooks/useEntityCrud';
 src/shared/components/common/CommandBar/index.tsx|10|interface CommandBarProps {
-src/shared/components/common/CommandBar/index.tsx|61|  type Filter = { id: string; field: string; value: string };
+src/shared/components/common/CommandBar/index.tsx|61| type Filter = { id: string; field: string; value: string };
 src/shared/components/common/PaginatedEntityTable/index.tsx|5|export type PaginationConfig = {
 src/shared/components/common/PaginatedEntityTable/index.tsx|13|export type PaginatedEntityTableProps<T extends Record<string, unknown>> = {
 src/shared/components/common/forms/inputs/FormInput.tsx|4|type BaseProps = React.InputHTMLAttributes<HTMLInputElement> & {
@@ -83,7 +84,7 @@ src/shared/components/ErrorBoundary/index.tsx|7|type Props = { children: React.R
 src/shared/components/ErrorBoundary/index.tsx|9|type State = {
 src/shared/components/ui/Spinner/Spinner.tsx|3|export type SpinnerProps = {
 src/features/kanban/components/components/Column/index.tsx|9|interface ColumnProps {
-src/features/kanban/components/components/Column/index.tsx|21|  type Perm = { key?: string; permission_key?: string; name?: string };
+src/features/kanban/components/components/Column/index.tsx|21| type Perm = { key?: string; permission_key?: string; name?: string };
 src/shared/components/common/Pagination/index.tsx|5|interface PaginationProps {
 src/features/shell/components/ResponsiveAppBar/hooks/useMainMenu.ts|11|type MenuItemWithPerm = NavMenuItem & {
 src/features/shell/components/ResponsiveAppBar/UserProfileMenu.tsx|81|type UserProfileMenuProps = {
@@ -137,7 +138,6 @@ src/features/security/types/dto.ts|8|export type CreateUserDTO = Omit<User, 'use
 src/features/security/types/dto.ts|9|export type UpdateUserFlagsDTO = {
 src/features/security/types/dto.ts|13|export type UpdateUserDTO = Partial<
 
-
 ## Usos de any / @ts-ignore
 
 ## Duplicados y near-duplicates
@@ -167,7 +167,7 @@ src/features/security/types/dto.ts|13|export type UpdateUserDTO = Partial<
 
 - Shell/Menu: añadido `MenuItemSchema` (UI canónico) en `src/features/shell/types/schemas.menu.ts`.
 - Security: añadidos `PaginatedRolesSchema` y `PaginatedPermissionsSchema` (helpers) en `schemas.extra.ts`.
-- Core/tokens: creado `src/core/tokens.ts` con tokens base (color, spacing, radius) como esqueleto compatible con OrangeAlex DS.
+- Core/tokens: creado `src/core/tokens.ts` con tokens base (color, spacing, radius) como esqueleto compatible con Global DS.
 - ErrorBoundary: añadido componente en `src/shared/components/ErrorBoundary/` para observabilidad por feature.
 
 ### Ajuste MSW – Auth Refresh determinista (DEV)
@@ -178,17 +178,20 @@ src/features/security/types/dto.ts|13|export type UpdateUserDTO = Partial<
 - No requiere cambios al conectar con un backend real: el contrato del cliente no cambia.
 
 Checklist Fase 1.1
+
 - [x] Schema de menú (UI)
 - [x] Helpers de paginación en Security
 - [x] Tokens base (no funcionales)
 - [x] ErrorBoundary genérico
 
 Checklist Fase 1
+
 - [x] Schemas Zod para entidades de Security
 - [x] Public API por feature (Security)
 - [ ] ESLint boundaries (propuesta)
 
 Propuesta ESLint Boundaries (pendiente de activar):
+
 - Restringir imports entre features a través de sus `index.ts` públicos.
 - Bloquear rutas con `/internal/`, `/components/components/` u otras que no estén expuestas públicamente.
 
@@ -225,39 +228,39 @@ Consolidación: no se encontraron variantes extra de User/Role/Permission fuera 
 - Verificar y eliminar referencias a productos: se removió ruta DEV_PRODUCTS y lazy import en AppRoutes; constante DEV_PRODUCTS comentada.
 - Ejecutar tsc, ESLint y tests para validar en verde.
 
-src/routes/ProtectedRoute.tsx:17:    phase: s.phase ?? (s.authReady ? 'ready' : 'idle'),
-src/shared/hooks/useApiError.ts:11:  // ✅ Usamos 'unknown' en lugar de 'any' para mayor seguridad de tipos
+src/routes/ProtectedRoute.tsx:17: phase: s.phase ?? (s.authReady ? 'ready' : 'idle'),
+src/shared/hooks/useApiError.ts:11: // ✅ Usamos 'unknown' en lugar de 'any' para mayor seguridad de tipos
 manifest.md:204:## 9. Sin `any` y Tipado Estricto
 manifest.md:206:- Prohibido el uso de `any`, `unknown` o `//@ts-ignore`.
 manifest.md:249:- Regla sin `any`.
 manifest.md:342:No usar any. Si no hay tipo, definir interfaces mínimas o usar genéricos con Record<string, unknown>.
 manifest.md:381:No hay any ni ts-expect-error.
-prompt_operativo_baseApp.md:76:   - Sin `any`, sin `//@ts-ignore`.
+prompt_operativo_baseApp.md:76: - Sin `any`, sin `//@ts-ignore`.
 prompt_operativo_baseApp.md:98:No se usa any ni ts-expect-error.
-src/shared/components/PermissionGate/index.tsx:6:  mode?: 'any' | 'all';
-src/shared/components/PermissionGate/index.tsx:15:    ? mode === 'any'
+src/shared/components/PermissionGate/index.tsx:6: mode?: 'any' | 'all';
+src/shared/components/PermissionGate/index.tsx:15: ? mode === 'any'
 CONTRIBUTING.md:7:- Sin `any`.
-CONTRIBUTING.md:9:  - Excepciones documentadas: en `src/mocks/data/db.ts` se emplean guards adicionales (función `isDev()`) para entornos de test donde `import.meta` o `window` podrían no existir; mantener tipado estricto y evitar `any` igualmente.
+CONTRIBUTING.md:9: - Excepciones documentadas: en `src/mocks/data/db.ts` se emplean guards adicionales (función `isDev()`) para entornos de test donde `import.meta` o `window` podrían no existir; mantener tipado estricto y evitar `any` igualmente.
 CONTRIBUTING.md:92:- [ ] No hay `any` ni `@ts-expect-error`.
 CONTRIBUTING.md:108:> - No se usa `any` ni `@ts-expect-error`.
 docs/CODING_RULES.md:5:- Tipado estricto: prohibido `any`
-docs/CODING_RULES.md:6:  - No usar `any`. Preferir tipos del dominio o `unknown` con narrowing.
+docs/CODING_RULES.md:6: - No usar `any`. Preferir tipos del dominio o `unknown` con narrowing.
 docs/CODING_RULES.md:12:- Nada de parámetros implícitos `any`
-public/mockServiceWorker.js:283: * @param {any} message
-public/mockServiceWorker.js:285: * @returns {Promise<any>}
+public/mockServiceWorker.js:283: _ @param {any} message
+public/mockServiceWorker.js:285: _ @returns {Promise<any>}
 prompt_auditoria_baseApp.md:46:- [ ] Tipado estricto sin `any`  
-src/shared/components/common/Entitytable/index.tsx:82:  // Ordenamiento seguro sin any
-src/shared/components/common/Entitytable/index.tsx:104:  // CSS var para max-width sin usar any
-src/shared/auth/bootstrapAuth.ts:27:      const perms = derivePermissions(userId, db);
-src/shared/auth/bootstrapAuth.ts:28:      const user = { ...session.user, permissions: perms };
-src/shared/auth/bootstrapAuth.ts:32:        console.log('[Auth] bootstrap ready', { user_id: user.user_id, perms: perms.map((p) => p.permission_string) });
-src/shared/auth/bootstrapAuth.ts:48:    const perms = derivePermissions(userId, db);
-src/shared/auth/bootstrapAuth.ts:49:    const user = { ...session.user, permissions: perms };
-src/shared/auth/bootstrapAuth.ts:53:      console.log('[Auth] finalizeLogin ready', { user_id: user.user_id, perms: perms.map((p) => p.permission_string) });
+src/shared/components/common/Entitytable/index.tsx:82: // Ordenamiento seguro sin any
+src/shared/components/common/Entitytable/index.tsx:104: // CSS var para max-width sin usar any
+src/shared/auth/bootstrapAuth.ts:27: const perms = derivePermissions(userId, db);
+src/shared/auth/bootstrapAuth.ts:28: const user = { ...session.user, permissions: perms };
+src/shared/auth/bootstrapAuth.ts:32: console.log('[Auth] bootstrap ready', { user_id: user.user_id, perms: perms.map((p) => p.permission_string) });
+src/shared/auth/bootstrapAuth.ts:48: const perms = derivePermissions(userId, db);
+src/shared/auth/bootstrapAuth.ts:49: const user = { ...session.user, permissions: perms };
+src/shared/auth/bootstrapAuth.ts:53: console.log('[Auth] finalizeLogin ready', { user_id: user.user_id, perms: perms.map((p) => p.permission_string) });
 src/shared/auth/derivePermissions.ts:3:export function derivePermissions(userId: number, db: MockDb | null | undefined): Permission[] {
-src/features/auth/components/index.tsx:30:  const phase = useAuthStore.getState().phase ?? (useAuthStore.getState().authReady ? 'ready' : 'idle');
-src/features/shell/state/authStore.ts:29:        const sessionUser = (res?.user ?? null) as UserSession | null;
-src/features/shell/components/Header/index.tsx:8:  const phase = useAuthStore.getState().phase ?? (authReady ? 'ready' : 'idle');
-src/features/security/components/Roles/Roles.scss:10:  /* Placeholder for any specific role page child layout */
+src/features/auth/components/index.tsx:30: const phase = useAuthStore.getState().phase ?? (useAuthStore.getState().authReady ? 'ready' : 'idle');
+src/features/shell/state/authStore.ts:29: const sessionUser = (res?.user ?? null) as UserSession | null;
+src/features/shell/components/Header/index.tsx:8: const phase = useAuthStore.getState().phase ?? (authReady ? 'ready' : 'idle');
+src/features/security/components/Roles/Roles.scss:10: /_ Placeholder for any specific role page child layout _/
 src/features/shell/components/ResponsiveAppBar/UserProfileMenu.tsx:13:// Type guards para evitar 'any' implícitos
-src/features/shell/components/ResponsiveAppBar/hooks/useMainMenu.ts:37:  const { isLoggedIn, phase, hasPermission } = useAuthStore((s) => ({ isLoggedIn: s.isLoggedIn, phase: s.phase ?? (s.authReady ? 'ready' : 'idle'), hasPermission: s.hasPermission }));
+src/features/shell/components/ResponsiveAppBar/hooks/useMainMenu.ts:37: const { isLoggedIn, phase, hasPermission } = useAuthStore((s) => ({ isLoggedIn: s.isLoggedIn, phase: s.phase ?? (s.authReady ? 'ready' : 'idle'), hasPermission: s.hasPermission }));

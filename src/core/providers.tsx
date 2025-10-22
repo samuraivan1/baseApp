@@ -9,7 +9,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { createContext, useContext } from 'react';
 
-// Minimal ThemeProvider (OrangeAlex) placeholder
 type Theme = {
   primary: string;
 };
@@ -17,7 +16,11 @@ const defaultTheme: Theme = { primary: 'var(--color-primary)' };
 const ThemeContext = createContext<Theme>(defaultTheme);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  return <ThemeContext.Provider value={defaultTheme}>{children}</ThemeContext.Provider>;
+  return (
+    <ThemeContext.Provider value={defaultTheme}>
+      {children}
+    </ThemeContext.Provider>
+  );
 }
 
 export function useTheme() {
@@ -41,14 +44,18 @@ export function CoreProviders({ store, children }: CoreProvidersProps) {
         const mod: ErrorServiceMod = await import('@/shared/api/errorService');
         const norm = mod.normalizeError(event.error || event.message || event);
         mod.default.logError(norm);
-      } catch { /* noop */ }
+      } catch {
+        /* noop */
+      }
     };
     const onUnhandledRejection = async (event: PromiseRejectionEvent) => {
       try {
         const mod: ErrorServiceMod = await import('@/shared/api/errorService');
         const norm = mod.normalizeError(event.reason);
         mod.default.logError(norm);
-      } catch { /* noop */ }
+      } catch {
+        /* noop */
+      }
     };
     window.addEventListener('error', onWindowError);
     window.addEventListener('unhandledrejection', onUnhandledRejection);
@@ -61,10 +68,14 @@ export function CoreProviders({ store, children }: CoreProvidersProps) {
     <ReduxProvider store={store}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <ErrorBoundary>
-            {children}
-          </ErrorBoundary>
-          <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick pauseOnFocusLoss={false} />
+          <ErrorBoundary>{children}</ErrorBoundary>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            newestOnTop
+            closeOnClick
+            pauseOnFocusLoss={false}
+          />
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

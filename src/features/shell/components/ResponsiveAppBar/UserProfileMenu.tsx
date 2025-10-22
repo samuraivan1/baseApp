@@ -92,6 +92,9 @@ const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
   const { user: userStore, logout } = useAuthStore();
   const { profileMenuItems } = useProfileMenu();
   const navigate = useNavigate();
+  const list: NavMenuItem[] = Array.isArray(items)
+    ? items
+    : (Array.isArray(profileMenuItems) ? profileMenuItems : []);
 
   const handleLogout = async () => {
     if (onLogout) {
@@ -120,7 +123,7 @@ const UserProfileMenu: React.FC<UserProfileMenuProps> = ({
       </div>
       <hr className="user-menu__divider" />
       <ul className="user-menu__list">
-        {(items ?? profileMenuItems).map((item) => (
+        {list.map((item: NavMenuItem) => (
           <MenuItem key={item.idMenu} item={item} onLogout={handleLogout} />
         ))}
       </ul>

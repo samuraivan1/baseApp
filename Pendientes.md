@@ -1,4 +1,4 @@
-Perfecto, pauso las fases y hago una auditoría enfocada en atomicidad y portabilidad de componentes, siguiendo FSD y OrangeAlex DS.
+Perfecto, pauso las fases y hago una auditoría enfocada en atomicidad y portabilidad de componentes, siguiendo FSD y global DS.
 Criterios usados
 • Atomicidad: cada componente encapsula su lógica, estilos, mensajes y tipos; no depende de variables externas ad hoc.
 • Portabilidad: un componente debe poder moverse a otra app sin romper por dependencias implícitas o acoplamientos (stores globales, rutas internas, strings sueltos).

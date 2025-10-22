@@ -12,7 +12,7 @@ Su cumplimiento es obligatorio para garantizar la calidad, escalabilidad y mante
 - **Gestión de Estado:**
   - **Servidor:** TanStack Query (React Query v5).
   - **Cliente Global:** Zustand (patrón de slices).
-- **Estilos:** SCSS modular + BEM + sistema de diseño OrangeAlex.
+- **Estilos:** SCSS modular + BEM + sistema de diseño global.
 - **Enrutamiento:** React Router v6.
 - **Formularios:** React Hook Form + Zod.
 - **Calidad:** ESLint + Prettier (con hooks y commitlint).
@@ -74,7 +74,7 @@ Toda verificación de permisos y rutas debe depender de estas constantes.
 
 ---
 
-## 4. Estilos y Sistema de Diseño OrangeAlex
+## 4. Estilos y Sistema de Diseño global
 
 - Paleta corporativa: **#F26822 (naranja Truper)** + grises neutros.
 - Inputs compactos (~36px).
@@ -154,10 +154,12 @@ En el entorno de desarrollo (`src/mocks/data/db.ts`):
 Si no existe `PermissionGate`, aplicar una verificación con el store:
 
 ```tsx
-const canCreate = useAuthStore((s) => s.hasPermission(PERMISSIONS.SECURITY_USERS_CREATE));
-{canCreate && (
-  <Button onClick={handleCreate}>Añadir Usuario</Button>
-)}
+const canCreate = useAuthStore((s) =>
+  s.hasPermission(PERMISSIONS.SECURITY_USERS_CREATE)
+);
+{
+  canCreate && <Button onClick={handleCreate}>Añadir Usuario</Button>;
+}
 ```
 
 **Verificación de Permisos (Zustand):**
@@ -197,7 +199,7 @@ useAuthStore
 
 - **Storybook obligatorio** para componentes de `ui`.
 - Los `common` deben documentarse cuando se usan globalmente.
-- OrangeAlex define la base visual y de espaciado.
+- global define la base visual y de espaciado.
 - Cada componente debe tener su propio archivo SCSS y no depender de herencias globales.
 
 ---
@@ -230,7 +232,7 @@ useAuthStore
 - **CommandBar / SearchBar:** Controla búsqueda, filtros y acciones.
 - **DynamicFilter:** Filtros opcionales (cliente o servidor).
 - **EntityTable:** Tabla estándar con ordenamiento, scroll y export a Excel.
-- **Pagination:** Fija, no parte del scroll, estilo OrangeAlex.
+- **Pagination:** Fija, no parte del scroll, estilo global.
 
 ---
 
@@ -340,7 +342,7 @@ useAuthStore
 El proyecto **baseApp** representa un estándar de arquitectura empresarial:
 
 - Modular, escalable, accesible y fuertemente tipado.
-- Visualmente consistente bajo el **OrangeAlex Design System**.
+- Visualmente consistente bajo el **global Design System**.
 - Con flujos de desarrollo estandarizados y auditables por IA.
 
 **Este manifiesto es vinculante.**  

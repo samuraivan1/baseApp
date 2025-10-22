@@ -11,7 +11,6 @@ import { apiCall } from '@/shared/api/apiCall';
 // estilos de página centralizados en features/security/styles/index.scss
 import FormInput from '@/shared/components/common/forms/inputs/FormInput';
 import FormTextarea from '@/shared/components/common/forms/inputs/FormTextarea';
-import '@/shared/components/common/forms/orangealex-form.scss';
 import LoadingOverlay from '@/shared/components/ui/LoadingOverlay';
 import { commonDefaultMessages } from '@/i18n/commonMessages';
 
@@ -67,9 +66,11 @@ export default function RoleForm({
   }, [open, onClose]);
 
   return (
-    <div className="orangealex-form oa-form--md oa-form--left">
+    <div className="global-form global-form--md global-form--left">
       <SectionHeader
-        title={initialValues ? (readOnly ? m.editTitle : m.editTitle) : m.newTitle}
+        title={
+          initialValues ? (readOnly ? m.editTitle : m.editTitle) : m.newTitle
+        }
         icon={undefined}
         onBack={onClose}
       />
@@ -83,10 +84,13 @@ export default function RoleForm({
             { where: 'security.roles.form.submit', toastOnError: true }
           );
         })}
-        className="orangealex-form__body"
+        className="global-form__body"
       >
-        <LoadingOverlay open={isSubmitting} message={commonDefaultMessages.saving} />
-        <div className="orangealex-form__grid">
+        <LoadingOverlay
+          open={isSubmitting}
+          message={commonDefaultMessages.saving}
+        />
+        <div className="global-form__grid">
           <FormInput
             label={m.fields.name}
             {...register('name', {
@@ -109,11 +113,19 @@ export default function RoleForm({
         </div>
 
         {/* Botonera común */}
-        <div className="orangealex-form__footer">
+        <div className="global-form__footer">
           {readOnly || !hasEditPermission ? (
-            <FormActions onCancel={onClose} onAccept={() => {}} isAccepting={isSubmitting} />
+            <FormActions
+              onCancel={onClose}
+              onAccept={() => {}}
+              isAccepting={isSubmitting}
+            />
           ) : (
-            <FormActions onCancel={onClose} onAccept={() => {}} isAccepting={isSubmitting} />
+            <FormActions
+              onCancel={onClose}
+              onAccept={() => {}}
+              isAccepting={isSubmitting}
+            />
           )}
         </div>
       </form>

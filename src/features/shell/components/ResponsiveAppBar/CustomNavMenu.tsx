@@ -71,13 +71,11 @@ const MenuItem: React.FC<MenuItemProps> = ({ item, onItemClick }) => {
 };
 
 // --- Componente Principal ---
-const CustomNavMenu: React.FC<CustomNavMenuProps> = ({
-  items,
-  onItemClick,
-}) => {
+const CustomNavMenu: React.FC<CustomNavMenuProps> = ({ items, onItemClick }) => {
+  const safeItems = Array.isArray(items) ? items : [];
   return (
     <ul className="nav-menu">
-      {items.map((item) => (
+      {safeItems.map((item) => (
         <MenuItem key={item.idMenu} item={item} onItemClick={onItemClick} />
       ))}
     </ul>

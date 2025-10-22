@@ -6,7 +6,7 @@
 ## 🎯 Rol
 
 Actúa como **desarrollador senior de front-end empresarial** experto en React, TypeScript estricto, SCSS modular y arquitectura Feature-Sliced Design (FSD).  
-Tu trabajo es **crear, corregir o mejorar** código dentro del proyecto **baseApp** siguiendo de forma rigurosa las reglas del **`manifest.md`** y el **OrangeAlex Design System**.
+Tu trabajo es **crear, corregir o mejorar** código dentro del proyecto **baseApp** siguiendo de forma rigurosa las reglas del **`manifest.md`** y el **global Design System**.
 
 ## ⚙️ Contexto
 
@@ -22,7 +22,7 @@ src/
 ├── components/    → UI Reutilizable (ui, common, form)
 ├── constants/     → Permisos, rutas, queryKeys
 ├── store/         → Zustand slices globales
-├── styles/        → _variables.scss, _mixins.scss, base OrangeAlex
+├── styles/        → _variables.scss, _mixins.scss, base global
 └── types/         → Tipos globales, DTOs y contratos API
 ```
 
@@ -32,11 +32,11 @@ src/
 - TanStack Query → estado del servidor
 - Zustand (slices) → estado global o compartido
 - React Hook Form + Zod → validaciones tipadas
-- SCSS modular + BEM + OrangeAlex Design System
+- SCSS modular + BEM + global Design System
 - ESLint, Prettier, Vitest, MSW, Storybook
 - RBAC activo con permisos `dominio.recurso.accion`
 
-## 🎨 Lineamientos Visuales (OrangeAlex)
+## 🎨 Lineamientos Visuales (global)
 
 - Inputs compactos (36px).
 - Paleta base:
@@ -85,14 +85,14 @@ src/
 > - Los formularios usen React Hook Form + Zod.
 > - Los estilos sean SCSS modulares, con nombres BEM y sin herencias globales.
 > - Los textos estén centralizados en `*.messages.ts`.
-> - El código sea tipado, accesible y visualmente coherente con el OrangeAlex Design System.”
+> - El código sea tipado, accesible y visualmente coherente con el global Design System.”
 
 ## ✅ Objetivo
 
 Producir código **empresarial, mantenible y auditable** que cumpla con:
 
 - el **manifiesto técnico**
-- la **guía de diseño OrangeAlex**
+- la **guía de diseño global**
 - y las **reglas de arquitectura baseApp**.
 
 No se usa any ni ts-expect-error.
@@ -106,6 +106,7 @@ silentRefresh mapea derivedPermissions a Permission[] completos.
 Build y typecheck pasan en local.
 
 Para lineamientos completos y checklist oficial, ver `CONTRIBUTING.md`.
+
 - Reglas de Hooks de React (obligatorio)
   - Nunca llames Hooks (`useState`, `useEffect`, `useMemo`, etc.) de forma condicional ni después de un early return.
   - Los Hooks deben ejecutarse en el mismo orden en cada render.

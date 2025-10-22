@@ -3,7 +3,7 @@
 // Escala base y colores de marca (SCSS)
 // ----------------------------------------------------
 $truper-orange: #ef6b06; // legado
-$orangealex-primary: #F26822; // naranja corporativo actual
+$color-corporative-primary: #f26822; // naranja corporativo actual
 $black: #000;
 $white: #fff;
 $main-color: #cac8b2;
@@ -20,7 +20,7 @@ $gray-800: #343a40;
 $gray-900: #212529;
 
 // --- Paleta Semántica ---
-$color-primary: $orangealex-primary;
+$color-primary: $color-corporative-primary;
 $color-secondary: $gray-600;
 $color-success: #28a745;
 $color-danger: #dc3545;
@@ -83,7 +83,7 @@ $txt-black: $black;
 
   // Alturas estándar de controles/botones
   --control-height-sm: 25px;
-  --control-height-md: 36px; // OrangeAlex compacto
+  --control-height-md: 36px; // compacto
   --control-height-lg: 40px;
 
   // Superficies
@@ -130,7 +130,6 @@ $colors: (
   'red': #ff0000,
 );
 // color module imported at top
-/* OrangeAlex centralized variables */
 :root {
   /* Colors */
   --color-primary: #f26822;

@@ -7,7 +7,6 @@ import { apiCall } from '@/shared/api/apiCall';
 import { userSchema, UserFormValues } from './validationSchema';
 // removed unused userFormMessages import
 import './UserForm.scss';
-import '@/shared/components/common/forms/orangealex-form.scss';
 import SectionHeader from '@/shared/components/common/SectionHeader';
 // removed unused Button import
 import { usersMessages } from './Users.messages';
@@ -155,7 +154,7 @@ const UserForm: React.FC<Props> = ({
   };
 
   return (
-    <div className="orangealex-form oa-form--md oa-form--left">
+    <div className="global-form global-form--md global-form--left">
       <SectionHeader
         title={
           initialData
@@ -168,11 +167,11 @@ const UserForm: React.FC<Props> = ({
         onBack={onCancel}
       />
       <form
-        className="user-form"
         onSubmit={handleSubmit(async (data) => {
           if (readOnly || !hasEditPermission) return; // abort submit
           await submit(data);
         })}
+        className="global-form__body"
       >
         <LoadingOverlay
           open={
@@ -180,7 +179,7 @@ const UserForm: React.FC<Props> = ({
           }
           message={usersMessages.savingUser ?? commonDefaultMessages.saving}
         />
-        <div className="orangealex-form__grid">
+        <div className="global-form__grid">
           {/* Fila 1: 4 columnas */}
           <FormInput
             label={usersMessages.form?.nombre ?? 'Nombre'}
@@ -313,7 +312,7 @@ const UserForm: React.FC<Props> = ({
             readOnly
           />
         </div>
-        <div className="user-form__actions">
+        <div className="global-form__footer">
           <FormActions
             onCancel={onCancel}
             onAccept={() => {}}

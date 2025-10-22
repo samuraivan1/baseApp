@@ -1,0 +1,164 @@
+@use '@/styles/_mixins' as mix;
+@use '@/styles/_variables' as vars;
+
+/* ============================================================
+   GLOBAL FORM - Base Style
+   Estructura corporativa global Design System
+   ============================================================ */
+
+.global-form {
+  /* ---------- Variables locales ---------- */
+  --control-height-input: var(--control-height-sm);
+
+  /* ---------- Layout base ---------- */
+  background: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-medium);
+  padding: var(--spacing-md);
+  width: clamp(560px, 70ch, 880px);
+  max-width: 100%;
+  margin: 0 auto;
+
+  /* ============================================================
+     SECTION: HEADER
+     ============================================================ */
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+
+    &__icon {
+      color: var(--color-primary);
+      font-size: 1.2rem;
+    }
+
+    &__title {
+      font-weight: var(--font-weight-semibold); // 600 por defecto
+      font-size: var(--font-size-md);
+      color: var(--color-text-strong);
+    }
+  }
+
+  /* ============================================================
+     SECTION: BODY
+     ============================================================ */
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  /* ============================================================
+     SECTION: GRID
+     ============================================================ */
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: var(--spacing-sm);
+
+    /* Column spans */
+    .form-field--full {
+      grid-column: 1 / -1;
+    }
+    .form-field--span-2 {
+      grid-column: span 2;
+    }
+    .form-field--span-3 {
+      grid-column: span 3;
+    }
+    .form-field--span-4 {
+      grid-column: span 4;
+    }
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (min-width: 1024px) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* ============================================================
+     SECTION: FOOTER
+     ============================================================ */
+  &__footer {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+  }
+
+  /* ============================================================
+     MODIFICADORES
+     ============================================================ */
+
+  /* Tamaños predefinidos */
+  &--sm {
+    max-width: 360px;
+  }
+  &--md {
+    max-width: 480px;
+  }
+  &--lg {
+    max-width: 680px;
+  }
+  &--xl {
+    max-width: 880px;
+  }
+
+  &--left {
+    margin-left: 0;
+  }
+
+  /* Layout de columnas fijas */
+  &--cols-3 .global-form__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  &--cols-4 .global-form__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  /* Variante: formulario de permisos */
+  &--permisos .global-form__grid {
+    grid-template-columns: 2fr 1fr 1fr;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1.5fr 1fr;
+    }
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Variante: compacta (opcional) */
+  &--compact {
+    --control-height-input: 28px;
+    padding: var(--spacing-sm);
+  }
+}
+
+/* ============================================================
+   CAMPOS GENERALES
+   ============================================================ */
+
+.form-label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-bottom: var(--spacing-2xs);
+  color: var(--color-text-primary);
+}
+
+/* Inputs y textareas compactos */
+.global-form input,
+.global-form select,
+.global-form textarea,
+.form-input,
+.form-textarea {
+  @include mix.input-compact();
+  width: 100%;
+  font-size: var(--font-size-md);
+}

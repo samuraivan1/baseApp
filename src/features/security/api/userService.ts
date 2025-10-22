@@ -7,8 +7,9 @@ import { type UserResponseDTO, mapUserFromDto } from '@/features/security/types/
 
 export async function getUsers(): Promise<User[]> {
   try {
-    const { data } = await api.get<UserResponseDTO[]>('/users');
-    return data.map(mapUserFromDto);
+    const res = await api.get<UserResponseDTO[] | { data: UserResponseDTO[] }>('/users');
+    const rows = Array.isArray(res.data) ? res.data : (res.data as { data: UserResponseDTO[] }).data;
+    return (rows ?? []).map(mapUserFromDto);
   } catch (error) {
     throw handleApiError(error);
   }
