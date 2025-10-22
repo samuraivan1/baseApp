@@ -8,4 +8,4 @@ source: from_code
 - Puente de variables legacy a tokens CSS en `src/styles/_bridge.scss`.
 - Tokens: preferir `var(--color-*)` y mapear a `$` solo cuando sea necesario.
 - Convención de nombres: BEM recomendado para componentes.
-
+- Importaciones SCSS con alias: `@use '@/shared/styles/fs-table';`.

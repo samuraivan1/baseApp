@@ -1,19 +1,32 @@
-# Contribución: Reglas de Tipado y DTOs
+# Contribuir a baseApp
 
-## Checklist de PR (obligatorio)
-- [ ] Modelos de dominio en camelCase con interfaces `I<Name>` e ids `readonly`.
-- [ ] DTOs explícitos: `<Name>RequestDTO` / `<Name>ResponseDTO` en snake_case.
-- [ ] Sin alias redundantes (no `CreateXDTO` reexportando RequestDTO).
-- [ ] Mappers UI↔API puros para fechas y flags (boolean ↔ 0/1).
-- [ ] Enums centralizados con prefijo `E` en `src/shared/types/enums.ts`.
-- [ ] Sin `any`/`unknown` no justificados; usar genéricos/Record y `// TODO: refine type` temporal.
-- [ ] Zod schemas por entidad y DTO; pruebas de round-trip cuando aplique.
+Gracias por contribuir. Este documento resume el flujo de trabajo y enlaza a la documentación central. Mantén las PRs pequeñas, tipadas y alineadas a los estándares.
 
-## Dónde va cada cosa
-- Dominio: `features/*/types/models.ts` y `relations.ts`.
-- DTOs + mappers: `features/*/types/dto.ts` o `api/mappers/*`.
-- Enums compartidos: `src/shared/types/enums.ts`.
-- Genéricos base: `src/shared/types/api.ts`.
+## Flujo de trabajo
+- Crea rama desde `main`: `feat/*`, `fix/*`, `docs/*`.
+- Sigue commitlint (convencional): `feat:`, `fix:`, `docs:`, `refactor:`, etc.
+- Abre PR con descripción clara, checklist y enlaces a issues.
 
-Consulta `TYPES_STANDARD.md` y `AUDIT_PROMPTS.md` antes de abrir PR.
+## Checks locales obligatorios
+- Lint: `npm run lint`
+- Tests: `npm test`
+- Auditoría rápida de reglas: `npm run audit:rules`
 
+## Documentación central
+- Mapa global: `docs/00_Global_README.md`
+- Índice: `docs/SUMMARY.md`
+- Estándares clave:
+  - Arquitectura FSD: `docs/01_Estandares/Arquitectura_FSD.md`
+  - Estilo TS/TSX: `docs/01_Estandares/Estilo_Codigo_TSX.md`
+  - SCSS: `docs/01_Estandares/SCSS_Guia_Modular.md`
+  - RBAC: `docs/01_Estandares/RBAC_Permisos.md`
+  - Tipos y contratos: `docs/01_Estandares/Tipos_y_Contratos.md`
+  - Contribución Tipos y PR: `docs/01_Estandares/Contribucion_Tipos_y_PR.md`
+
+## Auditoría y prompts
+- Auditoría global: `docs/02_Auditorias/audit_global.md`
+- Registro de reglas: `docs/rules_registry.json`
+- Prompts operativos: `docs/03_Prompts/prompt_operativo.md`
+- Prompts de auditoría: `AUDIT_PROMPTS.md`
+
+¿Dudas? Abre un issue con etiqueta `question`.

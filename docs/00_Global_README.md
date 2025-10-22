@@ -48,6 +48,15 @@ docs/
   SUMMARY.md
 ```
 
+Auditorías clave
+- Auditoría Global: `docs/02_Auditorias/audit_global.md`
+- Aliases/Barriles/Estilos: `docs/02_Auditorias/audit_aliases_barriles_estilos.md`
+- Frontend: `docs/02_Auditorias/audit_frontend.md`
+- SCSS: `docs/02_Auditorias/audit_scss.md`
+
+## Scripts útiles
+- Ejecutar auditoría rápida de reglas: `npm run audit:rules`
+
 ## Normativa base
 - Manifesto del proyecto: ver `manifest.md` (raíz) como fuente normativa principal.
 - Guías complementarias: `docs/DEVELOPER_GUIDE.md`, `docs/CODING_RULES.md`, `docs/API_CONSUMPTION_RULES.md`, `docs/ERROR_HANDLING.md`, `docs/API_MOCKS.md`.

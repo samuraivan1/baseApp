@@ -34,7 +34,8 @@
     "test": "vitest || exit 0",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "cleanup:unused": "ts-node scripts/cleanup-unused.ts"
+    "cleanup:unused": "ts-node scripts/cleanup-unused.ts",
+    "audit:rules": "node scripts/audit-rules.js"
   },
   "browserslist": {
     "production": [

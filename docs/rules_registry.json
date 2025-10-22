@@ -170,5 +170,140 @@
       "src/features/security/styles/index.scss",
       "src/shared/styles/fs-table.scss"
     ]
+  },
+  {
+    "ruleId": "api.consumption.service.layer",
+    "category": "architecture",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/API_CONSUMPTION_RULES.md",
+      "src/shared/api/apiClient.ts"
+    ]
+  },
+  {
+    "ruleId": "api.errors.apiCall.withApiCall",
+    "category": "architecture",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/ERROR_HANDLING.md",
+      "src/shared/api/apiCall.ts",
+      "src/dev/DevMutationPlayground.tsx"
+    ]
+  },
+  {
+    "ruleId": "msw.handlers.documented",
+    "category": "qa",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/API_MOCKS.md",
+      "src/mocks/handlers/permissions.ts"
+    ]
+  },
+  {
+    "ruleId": "coding.no.any.no.tsignore",
+    "category": "rules",
+    "source": "from_md",
+    "validated": false,
+    "appearsIn": [
+      "docs/CODING_RULES.md",
+      "CONTRIBUTING.md"
+    ]
+  },
+  {
+    "ruleId": "i18n.centralized.messages",
+    "category": "ui",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/DEVELOPER_GUIDE.md",
+      "src/i18n/commonMessages.ts",
+      "src/i18n/types.ts"
+    ]
+  },
+  {
+    "ruleId": "prompts.audit.structure",
+    "category": "qa",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "AUDIT_PROMPTS.md",
+      "docs/02_Auditorias/audit_global.md"
+    ]
+  },
+  {
+    "ruleId": "contributing.commitlint.required",
+    "category": "rules",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "CONTRIBUTING.md",
+      "commitlint.config.js"
+    ]
+  },
+  {
+    "ruleId": "types.naming.interfaces.enums.dtos",
+    "category": "naming",
+    "source": "from_md",
+    "validated": false,
+    "appearsIn": [
+      "TYPES_STANDARD.md"
+    ]
+  },
+  {
+    "ruleId": "security.csrf.with.bearer",
+    "category": "security",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/API_MOCKS.md",
+      "src/shared/api/csrf.ts",
+      "src/shared/api/apiClient.ts"
+    ]
+  },
+  {
+    "ruleId": "testing.msw.storybook",
+    "category": "qa",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/DEVELOPER_GUIDE.md",
+      ".storybook/main.js",
+      "vite.config.js"
+    ]
+  },
+  {
+    "ruleId": "dev.mocks.force.errors",
+    "category": "qa",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/API_MOCKS.md",
+      "src/dev/api/devService.ts"
+    ]
+  },
+  {
+    "ruleId": "i18n.messages.typed.ids",
+    "category": "ui",
+    "source": "from_md",
+    "validated": true,
+    "appearsIn": [
+      "docs/DEVELOPER_GUIDE.md",
+      "src/i18n/commonMessages.ts",
+      "src/i18n/types.ts"
+    ]
+  },
+  {
+    "ruleId": "i18n.schemas.no-inline-strings",
+    "category": "ui",
+    "source": "from_experience",
+    "validated": false,
+    "appearsIn": [
+      "docs/01_Estandares/Estilo_Codigo_TSX.md",
+      "src/features/auth/LoginPage/validationSchema.ts",
+      "src/features/security/types/schemas.extra.ts"
+    ]
   }
 ]

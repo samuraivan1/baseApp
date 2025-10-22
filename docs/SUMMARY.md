@@ -13,13 +13,27 @@
   - 01_Estandares/Tokens_y_Tipografia.md
   - 01_Estandares/QA_y_Testing.md
   - 01_Estandares/Integraciones_SAP.md
+  - 01_Estandares/Aliases_y_Paths.md
+  - 01_Estandares/Manifesto.md
+  - 01_Estandares/Tipos_y_Contratos.md
 - 02 Auditorias
   - 02_Auditorias/audit_frontend.md
   - 02_Auditorias/audit_backend.md
   - 02_Auditorias/audit_scss.md
   - 02_Auditorias/audit_global.md
+  - 02_Auditorias/audit_aliases_barriles_estilos.md
 - 03 Prompts
   - 03_Prompts/prompt_operativo.md
   - 03_Prompts/prompt_entendimiento.md
+  - 03_Prompts/PROMPT_AUDITOR.md
+  - 03_Prompts/PROMPT_CODER.md
+  - 03_Prompts/prompt_operativo_baseApp.md
+  - 03_Prompts/prompt_auditoria_baseApp.md
 - 04 Logs
   - 04_Logs/log_historico_estandares.md
+  - 04_Logs/log_archivo_PROMPT_AUDITOR.md
+  - 04_Logs/log_archivo_PROMPT_CODER.md
+  - 04_Logs/log_archivo_prompt_operativo_baseApp.md
+  - 04_Logs/log_archivo_prompt_auditoria_baseApp.md
+  - 04_Logs/log_archivo_manifest.md
+  - 04_Logs/log_archivo_TYPES_STANDARD.md

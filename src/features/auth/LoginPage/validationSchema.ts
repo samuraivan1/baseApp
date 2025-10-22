@@ -2,9 +2,7 @@ import { z } from 'zod';
 import { loginPageText } from './LoginPage.messages';
 
 export const loginSchema = z.object({
-  emailOrUsername: z
-    .string()
-    .min(1, { message: loginPageText.emailRequired }),
+  emailOrUsername: z.string().min(1, { message: loginPageText.emailRequired }),
 
   password: z.string().min(1, { message: loginPageText.passwordRequired }),
 });
