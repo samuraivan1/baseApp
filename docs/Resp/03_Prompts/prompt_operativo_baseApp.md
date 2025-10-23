@@ -1,6 +1,7 @@
 ---
-status: active
-reason: "Consolidado desde la versión más completa de la raíz."
+title: "Prompt Operativo — BaseApp"
+version: 1.0
+last_sync: 2025-10-23
 ---
 # 🧩 Prompt Operativo — baseApp
 
@@ -99,7 +100,7 @@ src/
 > - El código sea tipado, accesible y visualmente coherente con el global Design System.”
 
 ### Validaciones Automáticas Sugeridas
-- Usar `docs/rules_registry.json` para verificar:
+- Usar `docs/01_Estandares/rules_registry.json` para verificar:
   - `imports.alias.at`
   - `architecture.core.barrel.exports`
   - `styles.shared.fs-table`
