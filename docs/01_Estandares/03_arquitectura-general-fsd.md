@@ -1,94 +1,3 @@
----
-title: "Guía de Desarrollo Unificada — baseApp"
-version: 1.0
-status: active
-last_sync: 2025-10-23
----
-
-# Guía de Desarrollo Unificada — baseApp
-
-## Manual técnico y pedagógico del ecosistema OrangeAlex
-
-Esta guía consolida todos los estándares, metodologías y buenas prácticas que rigen el desarrollo del proyecto **baseApp**.  
-Su objetivo es doble: servir como **referencia normativa** para arquitectos y auditores, y como **manual de incorporación** para nuevos desarrolladores.
-
----
-
-### Filosofía general
-
-baseApp es un ecosistema modular orientado a **calidad, escalabilidad y coherencia visual**.  
-Todo su código sigue tres principios:
-
-1. **Autonomía:** cada feature debe ser autocontenida y exportar su propia API pública.
-2. **Trazabilidad:** todos los procesos (auth, API, permisos, errores, UI) deben poder auditarse.
-3. **Consistencia:** las decisiones de diseño técnico y visual provienen del _Global Design System (GDS)_.
-
----
-
-## 🧩 1. Introducción
-
-baseApp nace como una aplicación empresarial basada en **React 18 + TypeScript**, pensada para ser el marco de trabajo oficial de soluciones internas y externas bajo la arquitectura OrangeAlex.  
-Esta guía explica cómo estructurar, desarrollar, documentar y mantener código dentro del estándar corporativo.
-
-Incluye convenciones de:
-
-- Arquitectura (FSD — Feature-Sliced Design)
-- Estado global (TanStack Query + Zustand)
-- Estilos (SCSS modular + BEM + tokens CSS)
-- Consumo de APIs (servicios + mappers + error handling)
-- Seguridad (RBAC + ProtectedRoute + PermissionGate)
-- Testing y CI/CD (Vitest + MSW + auditorías)
-
----
-
----
-
-title: "Stack Tecnológico Principal"
-version: 1.0
-status: active
-last_sync: 2025-10-23
-
----
-
-## ⚙️ 2. Stack Tecnológico Principal
-
-| Capa                      | Tecnología                      | Rol                                      |
-| ------------------------- | ------------------------------- | ---------------------------------------- |
-| **Framework UI**          | React 18 + TypeScript           | base SPA, tipado estricto                |
-| **Bundler**               | Vite                            | build rápido y hot reload                |
-| **Estado Servidor**       | TanStack Query v5               | caché, revalidación y sincronización API |
-| **Estado Cliente Global** | Zustand (slices)                | estado de UI, sesión y menús             |
-| **Formularios**           | React Hook Form + Zod           | validación tipada                        |
-| **Estilos**               | SCSS modular + BEM + tokens CSS | coherencia visual                        |
-| **Routing**               | React Router v6                 | navegación protegida y lazy loading      |
-| **Mock API**              | MSW (Mock Service Worker)       | simulación de endpoints                  |
-| **Pruebas**               | Vitest + React Testing Library  | unit + integración                       |
-| **Documentación UI**      | Storybook                       | catálogo de componentes                  |
-| **Calidad**               | ESLint + Prettier + commitlint  | estilo y normas de código                |
-
-**Integraciones opcionales:** Redux Toolkit (store base híbrido), Sentry (error tracking), DataDog (logging de producción).
-
----
-
-### Principios de stack
-
-- **Todo es tipado:** ninguna operación puede usar `any`.
-- **Un solo cliente HTTP:** `src/shared/api/apiClient.ts`.
-- **Mocks obligatorios en desarrollo:** no se hace fetch directo al backend.
-- **Capa de errores unificada:** `errorService` + `AppError`.
-- **Internacionalización por mensajes:** sin textos literales en JSX.
-
----
-
----
-
-title: "Arquitectura General — Feature-Sliced Design (FSD)"
-version: 1.0
-status: active
-last_sync: 2025-10-23
-
----
-
 ## 🧱 3. Arquitectura General — FSD
 
 La aplicación adopta el patrón **Feature-Sliced Design (FSD)**:  
@@ -107,7 +16,6 @@ src/
 └── routes/ → AppRoutes y ProtectedRoute
 
 yaml
-Copiar código
 
 ---
 
@@ -134,16 +42,15 @@ src/features/security/
 └── index.ts // API pública
 
 python
-Copiar código
 
 Uso en otro módulo:
 
-```ts
+````ts
 import { UsersPage } from "@/features/security";
 ❌ Prohibido:
 
 ts
-Copiar código
+
 import { UsersPage } from "@/features/security/components/UsersPage";
 3.3 Fuentes de verdad
 Permisos RBAC: src/features/security/constants/permissions.ts
@@ -174,7 +81,7 @@ Cada feature o capa debe mantener una jerarquía clara y reproducible.
 Los nombres de carpetas usan kebab-case; los archivos de componentes usan PascalCase.
 
 pgsql
-Copiar código
+
 src/
   features/
     auth/
@@ -210,13 +117,13 @@ index.ts	API pública del feature
 Todo componente vive en una carpeta homónima con su código, SCSS e índice.
 
 pgsql
-Copiar código
+
 /RolesTable
 ├── RolesTable.tsx
 ├── RolesTable.scss
 └── index.ts
 tsx
-Copiar código
+
 // RolesTable.tsx
 import "./RolesTable.scss";
 export const RolesTable = () => <div className="roles-table">...</div>;
@@ -244,7 +151,7 @@ Solo guardar estado de UI o sesión; los datos del backend van a React Query.
 
 4.5 Ejemplo de feature completo
 bash
-Copiar código
+
 features/
   kanban/
     api/tableroService.ts
@@ -256,4 +163,17 @@ features/
     types/models.ts
     index.ts
 Ventaja: el módulo es autónomo y portable; puede extraerse a un micro-frontend sin romper dependencias.
-```
+
+
+
+
+---
+
+
+
+---
+title: "Gestión de Estado y Hooks"
+version: 1.0
+status: active
+last_sync: 2025-10-23
+---
