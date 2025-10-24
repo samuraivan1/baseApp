@@ -21,10 +21,10 @@ async function getMockDerivedPermissions(
   const userRoleLinks = (db.user_roles as Array<{ user_id: number; role_id: number }>).filter(
     (r) => Number(r.user_id) === userId
   );
-  try {
-    console.log('[Auth] derived roles (ids):', userRoleLinks.map(r => Number(r.role_id)));
-  } catch {
-    // Ignorar errores de consola en entornos que no expongan console
+  if (import.meta.env.DEV && import.meta.env.VITE_DEBUG_AUTH === '1') {
+    try {
+      console.log('[Auth] derived roles (ids):', userRoleLinks.map(r => Number(r.role_id)));
+    } catch { /* noop */ }
   }
   const roleIds = userRoleLinks.map((r) => Number(r.role_id));
   const rolePermissions = (db.role_permissions as Array<{ role_id: number; permission_id: number }>).filter((r) =>
@@ -77,19 +77,19 @@ export async function silentRefresh(): Promise<boolean> {
       const userDto = session.user as unknown as UserResponseDTO;
       const user = mapUserFromDto(userDto);
       // Debug: imprimir permisos derivados por usuario para soporte
-      try {
-        const username = 'username' in (user as object) ? (user as { username?: string }).username : undefined;
-        console.log('[Auth] session user:', { id: user.userId, username });
-  } catch {
-        // Ignorar errores de log en navegadores sin consola
+      if (import.meta.env.DEV && import.meta.env.VITE_DEBUG_AUTH === '1') {
+        try {
+          const username = 'username' in (user as object) ? (user as { username?: string }).username : undefined;
+          console.log('[Auth] session user:', { id: user.userId, username });
+        } catch { /* noop */ }
       }
       const derivedPermissions = (await getMockDerivedPermissions(
         user.userId
       ).catch(() => undefined)) || [];
-      try {
-        console.log('[Auth] derived permissions:', derivedPermissions.map(p => (p as Partial<{ permissionKey: string; permission_string: string }>).permissionKey ?? (p as Partial<{ permissionKey: string; permission_string: string }>).permission_string));
-  } catch {
-        // Ignorar errores de log en navegadores sin consola
+      if (import.meta.env.DEV && import.meta.env.VITE_DEBUG_AUTH === '1') {
+        try {
+          console.log('[Auth] derived permissions:', derivedPermissions.map(p => (p as Partial<{ permissionKey: string; permission_string: string }>).permissionKey ?? (p as Partial<{ permissionKey: string; permission_string: string }>).permission_string));
+        } catch { /* noop */ }
       }
       // Construir un UserSession mínimo para cumplir la firma del store
       const sessionUser: UserSession = {
@@ -99,10 +99,10 @@ export async function silentRefresh(): Promise<boolean> {
         fullName: (user.firstName ?? '') + ' ' + (user.lastNameP ?? ''),
       };
       getAuthStore().setUser(sessionUser);
-      try {
-        console.log('[Auth] set user permissions in store:', sessionUser.permissions?.map(p => (p as Partial<{ permissionKey: string; permission_string: string }>).permissionKey ?? (p as Partial<{ permissionKey: string; permission_string: string }>).permission_string));
-      } catch {
-        // Ignorar errores de log en navegadores sin consola
+      if (import.meta.env.DEV && import.meta.env.VITE_DEBUG_AUTH === '1') {
+        try {
+          console.log('[Auth] set user permissions in store:', sessionUser.permissions?.map(p => (p as Partial<{ permissionKey: string; permission_string: string }>).permissionKey ?? (p as Partial<{ permissionKey: string; permission_string: string }>).permission_string));
+        } catch { /* noop */ }
       }
     }
 

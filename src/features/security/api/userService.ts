@@ -8,10 +8,6 @@ import { type UserResponseDTO, mapUserFromDto } from '@/features/security/types/
 export async function getUsers(): Promise<User[]> {
   try {
     const res = await api.get<UserResponseDTO[] | { data: UserResponseDTO[] }>('/users');
-    if (process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
-      console.log('[getUsers] raw response', res.data);
-    }
     const rows = Array.isArray(res.data) ? res.data : (res.data as { data: UserResponseDTO[] }).data;
     const safe: User[] = [] as unknown as User[];
     (rows ?? []).forEach((item, idx) => {
@@ -46,10 +42,6 @@ export async function getUsers(): Promise<User[]> {
         } as unknown as User);
       }
     });
-    if (process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
-      console.log('[getUsers] mapped size', safe.length);
-    }
     return safe;
   } catch (error) {
     throw handleApiError(error);

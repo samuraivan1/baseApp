@@ -19,8 +19,10 @@ const SecurityHeadersCheck: React.FC = () => {
           const headers = (res.headers || {}) as Record<string, string>;
           const v = headers[h] ?? null;
           if (!v) {
-            // eslint-disable-next-line no-console
-            console.warn(`[SECURITY][headers] Falta cabecera: ${h}`);
+            if (import.meta.env.DEV && import.meta.env.VITE_DEBUG_SECURITY === '1') {
+              // eslint-disable-next-line no-console
+              console.warn(`[SECURITY][headers] Falta cabecera: ${h}`);
+            }
           }
         });
       } catch (error) {

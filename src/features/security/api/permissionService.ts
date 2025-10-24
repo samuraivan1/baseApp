@@ -12,10 +12,6 @@ import {
 export async function getPermissions(): Promise<Permission[]> {
   try {
     const res = await api.get<PermissionResponseDTO[] | { data: PermissionResponseDTO[] }>('/permissions');
-    if (process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
-      console.log('[getPermissions] raw response', res.data);
-    }
     const rows = Array.isArray(res.data) ? res.data : (res.data as { data: PermissionResponseDTO[] }).data;
     const safe: Permission[] = [] as unknown as Permission[];
     (rows ?? []).forEach((item, idx) => {
@@ -37,10 +33,6 @@ export async function getPermissions(): Promise<Permission[]> {
         safe.push({ permissionId, permissionKey, resource, action, scope, description } as unknown as Permission);
       }
     });
-    if (process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
-      console.log('[getPermissions] mapped size', safe.length);
-    }
     return safe;
   } catch (error) {
     throw handleApiError(error);

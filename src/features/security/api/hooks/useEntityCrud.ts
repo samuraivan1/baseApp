@@ -22,10 +22,6 @@ export function useEntityCrud<T, C = Partial<T>>(entityKey: string, service: Ent
     queryFn: async () => {
       const res = await apiCall(() => service.list(), { where: `${entityKey}.list` });
       if (!res.ok) throw (res.error as unknown as Error);
-      if (process.env.NODE_ENV !== 'production') {
-        // eslint-disable-next-line no-console
-        console.log(`[useEntityCrud:${entityKey}] list size`, Array.isArray(res.value) ? res.value.length : 'non-array');
-      }
       return res.value;
     },
   });

@@ -7,10 +7,6 @@ import { type RoleResponseDTO, mapRoleFromDto } from '@/features/security/types/
 export async function getRoles(): Promise<Role[]> {
   try {
     const res = await api.get<RoleResponseDTO[] | { data: RoleResponseDTO[] }>('/roles');
-    if (process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
-      console.log('[getRoles] raw response', res.data);
-    }
     const rows = Array.isArray(res.data) ? res.data : (res.data as { data: RoleResponseDTO[] }).data;
     const safe: Role[] = [];
     (rows ?? []).forEach((item, idx) => {
@@ -29,10 +25,6 @@ export async function getRoles(): Promise<Role[]> {
         safe.push({ roleId, name, description });
       }
     });
-    if (process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
-      console.log('[getRoles] mapped size', safe.length);
-    }
     return safe;
   } catch (error) {
     throw handleApiError(error);
