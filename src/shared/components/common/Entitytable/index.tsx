@@ -149,12 +149,13 @@ function EntityTable<T extends object>({
             </tr>
           </thead>
           <tbody>
-            {sortedData.map((row) => {
-              const rowKey = String(row[keyField]);
+            {Array.isArray(sortedData) && sortedData.map((row) => {
+              const keyValue = (row as Record<string, unknown>)[keyField as string];
+              const rowKey = keyValue != null ? String(keyValue) : JSON.stringify(row);
               return (
                 <tr key={rowKey} onDoubleClick={onRowDoubleClick ? () => onRowDoubleClick(row) : undefined} className={onRowDoubleClick ? 'table-row--dblclick' : undefined}>
                   {columns.map((col) => {
-                    const value = row[col.key as keyof T] as unknown;
+                    const value = (row as Record<string, unknown>)[String(col.key)] as unknown;
                     return (
                       <td key={String(col.key)} className={col.className}>
                         {col.render

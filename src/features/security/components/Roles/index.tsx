@@ -95,6 +95,7 @@ const RolesPage: React.FC = () => {
     [filteredData, currentPage, rowsPerPage]
   );
 
+
   React.useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, activeFilters]);

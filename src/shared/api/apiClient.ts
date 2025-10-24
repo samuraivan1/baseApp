@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'ax
 import { getAuthStore } from '@/features/shell/state/authStore';
 import { getCsrfToken, setCsrfToken } from './csrf';
 import { API_ENDPOINTS } from '@/constants/apiConstants';
+import { ensureTraceId, setTraceId } from '@/shared/observability/trace';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL || '/api';
 const api: AxiosInstance = axios.create({ baseURL, withCredentials: true });
@@ -21,6 +22,10 @@ const flush = (token: string | null) => {
 };
 
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+  // Ensure and attach x-trace-id
+  const traceId = ensureTraceId();
+  config.headers['x-trace-id'] = traceId;
+
   const token = getAuthStore().getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -41,6 +46,12 @@ api.interceptors.response.use(
     const url = response.config?.url || '';
     const data = response.data;
 
+    // If backend echoes trace id, keep local in sync
+    const resHeaders = response.headers as Record<string, unknown> | undefined;
+    const resTrace = (resHeaders && typeof resHeaders['x-trace-id'] === 'string' ? (resHeaders['x-trace-id'] as string) : undefined) ||
+      (data && typeof (data as Record<string, unknown>).traceId === 'string' ? (data as Record<string, unknown>).traceId as string : undefined);
+    if (typeof resTrace === 'string' && resTrace) setTraceId(resTrace);
+
     if (
       (url.includes(API_ENDPOINTS.LOGIN) || url.includes(API_ENDPOINTS.REFRESH)) &&
       data && typeof data.csrf_token === 'string'
@@ -53,6 +64,13 @@ api.interceptors.response.use(
     const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
     const status = error.response?.status;
     const url = originalRequest.url || '';
+
+    // Attempt to sync trace id from error response
+    const errHeaders = error.response?.headers as Record<string, unknown> | undefined;
+    const errData = error.response?.data as Record<string, unknown> | undefined;
+    const errTrace = (errHeaders && typeof errHeaders['x-trace-id'] === 'string' ? (errHeaders['x-trace-id'] as string) : undefined) ||
+      (errData && typeof errData.traceId === 'string' ? (errData.traceId as string) : undefined);
+    if (typeof errTrace === 'string' && errTrace) setTraceId(errTrace);
 
     const isAuthEndpoint = url.includes(API_ENDPOINTS.LOGIN) || url.includes(API_ENDPOINTS.REFRESH);
 

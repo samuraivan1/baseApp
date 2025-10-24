@@ -8,7 +8,12 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
   ],
-  parserOptions: { ecmaVersion: 2020, sourceType: 'module' },
+  parserOptions: {
+    ecmaVersion: 2020,
+    sourceType: 'module',
+    project: ['./tsconfig.json'],
+    tsconfigRootDir: __dirname,
+  },
   env: { browser: true, es6: true, node: true },
   rules: {
     '@typescript-eslint/no-explicit-any': 'error',

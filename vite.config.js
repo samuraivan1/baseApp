@@ -7,9 +7,21 @@ export default defineConfig({
 
   server: {
     open: false,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5300',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
+
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-redux']
   },
 
   resolve: {
+    dedupe: ['react', 'react-dom'],
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },

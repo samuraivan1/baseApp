@@ -121,6 +121,7 @@ const PermissionsPage: React.FC = () => {
     [filteredData, currentPage, rowsPerPage]
   );
 
+
   // Efecto para desplazar y resaltar fila actualizada
   React.useEffect(() => {
     if (justUpdatedId == null) return;

@@ -57,17 +57,28 @@ const UsuariosPage: React.FC = () => {
 
     if (!Array.isArray(usersRaw)) return [];
 
-    return usersRaw.map((user: User) => ({
-      ...(user as unknown as Record<string, unknown>),
-      is_active: Boolean((user as unknown as { is_active?: boolean | number })?.is_active ?? user.isActive),
-      mfa_enabled: Boolean((user as unknown as { mfa_enabled?: boolean | number })?.mfa_enabled ?? user.mfaEnabled),
-      user_id: (user as unknown as { user_id?: number })?.user_id ?? user.userId,
-      first_name: (user as unknown as { first_name?: string })?.first_name ?? user.firstName,
-      second_name: (user as unknown as { second_name?: string | null })?.second_name ?? (user as unknown as { secondName?: string | null }).secondName ?? null,
-      last_name_p: (user as unknown as { last_name_p?: string })?.last_name_p ?? user.lastNameP,
-      last_name_m: (user as unknown as { last_name_m?: string | null })?.last_name_m ?? (user as unknown as { lastNameM?: string | null }).lastNameM ?? null,
-      rolId: roleByUserId.get((user as unknown as { user_id?: number })?.user_id ?? user.userId),
-    })) as unknown as UserWithRole[];
+    return usersRaw.map((user: User) => {
+      const u = user as unknown as Record<string, unknown>;
+      const normalized: Record<string, unknown> = {
+        ...u,
+        // Flags garantizados como boolean
+        is_active: Boolean((u.is_active as boolean | number | undefined) ?? (u.isActive as boolean | undefined)),
+        mfa_enabled: Boolean((u.mfa_enabled as boolean | number | undefined) ?? (u.mfaEnabled as boolean | undefined)),
+        // Identificador en snake_case
+        user_id: (u.user_id as number | undefined) ?? (u.userId as number | undefined) ?? 0,
+        // Nombres en snake_case
+        first_name: (u.first_name as string | undefined) ?? (u.firstName as string | undefined) ?? '',
+        second_name: (u.second_name as string | null | undefined) ?? (u.secondName as string | null | undefined) ?? null,
+        last_name_p: (u.last_name_p as string | undefined) ?? (u.lastNameP as string | undefined) ?? '',
+        last_name_m: (u.last_name_m as string | null | undefined) ?? (u.lastNameM as string | null | undefined) ?? null,
+        // Campos usados en filtros/búsqueda
+        username: (u.username as string | undefined) ?? '',
+        email: (u.email as string | undefined) ?? '',
+      };
+      // rolId derivado
+      normalized.rolId = roleByUserId.get((normalized.user_id as number) ?? 0);
+      return normalized as UserWithRole;
+    });
   }, [usersRaw, userRoles]);
 
   const isLoading = isLoadingUsers || isLoadingRoles;
@@ -135,6 +146,7 @@ const UsuariosPage: React.FC = () => {
       ),
     [filteredData, currentPage, rowsPerPage]
   );
+
 
   useEffect(() => {
     setCurrentPage(1);

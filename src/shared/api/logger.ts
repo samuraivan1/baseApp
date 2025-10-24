@@ -23,13 +23,12 @@ const logger = {
 
   /**
    * Registra un error. En un futuro, esto enviaría el error a un servicio externo.
-   * @param {Error} error - El objeto de error.
-   * @param {object} [errorInfo] - Información adicional sobre el contexto del error.
    */
-  error: (error: Error, errorInfo?: unknown): void => {
+  error: (error: unknown, errorInfo?: unknown): void => {
+    const e = (error as { message?: string; stack?: string }) ?? {};
     console.error('[ERROR] Ha ocurrido un error:', {
-      message: error.message,
-      stack: error.stack,
+      message: e.message ?? String(error),
+      stack: e.stack,
       extraInfo: errorInfo || 'Sin información adicional',
     });
     // Futura integración con Sentry:

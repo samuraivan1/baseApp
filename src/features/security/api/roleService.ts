@@ -6,8 +6,34 @@ import { type RoleResponseDTO, mapRoleFromDto } from '@/features/security/types/
 
 export async function getRoles(): Promise<Role[]> {
   try {
-    const { data } = await api.get<RoleResponseDTO[]>('/roles');
-    return data.map(mapRoleFromDto);
+    const res = await api.get<RoleResponseDTO[] | { data: RoleResponseDTO[] }>('/roles');
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.log('[getRoles] raw response', res.data);
+    }
+    const rows = Array.isArray(res.data) ? res.data : (res.data as { data: RoleResponseDTO[] }).data;
+    const safe: Role[] = [];
+    (rows ?? []).forEach((item, idx) => {
+      try {
+        const mapped = mapRoleFromDto(item);
+        safe.push(mapped);
+      } catch (e) {
+        if (process.env.NODE_ENV !== 'production') {
+          // eslint-disable-next-line no-console
+          console.error('[getRoles] map error at index', idx, e, item);
+        }
+        // Fallback mínimo tolerante
+        const roleId = (item as unknown as { roleId?: number; role_id?: number }).roleId ?? (item as unknown as { role_id?: number }).role_id ?? idx + 1;
+        const name = (item as unknown as { name?: string }).name ?? `Role ${roleId}`;
+        const description = (item as unknown as { description?: string | null }).description ?? null;
+        safe.push({ roleId, name, description });
+      }
+    });
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.log('[getRoles] mapped size', safe.length);
+    }
+    return safe;
   } catch (error) {
     throw handleApiError(error);
   }

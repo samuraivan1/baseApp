@@ -1,7 +1,7 @@
 // src/hooks/useMainMenu.ts
 import { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { apiCall } from '@/shared/api/apiCall';
+// Avoid apiCall contract ambiguity here; call service directly and validate
 import { appBarLogContexts } from '@/features/shell/components/ResponsiveAppBar/ResponsiveAppBar.messages';
 import { fetchMenu } from '@/features/shell';
 import type { NavMenuItem } from '@/features/shell/types';
@@ -46,9 +46,9 @@ export function useMainMenuBase(
   const { data = [], isLoading, isError, error } = useQuery<NavMenuItem[]>({
     queryKey: ['mainMenu'],
     queryFn: async () => {
-      const res = await apiCall(() => fetchMenu(), { where: 'shell.menu.main', toastOnError: true });
-      if (!res.ok) throw res.error as unknown as Error;
-      return res.value;
+      const items = await fetchMenu();
+      if (!Array.isArray(items)) throw new Error('Menú inválido');
+      return items as NavMenuItem[];
     },
     enabled,
   });

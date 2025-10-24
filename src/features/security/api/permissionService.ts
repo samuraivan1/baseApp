@@ -11,8 +11,37 @@ import {
 
 export async function getPermissions(): Promise<Permission[]> {
   try {
-    const { data } = await api.get<PermissionResponseDTO[]>('/permissions');
-    return data.map(mapPermissionFromDto);
+    const res = await api.get<PermissionResponseDTO[] | { data: PermissionResponseDTO[] }>('/permissions');
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.log('[getPermissions] raw response', res.data);
+    }
+    const rows = Array.isArray(res.data) ? res.data : (res.data as { data: PermissionResponseDTO[] }).data;
+    const safe: Permission[] = [] as unknown as Permission[];
+    (rows ?? []).forEach((item, idx) => {
+      try {
+        const mapped = mapPermissionFromDto(item);
+        safe.push(mapped as unknown as Permission);
+      } catch (e) {
+        if (process.env.NODE_ENV !== 'production') {
+          // eslint-disable-next-line no-console
+          console.error('[getPermissions] map error at index', idx, e, item);
+        }
+        // Fallback mínimo
+        const permissionId = (item as any).permissionId ?? (item as any).permission_id ?? idx + 1;
+        const permissionKey = (item as any).permissionKey ?? (item as any).permission_string ?? `perm.${permissionId}`;
+        const resource = (item as any).resource ?? null;
+        const action = (item as any).action ?? null;
+        const scope = (item as any).scope ?? null;
+        const description = (item as any).description ?? null;
+        safe.push({ permissionId, permissionKey, resource, action, scope, description } as unknown as Permission);
+      }
+    });
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.log('[getPermissions] mapped size', safe.length);
+    }
+    return safe;
   } catch (error) {
     throw handleApiError(error);
   }

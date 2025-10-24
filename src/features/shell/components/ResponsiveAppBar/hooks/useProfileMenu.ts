@@ -1,7 +1,7 @@
 // src/hooks/useProfileMenu.ts
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { apiCall } from '@/shared/api/apiCall';
+// Avoid apiCall contract ambiguity here; call service directly and validate
 import { appBarLogContexts } from '@/features/shell/components/ResponsiveAppBar/ResponsiveAppBar.messages';
 import { fetchProfileMenu } from '@/features/shell';
 import type { NavMenuItem } from '@/features/shell/types';
@@ -18,9 +18,9 @@ export const useProfileMenu = () => {
   } = useQuery<NavMenuItem[]>({
     queryKey: ['profileMenu'],
     queryFn: async () => {
-      const res = await apiCall(() => fetchProfileMenu(), { where: 'shell.menu.profile', toastOnError: true });
-      if (!res.ok) throw res.error as unknown as Error;
-      return res.value;
+      const items = await fetchProfileMenu();
+      if (!Array.isArray(items)) throw new Error('Menú perfil inválido');
+      return items as NavMenuItem[];
     },
     enabled: isLoggedIn,
   });

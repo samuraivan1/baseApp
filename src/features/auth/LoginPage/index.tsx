@@ -151,17 +151,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ backgroundImage }) => {
   const onSubmit = async (data: LoginFormData) => {
     setIsSubmitting(true);
     try {
-      const { apiCall } = await import('@/shared/api/apiCall');
-      const loginRes = await apiCall(
-        () => login(data.emailOrUsername, data.password),
-        { where: 'auth.login', toastOnError: true }
-      );
-      if (!loginRes.ok) return;
-      const finalizeRes = await apiCall(() => postLoginFinalize(), {
-        where: 'auth.finalize',
-        toastOnError: true,
-      });
-      if (!finalizeRes.ok) return;
+      // Usar apiCallEx que lanza AppError y simplifica el flujo
+      const { apiCallEx } = await import('@/shared/api/apiCallEx');
+      await apiCallEx(() => login(data.emailOrUsername, data.password), { retry: false });
+      await apiCallEx(() => postLoginFinalize(), { retry: false });
       toast.success(authMessages.loginSuccess);
       const from = (location.state as { from?: { pathname?: string } } | null)
         ?.from?.pathname;

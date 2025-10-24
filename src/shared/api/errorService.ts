@@ -6,7 +6,7 @@
  * - Exporta helpers: logError, captureBreadcrumb, setUser, flushQueue.
  */
 
-type NormalizedError = {
+export type NormalizedError = {
   status?: number | null;
   code?: string | null;
   message: string;
@@ -149,7 +149,15 @@ export function normalizeError(
   context?: Record<string, unknown>
 ): NormalizedError {
   const timestamp = new Date().toISOString();
-  if (!err) return { message: 'Error desconocido', timestamp, context };
+  // Try to attach current traceId if present (sync import to avoid await)
+  let contextWithTrace = context;
+  try {
+    // dynamic import avoided; use inline optional access via globalThis
+    const mod = (globalThis as unknown as { __oaTrace?: { getCurrentTraceId?: () => string | null } }).__oaTrace;
+    const traceId = mod?.getCurrentTraceId ? mod.getCurrentTraceId() : null;
+    if (traceId) contextWithTrace = { traceId, ...(context || {}) };
+  } catch { /* noop */ }
+  if (!err) return { message: 'Error desconocido', timestamp, context: contextWithTrace };
   // Axios-like error detection (shape-based)
   const anyErr = err as Record<string, unknown>;
   const response = anyErr && typeof anyErr === 'object' ? (anyErr['response'] as Record<string, unknown> | undefined) : undefined;
@@ -174,7 +182,7 @@ export function normalizeError(
       message,
       details: data ?? String(err),
       timestamp,
-      context,
+      context: contextWithTrace,
     };
   }
   // Generic error
@@ -185,7 +193,7 @@ export function normalizeError(
         : String(err)),
     details: err,
     timestamp,
-    context,
+    context: contextWithTrace,
   };
 }
 
