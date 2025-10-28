@@ -30,6 +30,8 @@ export interface EntityTableProps<T extends object> {
   renderActions?: (row: T) => React.ReactNode;
   /** Doble clic en fila para abrir detalle (modo lectura) */
   onRowDoubleClick?: (row: T) => void;
+  /** Props adicionales por fila (para data-attrs, className, etc.) */
+  getRowProps?: (row: T) => React.HTMLAttributes<HTMLTableRowElement>;
   /** Ancho fijo para la columna de acciones (ej. "120px") */
   actionColumnWidth?: string;
   /** Ajuste automático al contenido (tabla más angosta) */
@@ -51,6 +53,7 @@ function EntityTable<T extends object>({
   data,
   keyField,
   renderActions,
+  getRowProps,
   actionColumnWidth = '120px',
   autoFit = false,
   centered = false,
@@ -152,8 +155,14 @@ function EntityTable<T extends object>({
             {Array.isArray(sortedData) && sortedData.map((row) => {
               const keyValue = (row as Record<string, unknown>)[keyField as string];
               const rowKey = keyValue != null ? String(keyValue) : JSON.stringify(row);
+              const extraRowProps = getRowProps ? getRowProps(row) : undefined;
               return (
-                <tr key={rowKey} onDoubleClick={onRowDoubleClick ? () => onRowDoubleClick(row) : undefined} className={onRowDoubleClick ? 'table-row--dblclick' : undefined}>
+                <tr
+                  key={rowKey}
+                  onDoubleClick={onRowDoubleClick ? () => onRowDoubleClick(row) : undefined}
+                  className={onRowDoubleClick ? 'table-row--dblclick' : undefined}
+                  {...extraRowProps}
+                >
                   {columns.map((col) => {
                     const value = (row as Record<string, unknown>)[String(col.key)] as unknown;
                     return (

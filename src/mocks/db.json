@@ -97,6 +97,14 @@
           "ruta": "/seguridad/permisos",
           "permisoId": 330,
           "permission_string": "security.permissions.view"
+        },
+        {
+          "idMenu": 34,
+          "titulo": "Menús",
+          "iconKey": "Menu",
+          "ruta": "/seguridad/menu",
+          "permisoId": 340,
+          "permission_string": "security.menu.view"
         }
       ]
     }
@@ -186,7 +194,7 @@
     {
       "user_id": 2,
       "username": "arturolopez",
-      "password_hash": "password123",
+      "password_hash": "$2b$12$...",
       "first_name": "Arturo",
       "second_name": "",
       "last_name_p": "López",
@@ -209,7 +217,7 @@
     {
       "user_id": 3,
       "username": "gabrielavargas",
-      "password_hash": "password123",
+      "password_hash": "$2b$12$...",
       "first_name": "Gabriela",
       "second_name": null,
       "last_name_p": "Vargas",
@@ -228,6 +236,56 @@
       "last_login_at": "2025-07-30T16:00:00Z",
       "created_at": "2025-03-01T12:00:00Z",
       "updated_at": "2025-08-01T15:45:00Z"
+    }
+  ],
+  "menus": [
+    {
+      "idMenu": 1,
+      "titulo": "Dashboard",
+      "iconKey": "Dashboard",
+      "ruta": "/home",
+      "permisoId": 100,
+      "permission_string": "home.dashboard.view"
+    },
+    {
+      "idMenu": 2,
+      "titulo": "Kanban Board",
+      "iconKey": "Kanban",
+      "ruta": "/kanban",
+      "permisoId": 200,
+      "permission_string": "kanban.board.view"
+    },
+    {
+      "idMenu": 3,
+      "titulo": "Gestión de Usuarios",
+      "iconKey": "Users",
+      "ruta": "/seguridad/usuarios",
+      "permisoId": 310,
+      "permission_string": "security.users.view"
+    },
+    {
+      "idMenu": 4,
+      "titulo": "Gestión de Roles",
+      "iconKey": "Roles",
+      "ruta": "/seguridad/roles",
+      "permisoId": 320,
+      "permission_string": "security.roles.view"
+    },
+    {
+      "idMenu": 5,
+      "titulo": "Catálogo de Permisos",
+      "iconKey": "Key",
+      "ruta": "/seguridad/permisos",
+      "permisoId": 330,
+      "permission_string": "security.permissions.view"
+    },
+    {
+      "idMenu": 6,
+      "titulo": "Configuración de Menús",
+      "iconKey": "Menu",
+      "ruta": "/seguridad/menu",
+      "permisoId": 340,
+      "permission_string": "security.menu.view"
     }
   ],
   "roles": [
@@ -409,6 +467,38 @@
       "description": "Eliminar permisos del catálogo"
     },
     {
+      "permission_id": 340,
+      "permission_string": "security.menu.view",
+      "resource": "menu",
+      "scope": "security",
+      "action": "view",
+      "description": "Ver el catálogo de menús"
+    },
+    {
+      "permission_id": 341,
+      "permission_string": "security.menu.create",
+      "resource": "menu",
+      "scope": "security",
+      "action": "create",
+      "description": "Crear nuevos ítems de menú"
+    },
+    {
+      "permission_id": 342,
+      "permission_string": "security.menu.update",
+      "resource": "menu",
+      "scope": "security",
+      "action": "update",
+      "description": "Editar ítems de menú existentes"
+    },
+    {
+      "permission_id": 343,
+      "permission_string": "security.menu.delete",
+      "resource": "menu",
+      "scope": "security",
+      "action": "delete",
+      "description": "Eliminar ítems de menú del catálogo"
+    },
+    {
       "permission_id": 900,
       "permission_string": "contact.form.submit",
       "resource": "form",
@@ -517,6 +607,22 @@
     },
     {
       "role_id": 1,
+      "permission_id": 340
+    },
+    {
+      "role_id": 1,
+      "permission_id": 341
+    },
+    {
+      "role_id": 1,
+      "permission_id": 342
+    },
+    {
+      "role_id": 1,
+      "permission_id": 343
+    },
+    {
+      "role_id": 1,
       "permission_id": 900
     },
     {
@@ -576,6 +682,14 @@
       "permission_id": 332
     },
     {
+      "role_id": 2,
+      "permission_id": 340
+    },
+    {
+      "role_id": 2,
+      "permission_id": 342
+    },
+    {
       "role_id": 3,
       "permission_id": 100
     },
@@ -598,6 +712,10 @@
     {
       "role_id": 3,
       "permission_id": 330
+    },
+    {
+      "role_id": 3,
+      "permission_id": 340
     }
   ]
 }

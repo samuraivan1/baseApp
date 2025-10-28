@@ -1,0 +1,34 @@
+// src/features/security/components/Menu/Menu.scss
+
+.menu-form {
+  // Add specific styles for the menu form here
+  // Example:
+  .form-field--full {
+    grid-column: 1 / -1; // Span across all columns if needed
+  }
+
+  .form-field--readonly {
+    background-color: var(--color-neutral-100); // Example readonly background
+    cursor: not-allowed;
+  }
+
+  .form-field--icon {
+    // Styles for icon input if it's a custom component
+  }
+
+  .form-field--permission {
+    // Styles for permission input
+  }
+}
+
+.menu-page {
+  // Styles for the main menu page
+  .loading-container {
+    // Ensure loading spinner is centered and takes appropriate space
+    min-height: 300px;
+  }
+
+  .fs-table-container {
+    // Styles for the table container
+  }
+}

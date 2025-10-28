@@ -40,6 +40,12 @@ export const PERMISSIONS = {
   SECURITY_PERMISSIONS_UPDATE: 'security.permissions.update',
   SECURITY_PERMISSIONS_DELETE: 'security.permissions.delete',
 
+  // Security > Menu
+  SECURITY_MENU_VIEW: 'security.menu.view',
+  SECURITY_MENU_CREATE: 'security.menu.create',
+  SECURITY_MENU_UPDATE: 'security.menu.update',
+  SECURITY_MENU_DELETE: 'security.menu.delete',
+
   // --- Contact (reservado/futuro) ---
   // CONTACT_FORM_SUBMIT: 'contact.form.submit',
 } as const;

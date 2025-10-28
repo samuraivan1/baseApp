@@ -7,14 +7,18 @@ import { fromUnknown, report } from '@/shared/errors/errorHandler';
 const queryErrorHandler = (err: unknown) => {
   const norm = normalizeError(err, { source: 'react-query' });
   errorService.logError(norm);
-  try { void report(fromUnknown(err), { where: 'react-query.query' }); } catch {}
+  try { void report(fromUnknown(err), { where: 'react-query.query' }); } catch {
+    // noop: evitar error de reporte encadenado
+  }
 };
 
 // ✅ 2. Define la lógica de error para las mutations (modificaciones)
 const mutationErrorHandler = (err: unknown) => {
   const norm = normalizeError(err, { source: 'react-query-mutation' });
   errorService.logError(norm);
-  try { void report(fromUnknown(err), { where: 'react-query.mutation' }); } catch {}
+  try { void report(fromUnknown(err), { where: 'react-query.mutation' }); } catch {
+    // noop: evitar error de reporte encadenado
+  }
 };
 
 export const queryClient = new QueryClient({

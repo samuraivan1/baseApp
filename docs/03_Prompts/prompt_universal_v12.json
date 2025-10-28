@@ -1,0 +1,145 @@
+{
+  "name": "BaseApp | Prompt Universal v12 — Crear Pantallas desde Patrón Permisos",
+  "description": "Genera una nueva pantalla CRUD replicando el patrón 'Permisos' (PageHeader + CommandBar + PaginatedEntityTable + Formulario embebido) con RBAC, i18n, SCSS GDS, API Service, hooks CRUD, MSW y BD.json. Asigna permisos por roles (1=todo, 2=ver/editar, 3=solo ver). Valida con tsc/lint/build.",
+  "params": {
+    "Module": "security",
+    "EntityName": "Menu",
+    "RBACDomain": "security.menu",
+    "RoutePath": "/security/menu",
+    "NavPosition": "after:Permisos",
+    "generateStubs": true
+  },
+  "must_rules": [
+    "No usar any ni @ts-ignore.",
+    "No inventar nombres de componentes: reutilizar los del patrón Permisos (OAForm, PageHeader, CommandBar, PaginatedEntityTable, etc.) si existen.",
+    "Formulario embebido (inline), no modal/drawer.",
+    "SCSS modular con tokens GDS; BEM; sin hardcode de colores.",
+    "i18n: sin literales en JSX.",
+    "RBAC: strings {RBACDomain}.view|create|update|delete; checks con useCan/ProtectedRoute.",
+    "MSW y BD.json deben quedar funcionando.",
+    "Rutas protegidas.",
+    "Compilación limpia: npx tsc --noEmit ; npm run lint ; npm run build."
+  ],
+  "source_of_truth": {
+    "pattern_reference": "src/features/security/components/Permissions/",
+    "standards": [
+      "docs/01_Estandares/03_arquitectura-general-fsd.md",
+      "docs/01_Estandares/04_estructura-de-carpetas-y-modulos.md",
+      "docs/01_Estandares/05_gestion-de-estado-y-hooks.md",
+      "docs/01_Estandares/07_formularios-y-validaciones-rhf-zod.md",
+      "docs/01_Estandares/08_consumo-de-api-y-manejo-de-errores.md",
+      "docs/01_Estandares/09_seguridad-rbac-y-permisos.md"
+    ]
+  },
+  "outputs": [
+    "Archivos nuevos para {EntityName} (pantalla, formulario, esquema, mensajes, SCSS, servicio, hook CRUD, tipos).",
+    "Modificaciones en rutas, permisos globales, navegación, MSW, BD.json.",
+    "Reporte final con rutas de archivos creados/modificados y resultado de tsc/lint/build."
+  ],
+  "steps": [
+    {
+      "title": "Crear estructura de archivos",
+      "actions": [
+        "Crear src/features/{Module}/components/{EntityName}/index.tsx (pantalla principal).",
+        "Crear src/features/{Module}/components/{EntityName}/{EntityName}Form.tsx (formulario embebido).",
+        "Crear src/features/{Module}/components/{EntityName}/{entityName}.schema.ts (Zod).",
+        "Crear src/features/{Module}/components/{EntityName}/{EntityName}.messages.ts (i18n).",
+        "Crear src/features/{Module}/components/{EntityName}/{EntityName}.scss (SCSS GDS).",
+        "Crear src/features/{Module}/api/{entityName}Service.ts (API Service CRUD).",
+        "Crear src/features/{Module}/api/hooks/use{EntityName}Crud.ts (hook CRUD).",
+        "Crear src/features/{Module}/types/dto.ts y src/features/{Module}/types/models.ts (tipos).",
+        "Crear/actualizar src/features/{Module}/constants/permissions.ts para registrar permisos del nuevo dominio."
+      ]
+    },
+    {
+      "title": "Pantalla principal (index.tsx)",
+      "rules": [
+        "Componer PageHeader + CommandBar + PaginatedEntityTable.",
+        "Incluir contenedor para el formulario embebido; NO usar modales.",
+        "RBAC en UI: ocultar/deshabilitar acciones según useCan({RBACDomain}.action).",
+        "Búsqueda/filtros según patrón Permisos; paginación con TanStack Query.",
+        "Mensajes de UI desde {EntityName}.messages.ts."
+      ]
+    },
+    {
+      "title": "Formulario embebido ({EntityName}Form.tsx)",
+      "rules": [
+        "Basado en el formulario de Permisos: mismos componentes base (ej. OAForm) y patrón de validación.",
+        "RHF + ZodResolver con el esquema {entityName}.schema.ts.",
+        "Submit: create si no hay id; update si existe id; notificación y refetch.",
+        "Sin literales; todo desde messages."
+      ]
+    },
+    {
+      "title": "Servicio y Hook CRUD",
+      "rules": [
+        "Service: getAll, create, update, delete con apiClient + interceptores (auth/error/loading).",
+        "Hook: useEntityCrud + useSafeMutation + invalidateQueries(['{entityNamePlural}']).",
+        "Reutilizar utilidades existentes del patrón Permisos."
+      ]
+    },
+    {
+      "title": "RBAC (constantes y checks)",
+      "actions": [
+        "En src/features/{Module}/constants/permissions.ts exportar {ENTITYNAME_UPPER}_PERMISSIONS con VIEW/CREATE/UPDATE/DELETE => strings {RBACDomain}.{action}.",
+        "Actualizar src/features/security/constants/permissions.ts si el proyecto centraliza permisos allí.",
+        "Asegurar ProtectedRoute con permiso VIEW en la ruta."
+      ]
+    },
+    {
+      "title": "Rutas y navegación",
+      "actions": [
+        "Editar src/routes/AppRoutes.tsx para registrar path {RoutePath} protegido por ProtectedRoute({RBACDomain}.view).",
+        "Editar el menú lateral/principal (p. ej., src/features/shell/components/Sidebar/Sidebar.tsx) e insertar tras NavPosition.",
+        "Respetar alias @/ en imports."
+      ]
+    },
+    {
+      "title": "Mocks (MSW) y BD.json",
+      "actions": [
+        "Crear src/mocks/handlers/{entityName}.ts con handlers GET/POST/PUT/DELETE basados en patrón Permisos.",
+        "Editar src/mocks/handlers.ts para agregar ...{entityName}Handlers.",
+        "Editar src/mocks/db.json para agregar la colección {entityNamePlural} con datos semilla.",
+        "Agregar/actualizar role_permissions en db.json: rol 1 (todos), rol 2 (view/update), rol 3 (view)."
+      ],
+      "rbac_seed_example": {
+        "role_permissions": [
+          {
+            "roleId": 1,
+            "permissions": [
+              "{RBACDomain}.view",
+              "{RBACDomain}.create",
+              "{RBACDomain}.update",
+              "{RBACDomain}.delete"
+            ]
+          },
+          {
+            "roleId": 2,
+            "permissions": ["{RBACDomain}.view", "{RBACDomain}.update"]
+          },
+          {
+            "roleId": 3,
+            "permissions": ["{RBACDomain}.view"]
+          }
+        ]
+      }
+    },
+    {
+      "title": "SCSS GDS",
+      "rules": [
+        "Usar @use '@/styles/variables' as vars; y parciales GDS.",
+        "BEM estricto (.{entityName}__container, .{entityName}__table, .{entityName}__form).",
+        "Sin colores hardcode; tokens GDS; responsive como en Permisos."
+      ]
+    },
+    {
+      "title": "Validaciones finales",
+      "actions": [
+        "Ejecutar: npx tsc --noEmit",
+        "Ejecutar: npm run lint",
+        "Ejecutar: npm run build"
+      ],
+      "expected": "Todos verdes, sin warnings críticos."
+    }
+  ]
+}

@@ -1,7 +1,8 @@
-import type { IRole, IUser, IPermission } from './models';
+import type { IRole, IUser, IPermission, IMenu } from './models';
 
 // API-aligned DTOs (snake_case) + mappers
 
+// Roles
 export interface RoleResponseDTO {
   role_id: number;
   name: string;
@@ -41,7 +42,6 @@ export interface UserResponseDTO {
 export type CreateUserRequestDTO = Omit<UserResponseDTO, 'user_id' | 'created_at' | 'updated_at'>;
 export type UpdateUserRequestDTO = Partial<CreateUserRequestDTO>;
 
-// Eliminados alias redundantes; usar CreateUserRequestDTO/UpdateUserRequestDTO directamente
 export type UpdateUserFlagsDTO = { is_active?: boolean | 0 | 1; mfa_enabled?: boolean | 0 | 1 };
 
 // Permissions
@@ -55,7 +55,27 @@ export interface PermissionResponseDTO {
 }
 export type CreatePermissionRequestDTO = Omit<PermissionResponseDTO, 'permission_id'>;
 export type UpdatePermissionRequestDTO = Partial<CreatePermissionRequestDTO>;
-// Eliminados alias redundantes; usar CreatePermissionRequestDTO/UpdatePermissionRequestDTO directamente
+
+// Menus
+export interface MenuResponseDTO {
+  idMenu: number;
+  titulo: string;
+  iconKey: string;
+  ruta: string;
+  permisoId: number | null;
+  permission_string: string | null;
+  items?: MenuResponseDTO[] | null;
+  kind?: 'divider' | null;
+}
+
+export type CreateMenuRequestDTO = Omit<MenuResponseDTO, 'idMenu' | 'permisoId' | 'items' | 'kind'> & {
+  permisoId?: number | null; // Explicitly make it optional
+  permission_string?: string | null;
+  items?: (CreateMenuRequestDTO | MenuResponseDTO)[] | null; // Allow both for nested items
+  kind?: 'divider' | null;
+};
+
+export type UpdateMenuRequestDTO = Partial<CreateMenuRequestDTO>;
 
 // Mappers UI ↔ API (parciales; completar según uso real)
 export const mapRoleFromDto = (dto: RoleResponseDTO): IRole => ({
@@ -95,4 +115,15 @@ export const mapUserFromDto = (dto: UserResponseDTO): IUser => ({
   updatedAt: dto.updated_at ? new Date(dto.updated_at) : undefined,
   isActive: dto.is_active === 1,
   mfaEnabled: dto.mfa_enabled === 1,
+});
+
+export const mapMenuFromDto = (dto: MenuResponseDTO): IMenu => ({
+  menuId: dto.idMenu,
+  title: dto.titulo,
+  iconKey: dto.iconKey,
+  route: dto.ruta,
+  permissionId: dto.permisoId,
+  permissionString: dto.permission_string,
+  items: dto.items ? dto.items.map(mapMenuFromDto) : null,
+  kind: dto.kind ?? null,
 });

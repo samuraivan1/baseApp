@@ -2,7 +2,7 @@ import { usersHandlers } from './handlers/users';
 import { rolesHandlers } from './handlers/roles';
 import { permissionsHandlers } from './handlers/permissions';
 import { relationsHandlers } from './handlers/relations';
-import { menuHandlers } from './handlers/menu';
+import { menuHandlers } from './handlers/menu'; // Import menuHandlers
 import { tableroHandlers as boardHandlers } from './handlers/tablero';
 import { authHandlers } from './handlers/auth';
 import { devHandlers } from './handlers/dev';
@@ -18,7 +18,7 @@ export const handlers = [
   ...rolesHandlers,
   ...permissionsHandlers,
   ...relationsHandlers,
-  ...menuHandlers,
+  ...menuHandlers, // Include menuHandlers
   ...boardHandlers,
   // Generic fallback: expone CRUD para cualquier colección de db.json via /api/:collection
   ...genericHandlers,

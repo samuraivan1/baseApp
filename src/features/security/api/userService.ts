@@ -9,37 +9,49 @@ export async function getUsers(): Promise<User[]> {
   try {
     const res = await api.get<UserResponseDTO[] | { data: UserResponseDTO[] }>('/users');
     const rows = Array.isArray(res.data) ? res.data : (res.data as { data: UserResponseDTO[] }).data;
-    const safe: User[] = [] as unknown as User[];
-    (rows ?? []).forEach((item, idx) => {
+    const safe: User[] = [];
+    (rows ?? []).forEach((item: UserResponseDTO, idx) => { // Explicitly type item
       try {
         const mapped = mapUserFromDto(item);
-        safe.push(mapped as unknown as User);
+        safe.push(mapped);
       } catch (e) {
         if (process.env.NODE_ENV !== 'production') {
           // eslint-disable-next-line no-console
           console.error('[getUsers] map error at index', idx, e, item);
         }
         // Fallback mínimo para permitir render
-        const userId = (item as any).userId ?? (item as any).user_id ?? idx + 1;
-        const username = (item as any).username ?? `user${userId}`;
-        const email = (item as any).email ?? `${username}@example.com`;
-        const firstName = (item as any).firstName ?? (item as any).first_name ?? '';
-        const lastNameP = (item as any).lastNameP ?? (item as any).last_name_p ?? '';
-        const lastNameM = (item as any).lastNameM ?? (item as any).last_name_m ?? null;
-        const isActive = Boolean((item as any).isActive ?? (item as any).is_active ?? true);
-        const mfaEnabled = Boolean((item as any).mfaEnabled ?? (item as any).mfa_enabled ?? false);
-        const passwordHash = (item as any).passwordHash ?? '';
+        const userId = item.user_id ?? idx + 1;
+        const username = item.username ?? `user${userId}`;
+        const email = item.email ?? `${username}@example.com`;
+        const firstName = item.first_name ?? '';
+        const lastNameP = item.last_name_p ?? '';
+        const lastNameM = item.last_name_m ?? null;
+        const isActive = Boolean(item.is_active ?? true);
+        const mfaEnabled = Boolean(item.mfa_enabled ?? false);
+        const passwordHash = item.password_hash ?? '';
         safe.push({
           userId,
           username,
           passwordHash,
           firstName,
+          secondName: null, // Added missing property
           lastNameP,
           lastNameM,
+          initials: null, // Added missing property
           email,
+          authProvider: null, // Added missing property
+          emailVerifiedAt: null, // Added missing property
+          avatarUrl: null, // Added missing property
+          bio: null, // Added missing property
+          phoneNumber: null, // Added missing property
+          azureAdObjectId: null, // Added missing property
+          upn: null, // Added missing property
+          lastLoginAt: null, // Added missing property
+          createdAt: undefined, // Added missing property
+          updatedAt: undefined, // Added missing property
           isActive,
           mfaEnabled,
-        } as unknown as User);
+        });
       }
     });
     return safe;

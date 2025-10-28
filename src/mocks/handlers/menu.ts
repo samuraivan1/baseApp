@@ -1,95 +1,126 @@
-import { http, HttpResponse, type HttpHandler } from 'msw';
-import { db } from '../data/db';
+import { http, HttpResponse } from 'msw';
+import { db, nextId, persistDb } from '../data/db';
 import { requireAuth, ensurePermission } from '../utils/auth';
+import { requireCsrfOnMutation } from '../utils/csrf';
+import { PERMISSIONS } from '@/features/security/constants/permissions';
+import type { MenuResponseDTO, CreateMenuRequestDTO, UpdateMenuRequestDTO } from '@/features/security/types/dto';
 
-// Normaliza items al formato legacy que consume el front:
-// { idMenu, titulo, ruta, permisoId, items }
-type LegacyMenuItem = {
-  id: number | string;
-  parentId?: number | string | null;
-  titulo?: string;
-  label?: string;
-  title?: string;
-  name?: string;
-  permisoId?: number;
-  permissionId?: number;
-  permission?: number | string;
-  items?: LegacyMenuItem[];
-  children?: LegacyMenuItem[];
-  hijos?: LegacyMenuItem[];
-  url?: string;
-  path?: string;
-  ruta?: string;
-  idMenu?: number | string;
-  menu_id?: number | string;
-  key?: string;
-};
-
-function mapItemToLegacy(raw: LegacyMenuItem): LegacyMenuItem {
-  const childrenRaw = raw.items || raw.children || raw.hijos || undefined;
-  const mapped = {
-    idMenu:
-      raw.idMenu ??
-      raw.menu_id ??
-      raw.id ??
-      raw.key ??
-      String(raw.titulo ?? raw.title ?? raw.label ?? 'item'),
-    titulo: raw.titulo ?? raw.title ?? raw.label ?? raw.name ?? '',
-    ruta: raw.ruta ?? raw.path ?? raw.url ?? undefined,
-    permisoId: raw.permisoId ?? raw.permissionId ?? raw.permission ?? undefined,
-  } as LegacyMenuItem;
-  if (Array.isArray(childrenRaw)) {
-    mapped.items = childrenRaw.map(mapItemToLegacy);
-  }
-  return mapped;
+function getMenusTable(): MenuResponseDTO[] {
+  return db.menu as MenuResponseDTO[];
 }
 
-const resolveMenus: HttpHandler['resolver'] = ({ request }) => {
-  const auth = requireAuth(request);
-  if (auth instanceof HttpResponse) return auth;
-  const tree = ((db as unknown as Record<string, unknown>).menus ?? (db as unknown as Record<string, unknown>).menu ?? []) as LegacyMenuItem[];
-  const mapped = tree.map(mapItemToLegacy);
-  return HttpResponse.json(mapped, { status: 200 });
-};
+// Helper to transform CreateMenuRequestDTO to MenuResponseDTO, assigning IDs for nested items
+function transformCreateToResponse(item: CreateMenuRequestDTO): MenuResponseDTO {
+  const idMenu = nextId('menu');
+  return {
+    idMenu,
+    titulo: item.titulo,
+    iconKey: item.iconKey,
+    ruta: item.ruta,
+    permisoId: item.permisoId ?? null,
+    permission_string: item.permission_string ?? null,
+    items: item.items ? item.items.map(transformCreateToResponse) : null,
+    kind: item.kind ?? null,
+  };
+}
 
-const resolveMenu: HttpHandler['resolver'] = ({ request }) => {
-  const auth = requireAuth(request);
-  if (auth instanceof HttpResponse) return auth;
-  const tree = ((db as unknown as Record<string, unknown>).menu ?? (db as unknown as Record<string, unknown>).menus ?? []) as LegacyMenuItem[];
-  const mapped = tree.map(mapItemToLegacy);
-  return HttpResponse.json(mapped, { status: 200 });
-};
+const BASE = '/api/menus';
 
-const resolveMenuPerfil: HttpHandler['resolver'] = ({ request }) => {
-  const auth = requireAuth(request);
-  if (auth instanceof HttpResponse) return auth;
-  const menu = ((db as unknown as Record<string, unknown>).menuPerfil ?? (db as unknown as Record<string, unknown>).menu ?? []) as LegacyMenuItem[];
-  const mapAndFilter = (items: LegacyMenuItem[]): LegacyMenuItem[] =>
-    items
-      .map(mapItemToLegacy)
-      .map((it) => ({
-        ...it,
-        items: Array.isArray(it.items) ? mapAndFilter(it.items) : undefined,
-      }))
-      .filter((it) => {
-        const pid = (it.permisoId ?? it.permissionId) as number | undefined;
-        if (pid != null && auth.user) {
-          const denied = ensurePermission(auth.user.user_id, String(pid));
-          if (denied) return false;
-        }
-        return !it.items || it.items.length > 0;
-      });
-  const filtered = mapAndFilter(menu);
-  return HttpResponse.json(filtered, { status: 200 });
-};
+export const menuHandlers = [
+  http.get(BASE, ({ request }) => {
+    const auth = requireAuth(request);
+    if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_MENU_VIEW
+    );
+    if (denied) return denied;
+    return HttpResponse.json(getMenusTable(), { status: 200 });
+  }),
 
-export const menuHandlers: HttpHandler[] = [
-  // DEPRECATED: alias sin '/api' sólo por compatibilidad temporal
-  http.get('/api/menus', resolveMenus),
-  http.get('/menus', resolveMenus),
-  http.get('/api/menu', resolveMenu),
-  http.get('/menu', resolveMenu),
-  // Perfil (filtrado por permiso por ítem si existe permissionId en la semilla)
-  http.get('/api/menuPerfil', resolveMenuPerfil),
-  http.get('/menuPerfil', resolveMenuPerfil),
+  http.get(`${BASE}/:id`, ({ params, request }) => {
+    const auth = requireAuth(request);
+    if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_MENU_VIEW
+    );
+    if (denied) return denied;
+    const id = Number(params.id);
+    const row = getMenusTable().find(
+      (item) => Number(item.idMenu) === id
+    );
+    if (!row) return new HttpResponse(null, { status: 404 });
+    return HttpResponse.json(row, { status: 200 });
+  }),
+
+  http.post(BASE, async ({ request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
+    const auth = requireAuth(request);
+    if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_MENU_CREATE
+    );
+    if (denied) return denied;
+    const body = (await request.json()) as CreateMenuRequestDTO;
+    const newMenu = transformCreateToResponse(body); // Use helper to create new menu with IDs
+
+    getMenusTable().push(newMenu);
+    persistDb();
+    return HttpResponse.json(newMenu, { status: 201 });
+  }),
+
+  http.put(`${BASE}/:id`, async ({ params, request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
+    const auth = requireAuth(request);
+    if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_MENU_UPDATE
+    );
+    if (denied) return denied;
+    const id = Number(params.id);
+    const body = (await request.json()) as UpdateMenuRequestDTO;
+    const menus = getMenusTable();
+    const idx = menus.findIndex(
+      (item) => Number(item.idMenu) === id
+    );
+    if (idx === -1) return new HttpResponse(null, { status: 404 });
+    menus[idx] = {
+      ...menus[idx],
+      ...body,
+      idMenu: id,
+    } as MenuResponseDTO;
+    persistDb();
+    return HttpResponse.json(menus[idx], { status: 200 });
+  }),
+
+  http.delete(`${BASE}/:id`, ({ params, request }) => {
+    const csrf = requireCsrfOnMutation(request);
+    if (csrf) return csrf;
+    const auth = requireAuth(request);
+    if (auth instanceof HttpResponse) return auth;
+    if (!auth.user) return new HttpResponse(null, { status: 401 });
+    const denied = ensurePermission(
+      auth.user.user_id,
+      PERMISSIONS.SECURITY_MENU_DELETE
+    );
+    if (denied) return denied;
+    const id = Number(params.id);
+    const menus = getMenusTable();
+    const idx = menus.findIndex(
+      (item) => Number(item.idMenu) === id
+    );
+    if (idx === -1) return new HttpResponse(null, { status: 404 });
+    menus.splice(idx, 1);
+    persistDb();
+    return new HttpResponse(null, { status: 204 });
+  }),
 ];

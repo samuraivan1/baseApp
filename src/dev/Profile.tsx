@@ -1,10 +1,11 @@
 import { useAuthStore } from '@/features/shell/state/authStore';
 import PageHeader from '@/shared/components/common/PageHeader';
 import { PERMISSIONS } from '@/features/security/constants/permissions';
+import type { IPermission } from '@/features/security/types/models'; // Import IPermission
 
 export default function ProfileDev() {
   const { user, hasPermission } = useAuthStore((s) => ({ user: s.user, hasPermission: s.hasPermission }));
-  const perms = user?.permissions ?? [];
+  const perms: IPermission[] = user?.permissions ?? []; // Explicitly type perms
   console.log('[Dev/Profile] User:', user?.userId, (user && 'username' in user ? (user as { username?: string }).username : undefined));
   console.log('[Dev/Profile] Permissions:', perms.map(p => p.permissionKey));
   const checks = [
@@ -14,6 +15,7 @@ export default function ProfileDev() {
     PERMISSIONS.SECURITY_USERS_VIEW,
     PERMISSIONS.SECURITY_ROLES_VIEW,
     PERMISSIONS.SECURITY_PERMISSIONS_VIEW,
+    PERMISSIONS.SECURITY_MENU_VIEW, // Add new menu permission for testing
   ];
   return (
     <div style={{ padding: 24 }}>
@@ -23,7 +25,7 @@ export default function ProfileDev() {
       </pre>
       <h3>Permisos efectivos ({perms.length})</h3>
       <ul>
-        {perms.map((p, i: number) => (
+        {perms.map((p: IPermission, i: number) => (
           <li key={i}>{String(p.permissionKey)}</li>
         ))}
       </ul>

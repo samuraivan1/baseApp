@@ -1,8 +1,7 @@
 // apiClient no requerido aquí tras unificar refresh vía authService
 import { getAuthStore } from '@/features/shell';
 import { getSession, refresh } from '@/shared/api/authService';
-import type { IPermission as Permission, IUserSession as UserSession } from '@/features/security/types/models';
-import type { IRole as Role } from '@/features/security/types/models';
+import type { IPermission as Permission, IUserSession as UserSession, IRole as Role } from '@/features/security/types/models'; // Import IUserSession and IRole
 import type { UserResponseDTO } from '@/features/security/types/dto';
 import { mapUserFromDto } from '@/features/security/types/dto';
 
@@ -44,7 +43,7 @@ async function getMockDerivedPermissions(
     action: null,
     scope: null,
     description: null,
-  } as unknown as Permission));
+  } as Permission));
 }
 
 /**
@@ -88,7 +87,7 @@ export async function silentRefresh(): Promise<boolean> {
       ).catch(() => undefined)) || [];
       if (import.meta.env.DEV && import.meta.env.VITE_DEBUG_AUTH === '1') {
         try {
-          console.log('[Auth] derived permissions:', derivedPermissions.map(p => (p as Partial<{ permissionKey: string; permission_string: string }>).permissionKey ?? (p as Partial<{ permissionKey: string; permission_string: string }>).permission_string));
+          console.log('[Auth] derived permissions:', derivedPermissions.map((p: Permission) => p.permissionKey));
         } catch { /* noop */ }
       }
       // Construir un UserSession mínimo para cumplir la firma del store
@@ -101,7 +100,7 @@ export async function silentRefresh(): Promise<boolean> {
       getAuthStore().setUser(sessionUser);
       if (import.meta.env.DEV && import.meta.env.VITE_DEBUG_AUTH === '1') {
         try {
-          console.log('[Auth] set user permissions in store:', sessionUser.permissions?.map(p => (p as Partial<{ permissionKey: string; permission_string: string }>).permissionKey ?? (p as Partial<{ permissionKey: string; permission_string: string }>).permission_string));
+          console.log('[Auth] set user permissions in store:', sessionUser.permissions?.map((p: Permission) => p.permissionKey));
         } catch { /* noop */ }
       }
     }

@@ -106,7 +106,7 @@ const PermissionForm: React.FC<PermissionFormProps> = ({
   };
 
   return (
-    <div className="global-form oa-form--lg oa-form--left">
+    <div className="global-form oa-form--md oa-form--left">
       {open ? (
         <>
           <SectionHeader

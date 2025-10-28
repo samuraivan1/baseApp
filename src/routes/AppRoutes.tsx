@@ -9,6 +9,7 @@ import {
   UsuariosPage,
   RolesPage,
   PermissionsPage,
+  MenuPage, // Import the new MenuPage
 } from '@/features/security';
 import { Unauthorized } from '@/features/shell';
 import ProtectedRoute from './ProtectedRoute';
@@ -109,7 +110,15 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        ß{' '}
+        {/* Add the new route for MenuPage */}
+        <Route
+          path="menu"
+          element={
+            <ProtectedRoute permiso={PERMISSIONS.SECURITY_MENU_VIEW}>
+              <MenuPage />
+            </ProtectedRoute>
+          }
+        />
       </Route>
 
       {/* Redirecciones y placeholders */}

@@ -10,6 +10,7 @@ import { faPlus, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { ensureSafeUrl } from '@/shared/security/url';
 import { toast } from 'react-toastify';
 import { useTheme } from '@/core';
+import type { IPermission, IRole } from '@/features/security/types/models'; // Import IPermission and IRole
 
 const Home: React.FC = () => {
   const { user, authReady, isLoggedIn, logout } = useAuthStore((s) => ({ user: s.user, authReady: s.authReady, isLoggedIn: s.isLoggedIn, logout: s.logout }));
@@ -80,10 +81,10 @@ const Home: React.FC = () => {
               <div><strong>username:</strong> {'username' in (user as object || {}) ? (user as { username?: string }).username ?? '—' : '—'}</div>
               <div><strong>fullName:</strong> {user?.fullName ?? '—'}</div>
               <div><strong>email:</strong> {user?.email ?? '—'}</div>
-              <div><strong>roles (ids):</strong> {user?.roles?.map(r => r.roleId).join(', ') ?? '—'}</div>
+              <div><strong>roles (ids):</strong> {user?.roles?.map((r: IRole) => r.roleId).join(', ') ?? '—'}</div>
               <div><strong>permissions:</strong></div>
               <ul style={{ maxHeight: 160, overflow: 'auto', marginTop: 4 }}>
-                {(user?.permissions ?? []).map((p, i) => (
+                {(user?.permissions ?? []).map((p: IPermission, i: number) => (
                   <li key={i}><code>{p.permissionKey}</code></li>
                 ))}
               </ul>

@@ -1,7 +1,7 @@
 // src/services/permissionService.ts
 import api from '@/shared/api/apiClient';
 import { handleApiError } from '@/shared/api/errorService';
-import type { Permission } from '@/shared/types/security';
+import type { IPermission as Permission } from '@/features/security/types/models';
 import {
   type PermissionResponseDTO,
   type CreatePermissionRequestDTO,
@@ -13,24 +13,24 @@ export async function getPermissions(): Promise<Permission[]> {
   try {
     const res = await api.get<PermissionResponseDTO[] | { data: PermissionResponseDTO[] }>('/permissions');
     const rows = Array.isArray(res.data) ? res.data : (res.data as { data: PermissionResponseDTO[] }).data;
-    const safe: Permission[] = [] as unknown as Permission[];
-    (rows ?? []).forEach((item, idx) => {
+    const safe: Permission[] = [];
+    (rows ?? []).forEach((item: PermissionResponseDTO, idx) => { // Explicitly type item
       try {
         const mapped = mapPermissionFromDto(item);
-        safe.push(mapped as unknown as Permission);
+        safe.push(mapped);
       } catch (e) {
         if (process.env.NODE_ENV !== 'production') {
           // eslint-disable-next-line no-console
           console.error('[getPermissions] map error at index', idx, e, item);
         }
         // Fallback mínimo
-        const permissionId = (item as any).permissionId ?? (item as any).permission_id ?? idx + 1;
-        const permissionKey = (item as any).permissionKey ?? (item as any).permission_string ?? `perm.${permissionId}`;
-        const resource = (item as any).resource ?? null;
-        const action = (item as any).action ?? null;
-        const scope = (item as any).scope ?? null;
-        const description = (item as any).description ?? null;
-        safe.push({ permissionId, permissionKey, resource, action, scope, description } as unknown as Permission);
+        const permissionId = item.permission_id ?? idx + 1;
+        const permissionKey = item.permission_string ?? `perm.${permissionId}`;
+        const resource = item.resource ?? null;
+        const action = item.action ?? null;
+        const scope = item.scope ?? null;
+        const description = item.description ?? null;
+        safe.push({ permissionId, permissionKey, resource, action, scope, description } as Permission);
       }
     });
     return safe;

@@ -246,6 +246,7 @@ const PermissionsPage: React.FC = () => {
                 keyField={"permissionId"}
                 autoFit
                 centered
+                getRowProps={(row) => ({ ['data-row-id']: String(row.permissionId) } as React.HTMLAttributes<HTMLTableRowElement>)}
                 onRowDoubleClick={(row) => {
                   setEditing(row);
                   setIsFormOpen(true);

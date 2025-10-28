@@ -17,6 +17,7 @@ export type PaginatedEntityTableProps<T extends object> = {
   footerClassName?: string;
   renderActions?: (row: T) => React.ReactNode;
   onRowDoubleClick?: (row: T) => void;
+  getRowProps?: (row: T) => React.HTMLAttributes<HTMLElement>;
   pagination: PaginationConfig;
   autoFit?: boolean;
   centered?: boolean;
@@ -28,6 +29,7 @@ const PaginatedEntityTable = <T extends object>({
   keyField,
   renderActions,
   onRowDoubleClick,
+  getRowProps,
   pagination,
   autoFit,
   centered,
@@ -42,6 +44,7 @@ const PaginatedEntityTable = <T extends object>({
       centered={centered}
       renderActions={renderActions}
       onRowDoubleClick={onRowDoubleClick}
+      getRowProps={getRowProps as unknown as (row: unknown) => React.HTMLAttributes<HTMLElement>}
       footer={
         <div className={footerClassName}>
           <Pagination

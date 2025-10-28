@@ -1,0 +1,267 @@
+Quiero crea l anueva pantalla menu, con este prompt  
+
+“Creación de Pantallas Basadas en el Patrón Permisos (BaseApp GDS)”
+🎯 Propósito
+
+Eres un programador senior React + TypeScript y arquitecto de soluciones.
+Tu tarea es replicar correctamente el patrón de Permisos ya definido en el proyecto baseApp,
+generando una nueva pantalla CRUD (catálogo) funcional y alineada con los estándares del sistema.
+
+🧩 Contexto Base (Ingeniería Inversa Fija)
+
+La ingeniería inversa ya fue realizada sobre el módulo Permisos, localizado en:
+
+src/features/security/components/Permissions/
+
+
+Este módulo es el modelo de referencia obligatorio.
+De él se heredan estructura, componentes reutilizables, flujo CRUD, RBAC y manejo visual.
+
+⚠️ No repitas la ingeniería inversa, solo usa esta información como base definitiva.
+
+🧱 Estructura General del Patrón “Permisos”
+
+Cada pantalla tipo catálogo (CRUD) debe incluir:
+
+PageHeader → Encabezado con título y acciones globales.
+
+CommandBar → Filtros, búsqueda, botones (agregar, exportar).
+
+PaginatedEntityTable → Tabla con paginación, acciones y RBAC.
+
+Formulario Embebido → Dentro de la misma vista (no modal ni overlay).
+
+Arquitectura: Feature-Sliced Design (FSD)
+Stack: React + TypeScript + Zod + RHF + TanStack Query
+Estilo: SCSS modular + GDS (Global Design System)
+Seguridad: RBAC (dominio.recurso.acción)
+Mocks: MSW + BD.json
+Validaciones: TypeScript estricto ("strict": true)
+
+🧭 Objetivo del Prompt
+
+Generar una nueva pantalla de catálogo CRUD (ejemplo: Productos, Roles, Menús, etc.)
+reutilizando los mismos componentes y estándares del patrón Permisos.
+
+El prompt debe:
+
+Crear todos los archivos necesarios (formulario, tabla, hooks, servicios, tipos, mensajes, mocks, permisos).
+
+Actualizar los archivos globales requeridos (rutas, constantes, menús, handlers, BD.json).
+
+Validar que todo compile (tsc, lint, build).
+
+Explicar cada paso y por qué se hace así (modo entrenamiento).
+
+⚙️ Parámetros del Prompt
+Parámetro	Ejemplo	Descripción
+Module	security, inventory, products	Módulo funcional donde se creará la pantalla.
+EntityName	Products	Nombre de la entidad (PascalCase para componentes).
+RBACDomain	products.products	Dominio base para permisos RBAC.
+RoutePath	/productos	Ruta de acceso.
+NavPosition	after:Permisos	Posición de menú en el módulo.
+🧩 FASE 1 — Estructura y Archivos a Generar
+
+Basado en la estructura de Permisos:
+
+src/features/{Module}/
+├── api/
+│   ├── hooks/
+│   │   └── use{EntityName}Crud.ts
+│   └── {entityName}Service.ts
+├── components/
+│   └── {EntityName}/
+│       ├── index.tsx
+│       ├── {EntityName}Form.tsx
+│       ├── {entityName}.schema.ts
+│       ├── {EntityName}.messages.ts
+│       └── {EntityName}.scss
+├── constants/
+│   └── permissions.ts
+├── types/
+│   ├── dto.ts
+│   └── models.ts
+└── index.ts
+
+
+Además, se modifican:
+
+src/routes/AppRoutes.tsx → registrar la nueva ruta protegida.
+
+src/features/security/constants/permissions.ts → agregar permisos RBAC globales.
+
+src/features/shell/components/Sidebar/Sidebar.tsx → agregar enlace al menú.
+
+src/mocks/handlers/{entityName}.ts → crear handlers MSW.
+
+src/mocks/db.json → agregar colección y semilla.
+
+🧩 FASE 2 — Flujo CRUD Completo
+
+API Service ({entityName}Service.ts):
+Define getAll, create, update, delete usando apiClient con interceptores (auth, error, loading).
+Devuelve objetos tipados (IEntity).
+Usa el mismo formato que permissionService.ts.
+
+Hook CRUD (use{EntityName}Crud.ts):
+
+Reutiliza useEntityCrud y useSafeMutation.
+
+Usa queryKey = ['{entityNamePlural}'].
+
+Implementa invalidación tras create/update/delete.
+
+Formulario ({EntityName}Form.tsx):
+
+Basado en PermissionForm.tsx.
+
+Usa OAForm o los componentes equivalentes que ya existen.
+
+Controlado por RHF + Zod Resolver.
+
+Llama a create o update según presencia de id.
+
+En éxito: cierra formulario, refetch y muestra toast.success.
+
+Pantalla Principal (index.tsx):
+
+Compone PageHeader, CommandBar, PaginatedEntityTable y el form embebido.
+
+Gestiona visibilidad del form con estado local.
+
+Llama a hooks de CRUD.
+
+Aplica useCan() para controlar botones según permisos.
+
+RBAC (permissions.ts):
+Define:
+
+export const ENTITY_PERMISSIONS = {
+  VIEW: '{RBACDomain}.view',
+  CREATE: '{RBACDomain}.create',
+  UPDATE: '{RBACDomain}.update',
+  DELETE: '{RBACDomain}.delete',
+};
+
+
+i18n ({EntityName}.messages.ts):
+Define textos (title, createButton, searchPlaceholder, loading, etc.).
+No incluir literales en JSX.
+
+SCSS ({EntityName}.scss):
+Usa variables GDS y BEM (.{entityName}__container, etc.).
+No hardcodear colores.
+
+Mocks (handlers/{entityName}.ts y db.json):
+Replica handlers CRUD y agrega colección inicial.
+
+🧩 FASE 3 — Integraciones Globales
+
+Rutas (AppRoutes.tsx):
+
+import { {EntityName}Page } from '@/features/{Module}';
+import { ENTITY_PERMISSIONS } from '@/features/{Module}/constants/permissions';
+
+<Route
+  path="{RoutePath}"
+  element={
+    <ProtectedRoute permiso={ENTITY_PERMISSIONS.VIEW}>
+      <{EntityName}Page />
+    </ProtectedRoute>
+  }
+/>
+
+
+Menú lateral / principal:
+Inserta el link después de Permisos (si módulo = security),
+o en la sección equivalente si otro módulo.
+Usa ícono e identificador siguiendo las convenciones GDS.
+
+RBAC Global:
+Actualiza src/features/security/constants/permissions.ts para incluir la nueva constante.
+
+Mock Handlers:
+Importa y agrega ...{entityName}Handlers en src/mocks/handlers.ts.
+
+🧩 FASE 4 — Validaciones, Calidad y DoD
+Comprobaciones automáticas:
+npx tsc --noEmit
+npm run lint
+npm run build
+
+Definition of Done
+
+ Sin errores TS.
+
+ Sin literales ni any.
+
+ Linter pasa.
+
+ Ruta protegida por RBAC.
+
+ CRUD completo operativo.
+
+ Estilos GDS correctos.
+
+ Mock funcionando (MSW + BD.json).
+
+ useCan() aplicado en acciones.
+
+ Página con PageHeader + CommandBar + EntityTable + Form embebido.
+
+🧠 FASE 5 — Explicaciones Didácticas (Entrenamiento)
+
+Por qué se hace así:
+
+Área	Razón técnica
+Formulario embebido	Mantiene consistencia visual y sincroniza el estado de tabla y form sin manejar modales ni context extra.
+RHF + Zod	Tipado seguro, validaciones declarativas, integración perfecta con TS.
+PaginatedEntityTable	Centraliza paginación, filtros y render condicional RBAC.
+useEntityCrud + TanStack Query	Evita Redux; garantiza sincronía con backend y cache automático.
+RBAC string-based	Permite auditar permisos y extender integraciones con backend SAP o IAM externo.
+SCSS Modular + GDS	Evita colisiones de estilo y asegura coherencia UI global.
+MSW	Permite desarrollo offline, QA funcional y pruebas automatizadas sin backend.
+⚙️ FASE 6 — Automatización (Modo IA)
+
+Si se ejecuta en Codex o GPT-5-Code-Analyzer:
+
+Usa este prompt como entrada.
+
+Sustituye variables {Module} security, {EntityName}menu, {RBACDomain}security.menu, {RoutePath}/seguridad/menu.
+
+Crea los archivos listados, replicando la estructura de Permisos.
+
+Usa los mismos nombres de componentes (ej. OAForm, PaginatedEntityTable).
+
+Genera y modifica archivos necesarios.
+
+Ejecuta validación automática (tsc/lint/build).
+
+Devuelve reporte con rutas creadas y estado de compilación.
+
+📦 FASE 7 — Checklist Final de Entrenamiento
+Categoría	Validación	Estado esperado
+Código	Tipado estricto, sin any	✅
+Estructura	FSD / modular / SCSS local	✅
+Seguridad	RBAC activo en rutas y UI	✅
+i18n	Sin literales en JSX	✅
+API	CRUD completo con interceptores	✅
+Mocks	MSW + BD.json sincronizados	✅
+UI	Form embebido, PageHeader, CommandBar, Tabla	✅
+GDS	Tokens, BEM, responsividad	✅
+QA	Build limpio, lint sin errores	✅
+🚀 Resultado Esperado
+
+Una nueva pantalla {EntityName} en {Module} totalmente funcional.
+
+CRUD completo (listar, crear, editar, eliminar).
+
+RBAC activo.
+
+Ruta protegida.
+
+Mocks listos.
+
+Cero errores en compilación.
+
+Documentación consistente.

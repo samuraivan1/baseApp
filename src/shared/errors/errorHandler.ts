@@ -10,13 +10,13 @@ function extractAxios(err: unknown): {
   headers?: Record<string, unknown>;
   message?: string;
 } {
-  const e = err as { isAxiosError?: boolean; response?: { status?: number; data?: any; headers?: any }; message?: string };
+  const e = err as { isAxiosError?: boolean; response?: { status?: number; data?: Record<string, unknown>; headers?: Record<string, unknown> }; message?: string };
   const isAxios = Boolean(e?.response || e?.isAxiosError);
   return {
     isAxios,
     status: e?.response?.status,
-    data: (e?.response?.data as Record<string, unknown>) || undefined,
-    headers: (e?.response?.headers as Record<string, unknown>) || undefined,
+    data: e?.response?.data || undefined,
+    headers: e?.response?.headers || undefined,
     message: e?.message,
   };
 }
